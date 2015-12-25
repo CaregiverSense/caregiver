@@ -1,0 +1,32 @@
+html(ng-app='Test')
+    head
+        link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap-theme.css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap-theme.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/stylesheets/notes.css')
+        link(rel='stylesheet', href='/stylesheets/mmse.css')
+        script(src='/js/lib/angular.min.js')
+        script(src='/js/app/MmseCtrl.js')
+
+    body.container(ng-controller='MmseCtrl as mmse')
+        .sections(ng-repeat='section in mmse.sections')
+            .section.panel.panel-
+                .form-inline
+                    .form-group.container
+                        .row
+                            .col-md-6
+                                .title {{section.title}}
+                            .col-md-4
+                                .ctrl
+                                    input.form-control.input-lg(type="number" min='0' max='{{section.max}}' ng-model="mmse.testResults[section.key]" placeholder="" ng-class="{'questionComplete': mmse.jade.isFilled(mmse.jade.testResults[section.key])}")
+                            .col-md-2
+                                button.btn.btn-lg.btn-default(ng-click='mmse.toggleInstructions(section)') Instructions
+                        .row(ng-show='section.showInstructions' )
+                            .col-md-12
+                                h4 Questions
+                                p {{section.question}}
+                                br
+                                h4 Administration
+                                p {{section.instruction}}
+                        button.btn.btn-lg.btn-primary(ng-click='mmse.submit()') Submit

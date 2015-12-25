@@ -1,0 +1,13 @@
+.sections {
+}
+.section {
+    padding-bottom: 1.3em;
+    border-bottom: 1px solid #e4e4e4;
+}
+.title {
+    font-size:2em;
+}
+.questionComplete  {
+    background-color : #449D44;
+    color:white;
+}

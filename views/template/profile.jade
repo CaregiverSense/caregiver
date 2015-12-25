@@ -1,0 +1,70 @@
+style.
+    .rowBorder {
+        border-bottom: 1px solid gray;
+        padding-bottom:10px;
+        padding-top:15px;
+        cursor: pointer;
+    }
+    .allergy {
+        line-height:2em;
+        font-size:2em;
+        margin-left:3em;
+    }
+    .allergyTitle {
+        font-size:3em;
+        color:red;
+    }
+    .th {
+        font-weight: bold;
+    }
+
+    .profile {
+        font-size:1.2em;
+    }
+
+
+
+.container-fluid
+
+    .profile
+        h2 {{diag.patient.name}}
+        .row
+            .col-xs-4.th Age:
+            .col-xs-8 68
+        .row
+            .col-xs-4.th Diagnosis:
+            .col-xs-8 Vascular dementia
+        .row
+            .col-xs-4.th MOCA:
+            .col-xs-8 16 / 30
+        .row
+            .col-xs-4.th MMSE:
+            .col-xs-8 {{diag.mmseScore}} / 30
+        .row.rowBorder
+
+        h3 Health Conditions
+
+        ul
+            li
+                h4
+                    a(href='http://www.mayoclinic.org/diseases-conditions/type-1-diabetes/basics/treatment/con-20019573') Diabetes (Type 1)<br>
+                | Wears an insulin pump that must be refilled daily.  Avoid sweets, pasta, white bread & flour</i>
+            li
+                h4
+                    a(href='http://www.mayoclinic.org/diseases-conditions/high-blood-pressure/basics/definition/con-20019580') High blood pressure<br>
+                | Administer
+                a(href='http://www.webmd.com/drugs/2/drug-6873/lisinopril-oral/details') &nbsp;lisinopril&nbsp;
+                | oral twice a day, before breakfast and dinner
+            li
+                h4
+                    a(href='http://www.mayoclinic.org/diseases-conditions/rheumatoid-arthritis/basics/definition/con-20014868') Rheumatoid Arthritis<br>
+                | Takes
+                a(href='http://www.mayoclinic.org/drugs-supplements/ibuprofen-oral-route/description/drg-20070602') &nbsp;ibuprofen&nbsp;
+                | each morning.
+
+        h3 Allergies
+        ul
+            li Citrus fruits - <i>Avoid tomatoes, ketchup, oranges</i>
+            li Aspirin
+
+

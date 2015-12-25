@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  div(ng-controller="GroundCtrl as main")
+    header(ng-cloak ng-click='main.switchRole()')
+      i.fa.fa-heart-o
+      a(ng-href='{{main.homePath}}' style='padding-left:12px;color:#2A377C;text-decoration: none;' ng-cloak)
+        span(style='font-size:.8em') Princeton-Plainsboro Hospital
+      // span.not-visible(ng-cloak ng-class="{ superVisible: main.currentPath }") {{ main.currentPath }}
+      // span.not-visible(ng-cloak ng-class="{ superVisible: main.currentPath }") {{ main.currentPath }}
+
+    ng-view(autoscroll=true)

@@ -1,0 +1,152 @@
+extends layout
+
+block content
+    style.
+        .row-space {
+            margin-bottom:1em;
+        }
+        .hidden {
+            display:none;
+        }
+        .dropdownName {
+            font-size:2rem;
+            padding-left:1rem;
+        }
+
+        .cs-subpanel .header .icon {
+            font-size:1em;
+            padding: 0 .5em 0 .5em;
+        }
+        .cs-subpanel .header {
+            background-color: #091824;
+            opacity:.9;
+            color:white;
+            padding:.5em 0 .5em .25em;
+            font-size:1.5em;
+        }
+        .cs-subpanel {
+            background-color:rgb(12, 39, 62);
+            color:white;
+            border:1px solid black;
+            box-shadow: 3px 3px 17px 1px rgba(0,0,0,0.75);
+        }
+
+        .cs-subpanel table tr {
+            border-top: 1px solid #bbb
+        }
+
+
+    script(type="text/ng-template" id="userTemplate.html")
+        a
+            table(ng-cloak)
+                tr
+                    td
+                        img(ng-if='match.model.fbId' ng-src="//graph.facebook.com/{{match.model.fbId}}/picture?type=small")
+                    td
+                        .dropdownName(ng-bind-html="match.label | uibTypeaheadHighlight:query")
+
+    script(type='text/ng-template' id='addCaregiver.html')
+        .modal-header
+            | Add a new Caregiver
+        .modal-body
+            .container-fluid
+                .row.row-space
+                    .col-xs-4 Name
+                    .col-xs-8
+                        input.input-lg.form-control(type='text' ng-model='addcg.name')
+                .row.row-space
+                    .col-xs-4 E-Mail
+                    .col-xs-8
+                        input.input-lg.form-control(type='text' ng-model='addcg.email')
+                .row
+                    .col-xs-4 Phone #
+                    .col-xs-8
+                        input.input-lg.form-control(type='text' ng-model='addcg.phoneNumber')
+        .modal-footer
+            button.btn.btn-default(type="button" ng-click="addcg.cancel()") Cancel
+            button.btn.btn-primary(type="button" ng-click="addcg.ok()") Add
+
+
+
+    .container-fluid(ng-controller='AdminCtrl as admin')
+
+        .row
+            .col-xs-12.col-sm-6
+                .row.row-space
+                    .col-xs-12.col-sm-8.col-sm-offset-2
+                        button.btn.btn-large.btn-success(ng-click='admin.addCaregiver()') Add New Caregiver
+                .row.row-space
+                    .col-xs-12.col-sm-8.col-sm-offset-2
+                        input.form-control(placeholder='Caregiver Search' uib-typeahead="caregiver.name for caregiver in admin.getCaregivers($viewValue)" typeahead-loading="admin.loadingCaregivers" ng-model='admin.selectedCaregiver' typeahead-on-select='admin.showCaregiver($item,$model,$label)' typeahead-template-url="userTemplate.html")
+            .col-xs-12.col-sm-6
+                .row.row-space
+                    .col-xs-12.col-sm-8.col-sm-offset-2
+                        button.btn.btn-large.btn-success Add New Patient
+                .row.row-space
+                    .col-xs-12.col-sm-8.col-sm-offset-2
+                        input.form-control(placeholder='Patient Search' uib-typeahead="patient.name for patient in admin.getPatients($viewValue)" typeahead-loading="admin.loadingPatients" ng-model='admin.selectedPatient' typeahead-on-select='admin.showPatient($item,$model,$label)' typeahead-template-url="userTemplate.html")
+
+
+
+        .row
+            .col-xs-12.col-sm-6
+                .panel.panel-default(ng-show="admin.displayedCaregiver")
+                    .panel-heading
+                        h3.panel-title
+                            | Caregiver {{admin.displayedCaregiver.name}}
+                    .panel-body
+                        .row
+                            .col-xs-4.col-sm-4.col-lg-2
+                                img(ng-if='admin.displayedCaregiver.pic' src='{{admin.displayedCaregiver.pic}}')
+                            .col-xs-8.col-sm-8.col-lg-10
+                                h6 {{admin.displayedCaregiver.email}}
+
+                        .row(ng-if='admin.caregiverAndPatientSelected()')
+                            .col-xs-offset-4.col-xs-8.col-md-offset-4.col-md-8.col-lg-offset-2.col-lg-10
+                                button.btn.btn-lg.btn-primary(ng-class="admin.getAssignCaregiverButtonClass()" ng-click='admin.assignCaregiverToPatient()') {{ admin.getAssignCaregiverButtonText() }}
+                        br
+                        .row
+                            .col-xs-12.col-md-12.col-lg-12
+                                .cs-subpanel
+                                    div.header
+                                        .fa.fa-child.fa-2x.icon
+                                        | Patients
+                                    table.table
+                                        tr(ng-repeat="pt in admin.displayedCaregiver.patients")
+                                            td
+                                                img(src='//graph.facebook.com/{{pt.fbId}}/picture?type=small')
+                                            td
+                                                h4 {{pt.name}}
+                                            td
+                                                button.btn.btn-md.btn-default.pull-right.fa.fa-times.fa-1x(ng-click='admin.unassignPatient(pt)')
+
+
+            .col-xs-12.col-sm-6
+                .panel.panel-default(ng-if="admin.displayedPatient")
+                    .panel-body
+                        .row
+                            .col-xs-4.col-sm-4.col-lg-2
+                                img(ng-if='admin.displayedPatient.pic' src='{{admin.displayedPatient.pic}}')
+                            .col-xs-8.col-sm-8.col-lg-10
+                                h2 {{admin.displayedPatient.name}}
+                                h6 {{admin.displayedPatient.email}}
+                        .row(ng-if='admin.caregiverAndPatientSelected()')
+                            .col-xs-offset-4.col-xs-8.col-md-offset-4.col-md-8.col-lg-offset-2.col-lg-10
+                                button.btn.btn-lg.btn-primary(style='visibility:hidden')
+                        .row
+                            .col-xs-12.col-md-12.col-lg-offset-2.col-lg-10
+                                .panel.panel-default
+                                    .panel-heading
+                                        h3.panel-title Caregivers
+                                    .panel-body
+                                        table.table.table-striped
+                                            tr(ng-repeat="cg in admin.displayedPatient.caregivers")
+                                                td
+                                                    img(src='//graph.facebook.com/{{cg.fbId}}/picture?type=small')
+                                                td
+                                                    h4 {{cg.name}}
+                                                td
+                                                    button.btn.btn-md.btn-default.pull-right.fa.fa-times.fa-1x(ng-click='admin.unassignCaregiver(cg)')
+                            .col-xs-12.col-md-12.col-lg-12
+                                | {{admin.displayedPatient.userId}}
+                                patient-notes(patient-id="{{admin.displayedPatient.userId}}")

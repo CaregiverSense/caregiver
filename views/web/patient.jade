@@ -1,0 +1,30 @@
+extends layout
+block content
+    .container-fluid(ng-controller='PatientCtrl as patient')
+
+        //
+            .panel.panel-default(ng-show="patient.displayedPatient")
+                .panel-body
+                    .row
+                        .col-xs-4.col-sm-4.col-lg-2
+                            img(ng-if='patient.displayedPatient.pic' src='{{patient.displayedPatient.pic}}')
+                        .col-xs-8.col-sm-8.col-lg-10
+                            h2 {{admin.displayedPatient.name}}
+                            h6 {{admin.displayedPatient.email}}
+                    .row(ng-if='patient.caregiverAndPatientSelected()')
+                        .col-xs-offset-4.col-xs-8.col-md-offset-4.col-md-8.col-lg-offset-2.col-lg-10
+                            button.btn.btn-lg.btn-primary(style='visibility:hidden')
+                    .row
+                        .col-xs-offset-0.col-xs-12.col-md-offset-4.col-md-8.col-lg-offset-2.col-lg-10
+                            .panel.panel-default
+                                .panel-heading
+                                    h3.panel-title Caregivers
+                                .panel-body
+                                    table.table.table-striped
+                                        tr(ng-repeat="cg in patient.displayedPatient.caregivers")
+                                            td
+                                                img(src='//graph.facebook.com/{{cg.fbId}}/picture?type=small')
+                                            td
+                                                h4 {{cg.name}}
+                                            td
+                                                button.btn.btn-md.btn-default.pull-right.fa.fa-times.fa-1x(ng-click='patient.unassignCaregiver(cg)')

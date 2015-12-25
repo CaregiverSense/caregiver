@@ -1,0 +1,55 @@
+style.
+    .marginn {
+        padding: 15px;
+        margin: 15px;
+    }
+
+    .laundry h1 {
+        margin: auto;
+        text-align: center;
+    }
+
+    .active {
+        text-align: center;
+    }
+
+    .countdown {
+        position: relative;
+        margin: auto;
+    }
+
+    .countdown .timer {
+        position: absolute;
+        height: 50%;
+        top: 30%;
+        margin: auto;
+        width: 100%;
+        text-align: center;
+        z-index: 10;
+        font-size: 4em;
+        color: #555;
+        font-weight: bold;
+    }
+
+    .countdown .washer {
+        position: relative;
+        margin: auto;
+        z-index: -1;
+        width: 20em;
+        height: 20em;
+    }
+
+
+
+div.laundry
+    .row.marginn(ng-if="!laundry.timerActive")
+        button.btn.btn-block.btn-info.btn-lg.bigButton(ng-click='laundry.notify(1, "Check the washer :)", true)') Demo: 5s
+        button.btn.btn-block.btn-info.btn-lg.bigButton(ng-click='laundry.notify(30, "Check the washer :)")') Washer: 30m
+        button.btn.btn-block.btn-info.btn-lg.bigButton(ng-click='laundry.notify(60, "Check the dryer :)")') Dryer: 60m
+
+    .active
+        .countdown(ng-if="laundry.timerActive")
+            .timer {{laundry.timeDisplay}}
+            svg.washer(viewBox='0 0 100 100')
+                rect(x='5' y='5' width='90' height='90' stroke='#CCC' fill='#eee' stroke-width='5' stroke-linejoin='round')
+                circle(cx='50' cy='45' r='30' stroke='#CCC' fill='#fff' stroke-width='5')

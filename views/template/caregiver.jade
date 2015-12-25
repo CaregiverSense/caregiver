@@ -1,0 +1,58 @@
+style.
+    .dropdown {
+        margin-top:2em;
+        margin-bottom:.5em;
+    }
+
+    .patientPic {
+        width:100%;
+        margin-bottom:.5em;
+        opacity:.8;
+    }
+
+    .phoneButton {
+    }
+
+    .phoneIcon {
+        font-size: 9em;
+    }
+
+    .vcenter {
+        display: inline-block;
+        vertical-align: middle;
+        float: none;
+    }
+
+
+
+.container-fluid
+
+    .row
+        .col-xs-6
+            .dropdown
+                button.btn.btn-lg.btn-default.dropdown-toggle(type='button')
+                    | {{cg.patient.name}}
+                    span.caret
+                ul.dropdown-menu
+
+    .row
+        .col-xs-6.vcenter
+            img.patientPic(src='{{cg.facebookPicURL}}')
+        .col-xs-6.vcenter
+            a.phoneButton(ng-click='cg.call("+1-647-280-4016")' +
+            '')
+                .fa.fa-phone-square.fa-5x.text-success.phoneIcon
+
+    .row
+        .col-xs-12
+            button.btn.btn-block.btn-info.bigButton(ng-click='load("/profile");') Patient Profile
+    .row
+        .col-xs-12
+            button.btn.btn-block.btn-info.bigButton(ng-click='load("/schedule");')
+                i.fa.fa-calendar
+                SPAN Schedule
+    .row
+        .col-xs-12
+            button.btn.btn-block.btn-info.bigButton(ng-click='load("/notes");')
+                i.fa.fa-sticky-note-o
+                SPAN Notes

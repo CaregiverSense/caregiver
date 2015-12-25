@@ -1,0 +1,70 @@
+html(ng-app='Test')
+    head
+        link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap-theme.css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap-theme.min.css')
+        script(src='/js/lib/jquery.min.js')
+        script(src='/js/lib/angular.min.js')
+        script(src='/js/lib/dropdown.js')
+        script(src='/js/app/MocaCtrl.js')
+    body(ng-controller='MocaCtrl as moca')
+        style.
+            .sections {
+                margin-top: 3em;
+                font-size:1.5em;
+            }
+            li, .dropdown-toggle, .help {
+                line-height:2.25em;
+                font-size:1.5em;
+            }
+
+            .section {
+                padding-bottom: 1.3em;
+                border-bottom: 1px solid #e4e4e4;
+            }
+
+            .title {
+                font-size: 1.8em;
+            }
+
+            .questionComplete {
+                background:none;
+                background-color: #449D44 !important;
+                color: white;
+            }
+
+            .dropdown .dropdown-menu > li > a {
+                font-size: 1.5em;
+            }
+        .container-fluid
+            h1 Montreal Cognitive Assessment (MOCA)
+            .sections
+                .section.panel(ng-repeat='section in ::moca.sections')
+                    .row
+                        .col-xs-6
+                            .title {{::section.title}}
+                        .col-xs-4
+                            .ctrl
+                                .dropdown
+                                    button.btn.btn-default.btn-lg.dropdown-toggle(type="button" data-toggle="dropdown" ng-class="{'questionComplete': moca.isFilled(moca.testResults[section.key])}")
+                                        | {{moca.testResults[section.key] === "" ? "Score " : "&nbsp;&nbsp;&nbsp;" + moca.testResults[section.key] + "&nbsp;&nbsp;&nbsp;" }}
+                                        span.caret
+                                    ul.dropdown-menu
+                                        li(ng-repeat="i in ::moca.range(section.max)")
+                                            a(ng-click='moca.select(section.key, i)') {{::i}}
+                        .col-xs-2
+                            button.btn.btn-lg.btn-default.help(ng-click='moca.toggleInstructions(section, $event)') &nbsp;&nbsp;?&nbsp;&nbsp;
+                    .row(ng-show='section.showInstructions' )
+                        .col-xs-12
+                            h3 Administration
+                            p
+                                | {{::section.administration}}
+                            br
+                            h3 Scoring
+                            p
+                                | {{::section.scoring}}
+
+                button.btn.btn-lg.btn-primary(ng-click='moca.submit()') Submit
+                br
+    //
+              {{moca.testResults}}

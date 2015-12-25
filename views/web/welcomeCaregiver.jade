@@ -1,0 +1,36 @@
+extends layout
+block content
+
+    .fb-root
+    script.
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.5&appId=244016658689";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+    .container-fluid(ng-controller='WelcomeCaregiver as welcome' ng-cloak)
+        input(type='hidden' ng-model='welcome.registrationId' ng-init="welcome.registrationId='#{registrationId}'")
+        .row
+            .col-xs-12.text-center(ng-show='welcome.showLoginButton')
+                h1 Hi #{name},
+
+                h3 Welcome to CaregiverSense :)
+                br
+
+                p You can complete the registration by signing in below:
+                br
+
+
+                .fb-login-button(showdata-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false" onlogin='')
+            .col-xs-12.text-center(ng-if='welcome.showWelcomeBack')
+                h1 You are now registered!
+                br
+
+                h4 This page is incomplete.  In the meantime, you can check out the admin page:
+                br
+
+                button.btn.btn-lg.btn-success(ng-click='welcome.openCaregiverPage()') Admin Page
+                // TODO provide help with the mobile client.

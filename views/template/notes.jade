@@ -1,0 +1,78 @@
+style.
+    .textContent {
+        font-size:1.5em;
+    }
+    .textTime {
+        vertical-align:middle;
+        font-style: italic;
+        color:#888;
+        font-size:.75em;
+    }
+    .textFrom {
+        font-style: italic;
+        color:#888;
+        font-size:1em;
+    }
+    .text {
+        padding-left:.5em;
+    }
+    .sharedWithPatient {
+        white-space: nowrap;
+        margin-top:1em;
+    }
+    .date-title {
+        line-height:1.5em;
+        padding:.5em;
+    }
+
+
+
+.container-fluid
+    .row
+        .col-xs-12
+            h2 Add a note
+    .row
+        .col-xs-12
+            input.form-control.input-lg(
+            type='text'
+            value="{{notes.newNote}}"
+            ng-model='notes.newNote'
+            )
+    .row
+        .col-xs-12
+            .pull-left.sharedWithPatient.form-group(ng-if='notes.isCaregiver')
+                div
+                    input.form-control(style='float:left;width:3rem;' type='checkbox' id='sharedWithPatient' ng-model='notes.sharedWithPatient')
+                    label.control-label(style='margin:10px 0 0 10px;' for='sharedWithPatient') To Patient?
+            .pull-right
+                button.btn.btn-lg.btn-primary(ng-click='notes.addNote()' style='margin:2rem 0') Add
+
+    .row
+        .col-xs-12(ng-repeat="lookupDate in notes.lookupDates")
+            h2.bg-info.date-title.text-right {{ lookupDate | date:'EEE MMM d' }}
+            table.table.table-striped
+                tr(ng-repeat="note in notes.getNotesForDate(lookupDate)")
+
+                    td.noteText
+                        .textFrom.text-right
+                            span(ng-if='notes.isNotSelfNote(note)') {{note.fromUserName}}
+                        table.textContent
+                            tr
+                                td.textTime {{ note.lastUpdated | date:'hh:mm'}} &nbsp;
+                                td.text {{ note.content }}
+                    td.text-right
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

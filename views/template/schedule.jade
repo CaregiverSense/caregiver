@@ -1,0 +1,157 @@
+style.
+    .ps .input-group-addon {
+        min-width:7em;
+        text-align:right;
+    }
+
+    .selectedItem {
+        background-color: #d9edf7;
+    }
+
+    .centralDate {
+        margin-top: 1em;
+        white-space: nowrap;
+    }
+
+    .timeago {
+        font-size: 2em;
+    }
+
+    .actualDate {
+        font-size: 1em;
+    }
+
+    .complete {
+        background-color: #A2E98C;
+        opacity:0.8;
+    }
+    .navigation {
+        text-align: center;
+    }
+    .tableHeader {
+        text-align: left;
+        background-color: lightgray;
+    }
+
+    .rowBorder {
+        border-bottom: 1px solid gray;
+        padding-bottom:10px;
+        padding-top:15px;
+        cursor: pointer;
+    }
+
+    .myFont{
+        font-size:1.5em;
+        padding:15px;
+    }
+
+    .slide-out-form {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        padding: 50px;
+        background: #2B6598;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        color: white;
+        overflow:scroll;
+    }
+
+    .slide-out-form.active {
+        transform: translateX(0);
+    }
+
+    .bigButton {
+        line-height: 2em;
+        margin: .25em 0;
+    }
+
+    .newClass {
+        padding:15px;
+    }
+
+.container-fluid.container
+    .mycontainer
+        br
+        .navigation
+            .row.rowBorder
+                .col-xs-3.center-text
+                    button.bigButton.btn.btn-block.btn-info.fa.fa-arrow-left.fa-2x(ng-click='ps.openYesterday()')
+                .col-xs-6.center-text
+                    .centralDate
+                        .timeago {{ps.todayDateDisplay}}
+                        .actualDate {{ps.viewDate | date:'EEE MMM, d'}}
+                .col-xs-3.center-text
+                    button.bigButton.btn.btn-block.btn-info.fa.fa-arrow-right.fa-2x(ng-click='ps.openTomorrow()')
+
+            //.row.rowBorder.tableHeader
+                .col-xs-9.name
+                    |<h3><b>Task</b></h3>
+                .col-xs-2.time
+                    |<h3><b>Time</b></h3>
+
+
+        .items(ng-repeat='item in ps.schedule | orderBy:"time": reverse')
+            .row.rowBorder(ng-class='{selectedItem:item.showDetails,complete:item.completed}' ng-click='ps.toggleDetails(item, $event)')
+                .col-xs-9.name.fa-2x.myFont
+                    span(ng-if='item.completed')
+                        .fa.fa-check-circle-o
+                    | &nbsp;{{item.name}}
+                .col-xs-2.time.myFont {{item.time | date:'HH:mm'}}
+            .row.rowBorder.navigation(ng-show='item.showDetails')
+                .myFont {{item.description}}<br>
+                button.bigButton.btn.btn-danger.fa.fa-map-o.fa-2x(ng-click='ps.locate(item)' ng-show='item.directions')
+                |&nbsp;&nbsp;
+                button.bigButton.btn.btn-default.fa.fa-2x(ng-click='ps.isCompleted(item)') Complete
+                |&nbsp;&nbsp;
+                button.bigButton.btn.btn-default.fa.fa-trash.fa-2x(ng-click='ps.delete(item)' ng-show='ps.isCaregiver')
+
+        br
+        .navigation
+            button.bigButton.btn.btn-info.addNew.fa.fa-plus.fa-2x(ng-click="ps.addingTask = true")  Add New
+
+.slide-out-form(ng-class="{ active: ps.addingTask }")
+    .form-group
+
+        //data has:
+        //id
+        //name,
+        //description,
+        //creator,
+        //directions,
+        //date,
+        //time,
+        //completed,
+
+        label Name
+        input.form-control(type='text' ng-model='ps.newTask.name' placeholder='Enter name..')
+
+        br
+
+        label Description
+        input.form-control(type='text' ng-model='ps.newTask.description' placeholder='Enter description..')
+
+        br
+        label Location
+        input.form-control(type='text' ng-model='ps.newTask.directions' placeholder='Enter location..')
+
+        br
+        label Date
+        input.form-control(type='date' ng-model='ps.newTask.date')
+
+        br
+        label Time
+        input.form-control(type='time' placeholder="HH:mm" ng-model='ps.newTask.time')
+
+
+    button.btn.btn-block.btn-default.bigButton.btn-success(
+    ng-click="ps.addTask(ps.newTask)"
+    ) Save
+
+    button.btn.btn-block.btn-default.bigButton.btn-danger(
+    ng-click="ps.addingTask = false"
+    ) Cancel
+
+

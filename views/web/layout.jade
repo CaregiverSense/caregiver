@@ -1,0 +1,22 @@
+doctype html
+html
+    head
+        meta(charset='UTF-8')
+        base(href="/")
+        link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css")
+        script(src='js/lib/require.js' data-main='js/web/main-web.js')
+    body()
+        div(ng-controller="GroundWebCtrl as main" ng-cloak style="height:100%")
+            nav.navbar.navbar-inverse.navbar-fixed-top
+                button.button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#ga-navbar-collapse" aria-expanded="false")
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href="#") CaregiverSense
+            .ga-body
+                block content
+        

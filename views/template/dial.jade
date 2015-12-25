@@ -1,0 +1,60 @@
+style.
+    .slide-out-form {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        padding: 50px;
+        background: #2B6598;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        color: white;
+    }
+    .icon {
+        width:5em;
+        height:5em;
+    }
+
+    .slide-out-form.active {
+        transform: translateX(0);
+    }
+    .title {
+        padding-left:1em;
+    }
+
+
+
+div(style='height:calc(100% - 50px);position:relative;padding:15px')
+    button.btn.btn-block.btn-default.bigButton(
+        ng-repeat='number in dial.numbers track by $index'
+        ng-click='dial.call(number)')
+        table
+            tr
+                td
+                    img.icon(src="{{number.link}}")
+                td
+                    .title {{ number.title }}
+            // .number {{ number.number }}
+
+    button.btn.btn-block.btn-default.bigButton.btn-primary(
+     ng-click="dial.addingNumber = true"
+    ) Add Number
+
+.slide-out-form(ng-class="{ active: dial.addingNumber }")
+    .form-group
+        label Name
+        input.form-control(type='text' ng-model='dial.newNumber.title' placeholder='Enter name..')
+
+        br
+
+        label Number
+        input.form-control(type='text' ng-model='dial.newNumber.number' placeholder='Enter number..')
+
+    button.btn.btn-block.btn-default.bigButton.btn-success(
+        ng-click="dial.addNumber(dial.newNumber)"
+    ) Save
+
+    button.btn.btn-block.btn-default.bigButton.btn-danger(
+f        ng-click="dial.addingNumber = false"
+    ) Cancel
