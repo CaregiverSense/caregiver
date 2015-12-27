@@ -89,3 +89,12 @@ create table registration (
 
 alter table user add column registration_date datetime;
 
+-- Store the quick dial phone numbers for a user
+create table dial (
+	dialId 		integer not null primary key auto_increment,	-- primary key
+	userId 		integer not null references user(userId),		-- the user who the number is for
+	phone		varchar(30) not null,							-- the phone number (without the tel:// prefix)
+	rank		integer not null default 0						-- used to sort and reorder the numbers for a user
+)
+
+

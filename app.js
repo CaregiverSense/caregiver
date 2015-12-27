@@ -10,13 +10,13 @@ var l = require("./routes/util/log");
 
 var db = require("./routes/dao/db");
 
-var index = require('./routes/index');
-var admin = require('./routes/admin');
-var login = require('./routes/login');
-var notes = require('./routes/notes');
-var profile = require('./routes/profile');
-var register = require('./routes/register');
-var schedule = require('./routes/schedule');
+var index = require('./routes/csIndex');
+var admin = require('./routes/csAdmin');
+var login = require('./routes/csLogin');
+var notes = require('./routes/csNotes');
+var profile = require('./routes/csProfile');
+var register = require('./routes/csRegister');
+var schedule = require('./routes/csSchedule');
 
 var app = express();
 
@@ -36,7 +36,7 @@ function releaseConnection(req) {
     if (req.c) {
         req.c.release();
         req.c = null;
-        l("Connection released");
+        // l("Connection released");
     }
 }
 
@@ -73,9 +73,13 @@ if (app.get('env') === 'production') {
 
 // The first middleware chain link establishes a database connection.
 app.use(function(req, res, next) {
+    l("Path:   "); l(req.path);
+    l("Params: "); l(req.params);
+    l("Body:   "); l(req.body);
+
     db.getPool().getConnection(function(err, c) {
         if (!err) {
-            l("Connection obtained");
+            // l("Connection obtained");
             req.c = c;
             res.on("finish", function() {
                 releaseConnection(req);
