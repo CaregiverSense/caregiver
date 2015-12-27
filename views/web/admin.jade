@@ -5,9 +5,6 @@ block content
         .row-space {
             margin-bottom:1em;
         }
-        .hidden {
-            display:none;
-        }
         .dropdownName {
             font-size:2rem;
             padding-left:1rem;
@@ -93,16 +90,17 @@ block content
                 .panel.panel-default(ng-show="admin.displayedCaregiver")
                     .panel-heading
                         h3.panel-title
-                            | Caregiver {{admin.displayedCaregiver.name}}
+                            | Caregiver
                     .panel-body
                         .row
-                            .col-xs-4.col-sm-4.col-lg-2
+                            .col-xs-12.profileArea
                                 img(ng-if='admin.displayedCaregiver.pic' src='{{admin.displayedCaregiver.pic}}')
-                            .col-xs-8.col-sm-8.col-lg-10
-                                h6 {{admin.displayedCaregiver.email}}
+                                .profilePicInfo
+                                    .name {{admin.displayedCaregiver.name}}
+                                    .addr {{admin.displayedCaregiver.email}}
 
                         .row(ng-if='admin.caregiverAndPatientSelected()')
-                            .col-xs-offset-4.col-xs-8.col-md-offset-4.col-md-8.col-lg-offset-2.col-lg-10
+                            .col-xs-12
                                 button.btn.btn-lg.btn-primary(ng-class="admin.getAssignCaregiverButtonClass()" ng-click='admin.assignCaregiverToPatient()') {{ admin.getAssignCaregiverButtonText() }}
                         br
                         .row
@@ -123,15 +121,18 @@ block content
 
             .col-xs-12.col-sm-6
                 .panel.panel-default(ng-if="admin.displayedPatient")
+                    .panel-heading
+                        h3.panel-title
+                            | Patient
                     .panel-body
                         .row
-                            .col-xs-4.col-sm-4.col-lg-2
+                            .col-xs-12.profileArea
                                 img(ng-if='admin.displayedPatient.pic' src='{{admin.displayedPatient.pic}}')
-                            .col-xs-8.col-sm-8.col-lg-10
-                                h2 {{admin.displayedPatient.name}}
-                                h6 {{admin.displayedPatient.email}}
+                                .profilePicInfo
+                                    .name {{admin.displayedPatient.name}}
+                                    .addr {{admin.displayedPatient.email}}
                         .row(ng-if='admin.caregiverAndPatientSelected()')
-                            .col-xs-offset-4.col-xs-8.col-md-offset-4.col-md-8.col-lg-offset-2.col-lg-10
+                            .col-xs-12
                                 button.btn.btn-lg.btn-primary(style='visibility:hidden')
                         .row
                             .col-xs-12.col-md-12.col-lg-offset-2.col-lg-10
@@ -147,6 +148,3 @@ block content
                                                     h4 {{cg.name}}
                                                 td
                                                     button.btn.btn-md.btn-default.pull-right.fa.fa-times.fa-1x(ng-click='admin.unassignCaregiver(cg)')
-                            .col-xs-12.col-md-12.col-lg-12
-                                | {{admin.displayedPatient.userId}}
-                                patient-notes(patient-id="{{admin.displayedPatient.userId}}")

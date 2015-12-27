@@ -1,0 +1,24 @@
+{
+  "name": "caregiverSense",
+  "homepage": "https://github.com/CaregiverSense/caregiver",
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "angular-bootstrap": "~0.14.3",
+    "angular-route": "~1.4.8",
+    "bootstrap": "~3.3.6",
+    "moment": "~2.10.6",
+    "bootstrap-sass": "~3.3.6",
+    "components-font-awesome": "~4.5.0"
+  }
+}
