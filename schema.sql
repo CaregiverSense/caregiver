@@ -94,6 +94,7 @@ create table dial (
 	dialId 		integer not null primary key auto_increment,	-- primary key
 	userId 		integer not null references user(userId),		-- the user who the number is for
 	phone		varchar(30) not null,							-- the phone number (without the tel:// prefix)
+	label		varchar(80) not null,							-- the label to use for the phone number
 	rank		integer not null default 0						-- used to sort and reorder the numbers for a user
 )
 

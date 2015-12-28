@@ -9,6 +9,7 @@ var session = require('express-session')
 var l = require("./routes/util/log");
 
 var db = require("./routes/dao/db");
+db.default.init("databaseSettings.json");   // TODO replace with module
 
 var index = require('./routes/csIndex');
 var admin = require('./routes/csAdmin');
