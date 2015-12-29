@@ -14,26 +14,38 @@ var db_1 = require("../../routes/dao/db");
 var Service = (function () {
     function Service() {
     }
-    Service.prototype.addNumber = function (c, number) {
-        console.log("Adding number");
+    Service.addNumber = function (c, number) {
+        console.log("Dial.Service.addNumber( c, number = ", number, ")");
         return db_1["default"].query(c, "insert into dial (userId, phone, label) " +
-            "values (?, ?, ?)", [number.userId, number.phone, number.label]);
+            "values (?, ?, ?)", [number.userId, number.phone, number.label]).then(function (rs) {
+            return rs;
+        });
+    };
+    Service.loadNumbers = function (c, userId) {
+        console.log("Dial.Service.loadNumbers( c, userId = ", userId, ")");
+        return db_1["default"].query(c, "select * from dial where userId = ? order by rank, dialId", [userId]).then(function (rs) {
+            var result = rs.map(function (row) {
+                return new PhoneNumber(row.label, row.phone, row.userId, row.dialId);
+            });
+            return result;
+        });
+    };
+    Service.deleteNumber = function (c, dialId) {
+        console.log("Dial.Service.deleteNumber( c, dialId = ", dialId, ")");
+        return db_1["default"].query(c, "delete from dial where dialId = ?", [dialId]);
     };
     return Service;
 })();
-exports.Service = Service;
+exports.__esModule = true;
+exports["default"] = Service;
 var PhoneNumber = (function () {
-    function PhoneNumber(label, phone, userId) {
+    function PhoneNumber(label, phone, userId, dialId) {
         this.label = label;
         this.phone = phone;
         this.userId = userId;
+        this.dialId = dialId;
     }
     return PhoneNumber;
 })();
 exports.PhoneNumber = PhoneNumber;
-exports.__esModule = true;
-exports["default"] = function (db) {
-    Service.db = db;
-    return new Service();
-};
 //# sourceMappingURL=Dial.js.map

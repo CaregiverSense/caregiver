@@ -9,16 +9,28 @@
       "commit": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
     },
     "node/node.d.ts": {
-      "commit": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     },
     "es6-promise/es6-promise.d.ts": {
       "commit": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
     },
     "assertion-error/assertion-error.d.ts": {
-      "commit": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     },
     "chai/chai.d.ts": {
-      "commit": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "mysql/mysql.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "q/Q.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "promises-a-plus/promises-a-plus.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "chai-as-promised/chai-as-promised.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     }
   }
 }

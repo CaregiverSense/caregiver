@@ -1,7 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict"
 
-var Q = require("q");
 var l = require("../util/log");
 var mysql = require("mysql");
 
@@ -35,8 +34,6 @@ module db {
                 }
                 settings = require("../../" + path);
                 l("Loaded database settings "  + l(settings));
-            } else {
-                throw "Error: db.js is already initialized.  New attempt is ignored."
             }
             return me;
         }
@@ -51,47 +48,50 @@ module db {
 
     export function getConnection(cb) {
 
-        var promise = Q.defer();
+        if (settings == null) {
+            throw "init() was not called with database settings"
+        }
 
-        getPool().getConnection(function (err, c) {
+        return new Promise((resolve, reject) => {
+            getPool().getConnection(function (err, c) {
 
-            var release = (endedWell : boolean) => {
-                return function(err? : any) {
-                    if (err) {
-                        l(err);
-                    }
-                    l("Connection released");
-                    c.release();
-                    if (endedWell) {
-                        promise.resolve();
-                    } else {
-                        promise.reject(err);
+                var release = (endedWell : boolean) => {
+                    return function(err? : any) {
+                        if (err) {
+                            l(err);
+                        }
+                        l("Connection released");
+                        c.release();
+                        if (endedWell) {
+                            resolve();
+                        } else {
+                            reject(err);
+                        }
                     }
                 }
-            }
 
-            if (!err) {
-                l("Connection obtained");
+                if (!err) {
+                    l("Connection obtained");
 
-                try {
-                    var result = cb(c);
+                    try {
+                        var result = cb(c);
 
-                    if (!result.then) {
-                        l("Error: callback did not return a promise, " +
-                            "connection is immediately released.");
-                        (release(false))()
-                    } else {
-                        return result.then(release(true)).fail(release(false));
+                        if (!result || !result.then) {
+                            l("Error: callback did not return a promise, " +
+                                "connection is immediately released.");
+                            (release(false))()
+                        } else {
+                            return result.then(release(true)).catch(release(false));
+                        }
+                    } catch (e) {
+                        (release(false))(e)
+                        l("Connection problem" + l(e));
                     }
-                } catch (e) {
-                    (release(false))(e)
-                    l("Connection problem" + l(e));
+                } else {
+                    l("Error obtaining connection" + l(err));
                 }
-            } else {
-                l("Error obtaining connection" + l(err));
-            }
-        });
-        return promise.promise;
+            })
+        })
     }
 
     export function go(cb) {
@@ -113,35 +113,34 @@ module db {
             });
         }
 
-    export function query(c, sql:string, params?:any[]) {
-            var q = Q.defer();
-            c.query(sql, params, (err, rs) => {
-                if (err) {
-                    l("Error : " + l(err));
-                    q.reject(err);
-                } else {
-                    l("Resolved : " + l(rs));
-                    q.resolve(rs);
-                }
-            });
+    export function query(c, sql:string, params?:any[]) : Promise<any> {
 
-            return q.promise;
+            return new Promise((yes, no) => {
+                c.query(sql, params, (err, rs) => {
+                    if (err) {
+                        l("Error : " + l(err))
+                        no(err)
+                    } else {
+                        l("Resolved : " + l(rs))
+                        yes(rs)
+                    }
+                })
+            })
         }
 
-    export function queryOne(c, sql, params) {
-            var q = Q.defer();
+    export function queryOne(c, sql:string, params?:any[]) : Promise<any> {
 
-            c.query(sql, params, (err, rs) => {
-                if (err) {
-                    q.reject(err);
-                } else if (rs.length != 1) {
-                    q.reject("Expected one result from " + sql + " with params [" + params.join(',') + "] but found " + rs.length);
-                } else {
-                    q.resolve(rs[0]);
-                }
-            });
-
-            return q.promise;
+            return new Promise((yes, no) => {
+                c.query(sql, params, (err, rs) => {
+                    if (err) {
+                        no(err)
+                    } else if (rs.length != 1) {
+                        no(new Error("Expected one result from " + sql + " with params [" + params.join(',') + "] but found " + rs.length))
+                    } else {
+                        yes(rs[0])
+                    }
+                })
+            })
         }
 }
 

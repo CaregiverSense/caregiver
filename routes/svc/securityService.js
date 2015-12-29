@@ -1,3 +1,5 @@
+/// <reference path="../../typings/tsd.d.ts" />
+
 var db = require("../dao/db.js");
 var Q = require("q");
 

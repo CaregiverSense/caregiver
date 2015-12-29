@@ -42,6 +42,7 @@ router.post("/addNumber", function(req, res) {
     var patientId = o.patientId;
     var userId = req.session.user.userId;
 
+
     ss.ifUserCanSeePatient(userId, patientId).
     then(() => {
         return db.query(

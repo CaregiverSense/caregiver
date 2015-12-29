@@ -14,29 +14,48 @@ import db from "../../routes/dao/db";
 
  */
 
-export class Service {
+export default class Service {
 
     static db:any;
 
     constructor() {
     }
 
-    addNumber(c : any, number:  PhoneNumber) : Promise<void> {
-        console.log("Adding number")
+    static addNumber(c : any, number:  PhoneNumber) : Promise<any> {
+        console.log("Dial.Service.addNumber( c, number = ", number, ")")
         return db.query(c, "insert into dial (userId, phone, label) " +
             "values (?, ?, ?)",
             [number.userId, number.phone, number.label]
-        );
+        ).then((rs) => {
+            return rs
+        });
     }
+
+    static loadNumbers(c : any, userId : number) : Promise<PhoneNumber[]> {
+        console.log("Dial.Service.loadNumbers( c, userId = ", userId, ")")
+        return db.query(c, "select * from dial where userId = ? order by rank, dialId", [userId]
+        ).then((rs) => {
+            var result = rs.map((row) => {
+                return new PhoneNumber(row.label, row.phone, row.userId, row.dialId)
+            })
+            return result;
+        })
+    }
+
+    static deleteNumber(c : any, dialId : number) : Promise<any[]> {
+        console.log("Dial.Service.deleteNumber( c, dialId = ", dialId, ")")
+        return db.query(c, "delete from dial where dialId = ?", [dialId]);
+    }
+
 }
 
 
 export class PhoneNumber {
-    constructor(public label:string, public phone:string, public userId:number) {
+    constructor(
+        public label : string,
+        public phone : string,
+        public userId : number,
+        public dialId? : number
+    ) {
     }
-}
-
-export default (db) => {
-    Service.db = db;
-    return new Service();
 }
