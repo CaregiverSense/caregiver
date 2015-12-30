@@ -1,44 +1,20 @@
-var router = require('express').Router();
-var db = require("./dao/db");
-var l = require("./util/log");
-var login = require("./auth/login");
-var path = require('path');
-var jade = require("jade");
-var request = require('request');
-
-
-// TODO refactor this into a separate module to share with admin.js
-var generator = require('xoauth2').createXOAuth2Generator({
-    user: process.env.OAUTH_GMAIL_USER,
-    clientId: process.env.OAUTH_GMAIL_CLIENT_ID,
-    clientSecret: process.env.OAUTH_GMAIL_CLIENT_SECRET,
-    refreshToken: process.env.OAUTH_GMAIL_REFRESH_TOKEN
-});
-
-// listen for token updates
-// you probably want to store these to a db
-generator.on('token', function(token){
-    console.log('New token for %s: %s', token.user, token.accessToken);
-});
-
-
-var dao = {};
-require("extend")(dao,
-    require("./dao/user-dao"),
-    require("./dao/register-dao")
-);
-
-router.get("/", (req, res) => {
-
+/// <reference path="../typings/tsd.d.ts" />
+"use strict";
+var express = require("express");
+var login_1 = require("./auth/login");
+var User_1 = require("./user/User");
+var register_1 = require("./register/register");
+var log_1 = require("./util/log");
+var router = express.Router();
+router.get("/", function (req, res) {
     var registrationId = req.query.id;
-    dao.loadRegistration(req.c, registrationId).
-        then((reg) => {
-            if (reg) {
-                res.render("web/welcomeCaregiver", {registrationId, name : reg.name})
-            }
-        })
+    register_1["default"].loadRegistration(req.c, registrationId).
+        then(function (reg) {
+        if (reg) {
+            res.render("web/welcomeCaregiver", { registrationId: registrationId, name: reg.name });
+        }
+    });
 });
-
 /*
     // TODO does the signedRequest parameter need to be used in validation?
     Example post:
@@ -50,50 +26,42 @@ router.get("/", (req, res) => {
     }
     registrationId: '51451a88ab0ba36f8f3b5b3e43a18ae0'
 */
-
-router.post("/", (req, res) => {
+router.post("/", function (req, res) {
     var auth = req.body.auth;
     var registrationId = req.body.registrationId;
-
     // contact facebook to see if the access token is valid
-    l("POST /register called with: " + l(req.body));
-    l("Validating access token " + auth.accessToken);
-
-    login.verifyAccessToken(auth.accessToken).then((fbUser) => {
-
-        l("User verified by facebook, loading by fbId " + fbUser.id);
-
-        dao.loadUserByFbId(req.c, fbUser.id).then((user) => {
+    log_1["default"]("POST /register called with: " + log_1["default"](req.body));
+    log_1["default"]("Validating access token " + auth.accessToken);
+    login_1["default"].verifyAccessToken(auth.accessToken).then(function (fbUser) {
+        log_1["default"]("User verified by facebook, loading by fbId " + fbUser.id);
+        User_1["default"].loadUserByFbId(req["c"], fbUser.id).then(function (user) {
             if (user) {
-                l("The user " + user.name + " already exists with the userId " + fbUser.id);
+                log_1["default"]("The user " + user.name + " already exists with the userId " + fbUser.id);
                 // User is already registered, let them in.
                 // TODO update user information.
-
                 // If they are a caregiver then let them in.
                 if (user.role == 'caregiver') {
-                    res.send({userStatus : "alreadyExists"});
-                } else {
-                    // TODO show a 'not authorized' page.
+                    res.send({ userStatus: "alreadyExists" });
                 }
-            } else {
-                l("registerUser called for " + fbUser.name + " with userId " + fbUser.id + " for registrationId " + registrationId);
-                dao.registerUser(req.c, fbUser, registrationId, 'caregiver').
-                    then(() => {
-                        // TODO notify the admin of the registration by email
-                        l("Registered!");
-                        res.send({userStatus : "registered"});
-                    }).catch((err) => {
-                        l("Error: " + l(err));  // TODO add proper handling
-                    });
+                else {
+                }
             }
-
+            else {
+                log_1["default"]("registerUser called for " + fbUser.name + " with userId " + fbUser.id + " for registrationId " + registrationId);
+                register_1["default"].registerUser(req["c"], fbUser, registrationId, 'caregiver').
+                    then(function () {
+                    // TODO notify the admin of the registration by email
+                    log_1["default"]("Registered!");
+                    res.send({ userStatus: "registered" });
+                }).catch(function (err) {
+                    log_1["default"]("Error: " + log_1["default"](err)); // TODO add proper handling
+                });
+            }
         });
-    }, (err) => {
-        l("Error: " + l(err));      // TODO add proper handling
-    })
-
+    }, function (err) {
+        log_1["default"]("Error: " + log_1["default"](err)); // TODO add proper handling
+    });
 });
-
-
-
-module.exports = router;
+exports.__esModule = true;
+exports["default"] = router;
+//# sourceMappingURL=csRegister.js.map

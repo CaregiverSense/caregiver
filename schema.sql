@@ -1,6 +1,6 @@
 create table user (
 	userId 		integer auto_increment primary key,
-	tagId		varchar(8) not null unique key,
+	tagId		varchar(8),
 
 	name 		varchar(128),
 	email 		varchar(128),
@@ -10,10 +10,11 @@ create table user (
 
 	role		varchar(20),
 
-	first_name      varchar(100),
-	last_name       varchar(100),
-	locale          varchar(20),
-	timezone        varchar(20)
+	first_name  varchar(100),
+	last_name   varchar(100),
+	locale      varchar(20),
+	timezone    varchar(20),
+	patientId	integer references user(userId)
 );
 
 

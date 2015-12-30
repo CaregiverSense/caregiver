@@ -1,15 +1,12 @@
-var Q = require("q");
+/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+var User_1 = require("../user/User");
+var log_1 = require("../util/log");
 var request = require("request");
-var l = require("../util/log");
 var d = console.dir;
-
-var dao = {};
-require("extend")(dao,
-    require("../dao/user-dao")
-)
-
-var api = {
-
+var LoginService = (function () {
+    function LoginService() {
+    }
     /*
         Logs in a user to facebook, given an access token.
         Returns a promise of a verified user object, or the promise is rejected.
@@ -28,39 +25,32 @@ var api = {
             "verified":true
         }
     */
-    verifyAccessToken : function(accessToken) {
-
+    LoginService.verifyAccessToken = function (accessToken) {
         // TODO Is an https Agent pool needed here, since this will default to using the global agent which may be a bottleneck.
-
-        var q = Q.defer();
-        request.get({
-            url: "https://graph.facebook.com/me",
-            qs: {
-                "access_token": accessToken
-            }
-        }, function (err, httpResponse, body) {
-            var parsedBody = null;
-            if (body) {
-                parsedBody = JSON.parse(body);
-            }
-            if (err || httpResponse.statusCode != 200 || parsedBody == null || !parsedBody.verified) {
-                console.log(err);
-                console.log(httpResponse.statusCode);
-                console.log(parsedBody);
-                console.log(parsedBody.verified);
-
-                console.log("Call to https://graph.facebook.com/me failed with status code %d, error %s, and body %s", httpResponse.statusCode, err, parsedBody);
-                q.reject({err, body});
-                // TODO e-mail sysadmin about failure
-            } else {
-                console.log("Facebook response %s", body);
-                //q.reject({err, body});
-                q.resolve(parsedBody);
-            }
+        log_1["default"]("LoginService # verifyAccessToken");
+        return new Promise(function (resolve, reject) {
+            request.get({
+                url: "https://graph.facebook.com/me",
+                qs: {
+                    "access_token": accessToken
+                }
+            }, function (err, httpResponse, body) {
+                var parsedBody = null;
+                if (body) {
+                    parsedBody = JSON.parse(body);
+                }
+                if (err || httpResponse.statusCode != 200 || parsedBody == null || !parsedBody.verified) {
+                    console.log("Call to https://graph.facebook.com/me failed with status code %d, error %s, and body %s", httpResponse.statusCode, err, parsedBody);
+                    reject({ err: err, body: body });
+                }
+                else {
+                    console.log("Facebook response %s", body);
+                    //q.reject({err, body});
+                    resolve(parsedBody);
+                }
+            });
         });
-        return q.promise;
-    },
-
+    };
     /**
      * A promise for a status object with the following
      *  {
@@ -74,40 +64,32 @@ var api = {
      * @param auth      An object containing an accessToken to validate with facebook.
      * @returns         A promise for the status object above.
      */
-    login : function(c, session, auth) {
+    LoginService.login = function (c, session, auth) {
         var status = {
-            accessTokenVerified : false,
-            userIsRegistered : false
+            accessTokenVerified: false,
+            userIsRegistered: false
         };
-        return api.verifyAccessToken(auth.accessToken).
-
-            then(
-                (fbUser) => {
-                    status.accessTokenVerified = true;
-                    l("Access token verified for fbUser.id: " + fbUser.id);
-                    // TODO add dao
-                    return dao.loadUserByFbId(c, fbUser.id);
-                }
-            ).then(
-                (user) => {
-                    l("Loaded user: " + l(user));
-                    status.userIsRegistered = true;
-                    session.user = user;
-                },
-                () => {
-                    // TODO The user was not found, record the login attempt.
-                }
-            ).then(() => {
-                l("login.js # login(): Returning " + l(status));
-                return status;
-            }).catch(
-                (e) => {
-                    l("login.js # login() error: " + l(e));
-                    return status;
-                }
-            );
-
-    }
-};
-
-module.exports = api;
+        return LoginService.verifyAccessToken(auth.accessToken).
+            then(function (fbUser) {
+            status.accessTokenVerified = true;
+            log_1["default"]("Access token verified for fbUser.id: " + fbUser.id);
+            return User_1["default"].loadUserByFbId(c, fbUser.id);
+        }).then(function (user) {
+            log_1["default"]("Loaded user: " + log_1["default"](user));
+            status.userIsRegistered = true;
+            session["user"] = user;
+        }, function () {
+            // TODO The user was not found, record the login attempt.
+        }).then(function () {
+            log_1["default"]("login.js # login(): Returning " + log_1["default"](status));
+            return status;
+        }).catch(function (e) {
+            log_1["default"]("login.js # login() error: " + log_1["default"](e));
+            return status;
+        });
+    };
+    return LoginService;
+})();
+exports.__esModule = true;
+exports["default"] = LoginService;
+//# sourceMappingURL=login.js.map

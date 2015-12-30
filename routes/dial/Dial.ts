@@ -21,13 +21,22 @@ export default class Service {
     constructor() {
     }
 
-    static addNumber(c : any, number:  PhoneNumber) : Promise<any> {
+    /**
+     * Inserts a phone number and decorates the given number with
+     * the dialId assigned during the insert.
+     *
+     * @param c         The connection
+     * @param number    The PhoneNumber to insert
+     * @returns A promise of the dialId of the number insterted
+     */
+    static addNumber(c : any, number:  PhoneNumber) : Promise<number> {
         console.log("Dial.Service.addNumber( c, number = ", number, ")")
         return db.query(c, "insert into dial (userId, phone, label) " +
             "values (?, ?, ?)",
             [number.userId, number.phone, number.label]
         ).then((rs) => {
-            return rs
+            number.dialId = rs.insertId
+            return number.dialId
         });
     }
 
@@ -45,6 +54,11 @@ export default class Service {
     static deleteNumber(c : any, dialId : number) : Promise<any[]> {
         console.log("Dial.Service.deleteNumber( c, dialId = ", dialId, ")")
         return db.query(c, "delete from dial where dialId = ?", [dialId]);
+    }
+
+    static loadNumber(c : any, dialId : number) : Promise<PhoneNumber> {
+        return db.queryOne(c, "select * from dial where dialId = ?", [dialId]).
+            then(row => new PhoneNumber(row.label, row.phone, row.userId, row.dialId))
     }
 
 }

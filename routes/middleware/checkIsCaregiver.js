@@ -1,3 +1,4 @@
+"use strict"
 /**
  * Middleware
  *
@@ -7,12 +8,13 @@
  */
 module.exports = function(req, res, next) {
 
-    if (!req.session.user) {
-        throw "checkIsCaregiver must be occur after checkIsLoggedIn";
+    let user = req.session["user"]
+    if (!user) {
+        throw "checkIsCaregiver must be occur after checkIsLoggedIn"
     }
-    if (req.session.user.role == 'caregiver') {
-        next();
+    if (user.role == 'caregiver') {
+        next()
     } else {
-        next("checkIsCaregiver: Not authorized.  User " + user.userId + " is not a caregiver.");
+        next("checkIsCaregiver: Not authorized.  User " + user.userId + " is not a caregiver.")
     }
 }

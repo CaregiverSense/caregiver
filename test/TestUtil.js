@@ -5,7 +5,10 @@ var TestUtil = (function () {
     function TestUtil() {
     }
     TestUtil.resetDatabase = function (c) {
-        return db_1["default"].query(c, "delete from user");
+        return Promise.resolve().
+            then(function () { return db_1["default"].query(c, "delete from dial"); }).
+            then(function () { return db_1["default"].query(c, "delete from user_patient"); }).
+            then(function () { return db_1["default"].query(c, "delete from user"); });
     };
     return TestUtil;
 })();

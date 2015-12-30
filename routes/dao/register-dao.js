@@ -56,6 +56,7 @@ module.exports = {
     registerUser : function(c, auth, registrationId, role) {
 
         // Load the registration
+
         return db.queryOne(c,
                 "select * from registration where registrationId = ?",
                 [registrationId]

@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
-var l = require("../util/log");
+var log_1 = require("../util/log");
 var mysql = require("mysql");
 var db;
 (function (db) {
@@ -31,7 +31,7 @@ var db;
                 path = "databaseSettings.json";
             }
             settings = require("../../" + path);
-            l("Loaded database settings " + l(settings));
+            log_1["default"]("Loaded database settings " + log_1["default"](settings));
         }
         return me;
     }
@@ -52,9 +52,9 @@ var db;
                 var release = function (endedWell) {
                     return function (err) {
                         if (err) {
-                            l(err);
+                            log_1["default"](err);
                         }
-                        l("Connection released");
+                        log_1["default"]("Connection released");
                         c.release();
                         if (endedWell) {
                             resolve();
@@ -65,11 +65,11 @@ var db;
                     };
                 };
                 if (!err) {
-                    l("Connection obtained");
+                    log_1["default"]("Connection obtained");
                     try {
                         var result = cb(c);
                         if (!result || !result.then) {
-                            l("Error: callback did not return a promise, " +
+                            log_1["default"]("Error: callback did not return a promise, " +
                                 "connection is immediately released.");
                             (release(false))();
                         }
@@ -79,11 +79,13 @@ var db;
                     }
                     catch (e) {
                         (release(false))(e);
-                        l("Connection problem" + l(e));
+                        console.log(e);
+                        console.dir(e);
+                        log_1["default"]("Connection problem" + log_1["default"](e));
                     }
                 }
                 else {
-                    l("Error obtaining connection" + l(err));
+                    log_1["default"]("Error obtaining connection" + log_1["default"](err));
                 }
             });
         });
@@ -92,18 +94,18 @@ var db;
     function go(cb) {
         getPool().getConnection(function (err, c) {
             if (!err) {
-                l("Connection obtained");
+                log_1["default"]("Connection obtained");
                 try {
                     cb(c);
                     c.release();
-                    l("Connection released");
+                    log_1["default"]("Connection released");
                 }
                 catch (e) {
-                    l("Connection problem" + l(e));
+                    log_1["default"]("Connection problem" + log_1["default"](e));
                 }
             }
             else {
-                l("Error obtaining connection" + l(err));
+                log_1["default"]("Error obtaining connection" + log_1["default"](err));
             }
         });
     }
@@ -112,11 +114,11 @@ var db;
         return new Promise(function (yes, no) {
             c.query(sql, params, function (err, rs) {
                 if (err) {
-                    l("Error : " + l(err));
+                    log_1["default"]("Error : " + log_1["default"](err));
                     no(err);
                 }
                 else {
-                    l("Resolved : " + l(rs));
+                    log_1["default"]("Resolved : " + log_1["default"](rs));
                     yes(rs);
                 }
             });

@@ -12,7 +12,7 @@
       "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     },
     "es6-promise/es6-promise.d.ts": {
-      "commit": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     },
     "assertion-error/assertion-error.d.ts": {
       "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
@@ -30,6 +30,27 @@
       "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     },
     "chai-as-promised/chai-as-promised.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "mime/mime.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "serve-static/serve-static.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "express/express.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "express-session/express-session.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "jade/jade.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "request/request.d.ts": {
+      "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
+    },
+    "form-data/form-data.d.ts": {
       "commit": "dc9dabe74a5be62613b17a3605309783a12ff28a"
     }
   }

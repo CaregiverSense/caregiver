@@ -1,3 +1,4 @@
+"use strict"
 /**
  * Middleware
  *
@@ -7,7 +8,9 @@
  */
 module.exports = function(req, res, next) {
 
-    if (req.session.user) {
+    req.session.a = "------------------------------------------";
+
+    if (req.session["user"]) {
         next();
     } else {
         req.redirectToLogin = true;

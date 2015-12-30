@@ -17,15 +17,10 @@ const OTHER_USER_ID = 3
 let clear = () => {
     console.log("Called clear");
     return db.getConnection((c) => {
-
+        console.log("TestUtil is " + TestUtil)
         return TestUtil.resetDatabase(c).then(() => {
             console.log("Adding user")
             return db.query(c, "insert into user (userId, fbId) values (" + TEST_USER_ID + ",2)")
-        }).then(() => {
-            console.log("Deleting from dial")
-            return db.query(c, "delete from dial")
-        }).catch((err) => {
-            console.log("Failed with " + err);
         })
     })
 }
@@ -45,7 +40,7 @@ describe('DialService', function() {
 
         it('should save a new number', function (done) {
 
-            db.getConnection((c) => {
+            return db.getConnection((c) => {
                 return dial.addNumber(c, new PhoneNumber("TestHome", "1-755-855-9555", TEST_USER_ID)).then(() => {
 
                     return db.query(c, "select * from dial where label = 'TestHome'").then(
@@ -61,6 +56,7 @@ describe('DialService', function() {
                 });
             }).catch(done)
         });
+
     })
 
 
@@ -90,19 +86,19 @@ describe('DialService', function() {
 
     describe("#deleteNumber()", function() {
         it('should just delete the one number', function(done) {
-            let insertId : number = null;
+            let dialId : number = null;
             db.getConnection((c) => {
                 return dial.addNumber(c, new PhoneNumber("NumberA", "1-234-567-8910", TEST_USER_ID)).
                 then(() => {
                     return dial.addNumber(c, new PhoneNumber("NumberB", "9-876-543-2198", TEST_USER_ID)).
                         then((rs) => {
-                            expect(rs).to.have.property('insertId')
-                            insertId = rs.insertId
+                            dialId = rs
+                            expect(dialId).to.be.a('number')
                         })
                 }).then(() => {
                     return dial.addNumber(c, new PhoneNumber("NumberC", "9-876-543-2198", OTHER_USER_ID))
                 }).then(() => {
-                    return dial.deleteNumber(c, insertId)
+                    return dial.deleteNumber(c, dialId)
                 }).then(() => {
                     return dial.loadNumbers(c, TEST_USER_ID)
                 }).then((numbers : PhoneNumber[]) => {

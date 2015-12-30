@@ -15,9 +15,10 @@ export interface IUser {
     last_name  ?: string
     locale     ?: string
     timezone   ?: string
+    patientId  ?: number
 }
 
-export default class User implements IUser {
+export class User implements IUser {
 
     userId      : number
     tagId       : string
@@ -30,6 +31,7 @@ export default class User implements IUser {
     last_name   : string
     locale      : string
     timezone    : string
+    patientId   : number
 
     constructor(row : IUser) {
         this.userId = row.userId
@@ -43,19 +45,16 @@ export default class User implements IUser {
         this.last_name = row.last_name
         this.locale = row.locale
         this.timezone = row.timezone
+        this.patientId = row.patientId
     }
 
 
     hasAccessTo(c, userId : number) : Promise<boolean> {
-        return new Promise((yes, no) => {
-
-            if (this.userId == userId) {
-                yes(true)
-            } else {
-                return db.query(c, "")
-            }
-
-        })
+        if (this.userId == userId) {
+            return new Promise((y)=>y(true))
+        } else {
+            return this.isSupervisorOf(c, userId)
+        }
     }
 
     /**
@@ -82,7 +81,7 @@ export default class User implements IUser {
      * @param userId    The id of the given user
      * @returns {Promise<TResult>|Promise<U>} to allow chaining
      */
-    isSupervisorOf(c, userId : number) : Promise<boolean> {
+    isSupervisorOf(c : any, userId : number) : Promise<boolean> {
         return db.query(c, "select * from user_patient where userId = ? and patientId = ?",
             [this.userId, userId]
         ).then((results) => {
@@ -91,9 +90,22 @@ export default class User implements IUser {
         })
     }
 
+    /**
+     * Unassign a patient from the given user
+     *
+     * @param c         The connection
+     * @param userId    The userId of the patient to unassign from this user
+     * @returns {Promise<any>}
+     */
+    unassignPatient(c : any, userId : number) : Promise<any> {
+        return db.query(c, "delete from user_patient where userId = ? and patientId = ?", [this.userId, userId])
+    }
+
+
 }
 
-export class UserService {
+
+export default class UserService {
 
     /**
      * Adds the given user and decorates it with the generated userId
@@ -115,8 +127,9 @@ export class UserService {
                 "first_name," +
                 "last_name," +
                 "locale," +
-                "timezone" +
-            ") values (?,?,?,?,?,?,?,?,?,?)",
+                "timezone," +
+                "patientId" +
+            ") values (?,?,?,?,?,?,?,?,?,?,?)",
             [
                 user.tagId,
                 user.name,
@@ -127,7 +140,8 @@ export class UserService {
                 user.first_name,
                 user.last_name,
                 user.locale,
-                user.timezone
+                user.timezone,
+                user.patientId
             ]).
         then((results) => {
             user.userId = results.insertId
@@ -140,10 +154,50 @@ export class UserService {
 
         return db.queryOne(c, "select * from user where fbId = ?", [fbId]).
             then((row) => {
-                console.log("Have row");
-                console.dir(row)
                 return new User(row)
             });
     }
+
+    static loadUserByUserId(c : any, userId : number) : Promise<User> {
+        console.log("UserService.loadUserByUserId: Loading user with userId " + userId);
+
+        return db.queryOne(c, "select * from user where userId = ?", [userId]).
+            then((row) => {
+                return new User(row)
+            });
+    }
+
+    // TODO Add communityId
+    static loadUsersByRole(c : any, role : string) : Promise<User[]> {
+        return (db.
+            query(c, "select * from user where role " + ((role == null) ? "is null":"=?"), [role]).
+            then((results) => {
+                console.log("Loaded users for role " + role)
+                console.dir(results)
+                return results.map((row) => new User(row))
+            }) as Promise<User[]>)
+    }
+
+    static loadCaregiversForPatient(c : any, patientId : number) : Promise<User[]> {
+        return (db.
+            query(c,
+                "select u.* from user u, user_patient up where " +
+                "u.userId = up.userId and up.patientId = ?",
+                [patientId]).
+            then((results) => {
+                return results.map((row) => new User(row))
+            }) as Promise<User[]>)
+    }
+
+    static loadPatientsForCaregiver(c : any, caregiverId : number) : Promise<User[]> {
+        return (db.
+            query(c,
+                "select u.* from user u, user_patient up where u.userId = up.patientId and up.userId = ?",
+                [caregiverId]).
+            then((results) => {
+                return results.map((row) => new User(row))
+            }) as Promise<User[]>)
+    }
+
 
 }

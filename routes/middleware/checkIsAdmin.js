@@ -1,3 +1,4 @@
+"use strict"
 /**
  * Middleware
  *
@@ -7,7 +8,7 @@
  */
 module.exports = function(req, res, next) {
 
-    var user = req.session.user;
+    var user = req.session["user"];
 
     if (!user) {
         throw "checkIsAdmin must occur after checkIsLoggedIn";

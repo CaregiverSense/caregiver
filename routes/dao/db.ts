@@ -1,8 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict"
 
-var l = require("../util/log");
-var mysql = require("mysql");
+import l from "../util/log";
+import mysql = require("mysql");
 
 module db {
     let settings = null;
@@ -85,6 +85,8 @@ module db {
                         }
                     } catch (e) {
                         (release(false))(e)
+                        console.log(e)
+                        console.dir(e)
                         l("Connection problem" + l(e));
                     }
                 } else {

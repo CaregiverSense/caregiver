@@ -1,46 +1,35 @@
-
+"use strict";
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session')
-var l = require("./routes/util/log");
-
-var db = require("./routes/dao/db");
-db.default.init("databaseSettings.json");   // TODO replace with module
-
-var index = require('./routes/csIndex');
-var admin = require('./routes/csAdmin');
-var login = require('./routes/csLogin');
-var notes = require('./routes/csNotes');
+var session = require('express-session');
+var log_1 = require("./routes/util/log");
+var db_1 = require("./routes/dao/db");
+db_1["default"].init("databaseSettings.json");
+var csIndex_1 = require('./routes/csIndex');
+var csAdmin_1 = require('./routes/csAdmin');
+var csLogin_1 = require('./routes/csLogin');
+var csNotes_1 = require('./routes/csNotes');
+var csRegister_1 = require('./routes/csRegister');
 var profile = require('./routes/csProfile');
-var register = require('./routes/csRegister');
 var schedule = require('./routes/csSchedule');
-
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 function releaseConnection(req) {
     if (req.c) {
         req.c.release();
         req.c = null;
-        // l("Connection released");
     }
 }
-
 /*
 
  Configure the session
@@ -50,101 +39,91 @@ function releaseConnection(req) {
     patientId   - set when the user has a patient selected, or when they select a new one.
 
  */
+console.log(process.env.COOKIE_SECRET);
 app.use(session({
     // genid                // Use the uid2 library to generate session IDs.
-    name : 'memtag.sid',    // The name of the session ID cookie.
-    proxy : true,           // Trust the reverse proxy based on the 'X-Forwarded-Proto' header.
-    resave : false,         // TODO verify that the session store implements a touch method.
-    rolling : true,         // Set a cookie on each response, causing the expiration date to reset.
-    saveUninitialized : false, // A new session will not be saved unless it is modified.
-    secret : process.env.COOKIE_SECRET,  // Used to sign cookies.
+    name: 'memtag.sid',
+    proxy: true,
+    resave: false,
+    rolling: true,
+    saveUninitialized: false,
+    secret: process.env.COOKIE_SECRET,
     // store :              // Defaults to a new MemoryStore.  TODO change this to be a redis store or perhaps use Sequelize.js when clustering.
-    unset : 'keep',         // Setting req.session to null or using delete on it will result in the session being kept
-                            // open, but the changes made during the request are discarded.
-    cookie : {
-        httpOnly : true,    // The session cookie is not accessible by script.
-        secure : 'auto',    // The cookie will be secure if accessed over HTTPS, and not secure if accessed over HTTP.
-        maxAge : 2592000000,// The cookie expires after 30 days.
-        path : '/'
+    unset: 'keep',
+    // open, but the changes made during the request are discarded.
+    cookie: {
+        httpOnly: true,
+        secure: 'auto',
+        maxAge: 2592000000,
+        path: '/'
     }
 }));
 if (app.get('env') === 'production') {
     app.set('trust proxy', 1); // trust first proxy
 }
-
 // The first middleware chain link establishes a database connection.
-app.use(function(req, res, next) {
-    l("Path:   "); l(req.path);
-    l("Params: "); l(req.params);
-    l("Body:   "); l(req.body);
-
-    db.getPool().getConnection(function(err, c) {
+app.use(function (req, res, next) {
+    log_1["default"]("Path:   ");
+    log_1["default"](req.path);
+    log_1["default"]("Params: ");
+    log_1["default"](req.params);
+    log_1["default"]("Body:   ");
+    log_1["default"](req.body);
+    db_1["default"].getPool().getConnection(function (err, c) {
         if (!err) {
             // l("Connection obtained");
-            req.c = c;
-            res.on("finish", function() {
+            req["c"] = c;
+            res.on("finish", function () {
                 releaseConnection(req);
             });
             next();
-        } else {
+        }
+        else {
             next(err);
         }
     });
 });
-
-
-
-app.use('/', index);
+app.use('/', csIndex_1["default"]);
 app.use('/profile', profile);
 app.use('/schedule', schedule);
-app.use('/notes', notes);
-app.use('/admin', admin);
-app.use('/register', register);
-app.use('/login', login);
-
-
+app.use('/notes', csNotes_1["default"]);
+app.use('/admin', csAdmin_1["default"]);
+app.use('/register', csRegister_1["default"]);
+app.use('/login', csLogin_1["default"]);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-
-
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
-    err.status = 404;
+    err["status"] = 404;
     next(err);
 });
-
 // error handlers
-
 // Handler to release the database connection
-app.use(function(err, req, res, next) {
+app.use((function (err, req, res, next) {
     releaseConnection(req);
     next(err);
-});
-
-
-app.use(function(err, req, res, next) {
-    l("Error is " + l(err));
-
+}));
+app.use(function (err, req, res, next) {
+    log_1["default"]("Error is " + log_1["default"](err));
     var stack = (app.get('env') === 'development') ? err : {};
-
-    if (req.redirectToLogin) {
-        if (req.isAPI) {
-            res.status(200).send({needsLogin : true});
-        } else {
-            console.log("app.js: Redirecting user to 'web/login.jade'")
+    if (req["redirectToLogin"]) {
+        if (req["isAPI"]) {
+            res.status(200).send({ needsLogin: true });
+        }
+        else {
+            console.log("app.js: Redirecting user to 'web/login.jade'");
             res.status(200).render('web/login', {
                 message: err.message,
                 error: stack
             });
         }
-    } else {
-        console.log("app.js: Redirecting user to 'error.jade'")
+    }
+    else {
+        console.log("app.js: Redirecting user to 'error.jade'");
         res.status(err.status || 500).render('error', {
             message: err.message,
             error: stack
         });
     }
-
 });
-
-
 module.exports = app;
+//# sourceMappingURL=app.js.map

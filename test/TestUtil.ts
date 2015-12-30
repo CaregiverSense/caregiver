@@ -8,6 +8,9 @@ export default class TestUtil {
 
     static resetDatabase(c) : Promise<any> {
 
-        return db.query(c, "delete from user")
+        return Promise.resolve().
+            then(() => db.query(c, "delete from dial")).
+            then(() => db.query(c, "delete from user_patient")).
+            then(() => db.query(c, "delete from user"))
     }
 }

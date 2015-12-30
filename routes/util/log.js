@@ -1,16 +1,13 @@
-
-var d = console.dir;
-var l = console.log;
-var j = JSON.stringify;
-
-
-module.exports = function(item) {
-
-    if (typeof(item) == 'string') {
+/// <reference path="../../typings/tsd.d.ts" />
+"use strict";
+function log(item) {
+    if (typeof (item) == 'string') {
         console.log(item);
-    } else if (typeof(item) == 'object') {
+    }
+    else {
         return JSON.stringify(item);
-    } else {
-        return typeof(item);
     }
 }
+exports.__esModule = true;
+exports["default"] = log;
+//# sourceMappingURL=log.js.map

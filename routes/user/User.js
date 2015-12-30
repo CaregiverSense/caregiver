@@ -14,17 +14,15 @@ var User = (function () {
         this.last_name = row.last_name;
         this.locale = row.locale;
         this.timezone = row.timezone;
+        this.patientId = row.patientId;
     }
     User.prototype.hasAccessTo = function (c, userId) {
-        var _this = this;
-        return new Promise(function (yes, no) {
-            if (_this.userId == userId) {
-                yes(true);
-            }
-            else {
-                return db_1["default"].query(c, "");
-            }
-        });
+        if (this.userId == userId) {
+            return new Promise(function (y) { return y(true); });
+        }
+        else {
+            return this.isSupervisorOf(c, userId);
+        }
     };
     /**
      * Make this user a supervisor of the given one.
@@ -55,10 +53,19 @@ var User = (function () {
             return (results.length == 1);
         });
     };
+    /**
+     * Unassign a patient from the given user
+     *
+     * @param c         The connection
+     * @param userId    The userId of the patient to unassign from this user
+     * @returns {Promise<any>}
+     */
+    User.prototype.unassignPatient = function (c, userId) {
+        return db_1["default"].query(c, "delete from user_patient where userId = ? and patientId = ?", [this.userId, userId]);
+    };
     return User;
 })();
-exports.__esModule = true;
-exports["default"] = User;
+exports.User = User;
 var UserService = (function () {
     function UserService() {
     }
@@ -81,8 +88,9 @@ var UserService = (function () {
             "first_name," +
             "last_name," +
             "locale," +
-            "timezone" +
-            ") values (?,?,?,?,?,?,?,?,?,?)", [
+            "timezone," +
+            "patientId" +
+            ") values (?,?,?,?,?,?,?,?,?,?,?)", [
             user.tagId,
             user.name,
             user.email,
@@ -92,7 +100,8 @@ var UserService = (function () {
             user.first_name,
             user.last_name,
             user.locale,
-            user.timezone
+            user.timezone,
+            user.patientId
         ]).
             then(function (results) {
             user.userId = results.insertId;
@@ -103,12 +112,43 @@ var UserService = (function () {
         console.log("UserService.loadUserByFbId: Loading user with fbId " + fbId);
         return db_1["default"].queryOne(c, "select * from user where fbId = ?", [fbId]).
             then(function (row) {
-            console.log("Have row");
-            console.dir(row);
             return new User(row);
+        });
+    };
+    UserService.loadUserByUserId = function (c, userId) {
+        console.log("UserService.loadUserByUserId: Loading user with userId " + userId);
+        return db_1["default"].queryOne(c, "select * from user where userId = ?", [userId]).
+            then(function (row) {
+            return new User(row);
+        });
+    };
+    // TODO Add communityId
+    UserService.loadUsersByRole = function (c, role) {
+        return db_1["default"].
+            query(c, "select * from user where role " + ((role == null) ? "is null" : "=?"), [role]).
+            then(function (results) {
+            console.log("Loaded users for role " + role);
+            console.dir(results);
+            return results.map(function (row) { return new User(row); });
+        });
+    };
+    UserService.loadCaregiversForPatient = function (c, patientId) {
+        return db_1["default"].
+            query(c, "select u.* from user u, user_patient up where " +
+            "u.userId = up.userId and up.patientId = ?", [patientId]).
+            then(function (results) {
+            return results.map(function (row) { return new User(row); });
+        });
+    };
+    UserService.loadPatientsForCaregiver = function (c, caregiverId) {
+        return db_1["default"].
+            query(c, "select u.* from user u, user_patient up where u.userId = up.patientId and up.userId = ?", [caregiverId]).
+            then(function (results) {
+            return results.map(function (row) { return new User(row); });
         });
     };
     return UserService;
 })();
-exports.UserService = UserService;
+exports.__esModule = true;
+exports["default"] = UserService;
 //# sourceMappingURL=User.js.map

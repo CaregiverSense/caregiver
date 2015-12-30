@@ -1,96 +1,80 @@
-var router = require('express').Router();
-var db = require("./dao/db.js");
-var l = require("./util/log.js");
-var ss = require("./svc/securityService");
-
-
+/// <reference path="../typings/tsd.d.ts" />
+"use strict";
+var Dial_1 = require("./dial/Dial");
+var Dial_2 = require("./dial/Dial");
+var express = require('express');
+var router = express.Router();
+var log_1 = require("./util/log");
 // done create the dial table and add it to the schema.
 // todo create a /dial/addNumber api
 // todo update the UI to call the above
 // todo create a /dial/loadNumber api
 // todo update the admin page to allow adding/removing numbers
 // todo support deleting a number
-
-
-
 /**
  * API section
  */
-
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
-
-
 function onFail(res) {
-    return function(err) {
-        l("Error: " + l(err));
-        res.send({error: true});
-    }
+    return function (err) {
+        log_1["default"]("Error: " + log_1["default"](err));
+        res.send({ error: true });
+    };
 }
-
-
 /**
  *  Adds a phone number for the given user.
  *
- *  userId :
+ *  { label, phone, userId }
  *
  */
-router.post("/addNumber", function(req, res) {
-    l("/notes/save");
-
+router.post("/add", function (req, res) {
+    log_1["default"]("/dial/add");
+    var c = req["c"];
     var o = req.body;
-    var patientId = o.patientId;
-    var userId = req.session.user.userId;
-
-
-    ss.ifUserCanSeePatient(userId, patientId).
-    then(() => {
-        return db.query(
-            req.c,
-            "insert into notes (content, lastUpdated, byUserId, forUserId, patientVisible) values (?, ?, ?, ?, ?)",
-            [content,
-                new Date(),
-                userId,
-                patientId || userId,                // If the user does not have a patient, then the note is a personal one.
-                (patientVisible) ? true : false
-            ]
-        )}).
-    then(() => {
-        l("inserted note " + j(o));
-        res.send({"inserted": "true"})
-    }).fail(onFail(res))
+    var phoneNum = new Dial_2.PhoneNumber(o.label, o.phone, o.userId);
+    var user = req.session["user"];
+    user.hasAccessTo(c, o.userId).
+        then(function () { return Dial_1["default"].addNumber(c, phoneNum); }).
+        then(function () { return res.send({ dialId: phoneNum.dialId }); }).
+        catch(onFail(res));
 });
-
-
 /**
- * Load notes for the current patient of the logged in user.
+ * Delete a phone number
+ *
+ *  {
+ *      dialId     // The id of the phone number to delete
+ *      userId
+ *  }
  */
-router.post("/load", function(req, res) {       // TODO convert to get with patientId in the path.
-    l("/notes/load");
-    var patientId = req.body.patientId;
-    var userId = req.session.user.userId;
-    var loadNotesForUserId = patientId || userId;
-
-    ss.ifUserCanSeePatient(userId, patientId).
-    then(() => {
-        return db.query(req.c,
-            "select n.*, f.name as fromUserName from notes n, user f where n.byUserId = f.userId and n.forUserId = ? order by lastUpdated desc",
-            [loadNotesForUserId]
-        )}).
-    then((rs) => {
-        l("Loaded " + j(rs));
-        var filtered = [];
-        for (var i = 0; i < rs.length; i++) {
-            var row = rs[i];
-
-            var isNotPatient = userId != row.forUserId;
-
-            if (isNotPatient || row.patientVisible) {
-                filtered.push(row);
-            }
-        }
-        res.send(filtered)
-    }).fail(onFail(res))
+router.post("/delete", function (req, res) {
+    log_1["default"]("/dial/delete");
+    var c = req["c"];
+    var o = req.body;
+    var user = req.session["user"];
+    Dial_1["default"].loadNumber(c, o.dialId).
+        then(function (num) { return user.hasAccessTo(c, num.userId); }).
+        then(function () { return Dial_1["default"].deleteNumber(c, o.dialId); }).
+        then(function () { return res.send({ ok: true }); }).
+        catch(onFail(res));
 });
-
-module.exports = router;
+/**
+ * Loads phone numbers for a user
+ *
+ * {
+ *      userId      // Loads numbers for this user
+ * }
+ */
+router.post("/load", function (req, res) {
+    log_1["default"]("/dial/load");
+    var c = req["c"];
+    var o = req.body;
+    var user = req.session['user'];
+    user.hasAccessTo(c, o.userId).
+        then(function () { return Dial_1["default"].loadNumbers(c, o.userId); }).
+        then(function (users) { return res.send(users); }).
+        catch(onFail(res));
+});
+exports.__esModule = true;
+exports["default"] = router;
+//# sourceMappingURL=csDial.js.map

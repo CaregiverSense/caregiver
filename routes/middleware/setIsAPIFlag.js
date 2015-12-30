@@ -1,3 +1,4 @@
+"use strict"
 /**
  * This middleware piece precedes the 'checkIsLoggedIn' middleware.  By flagging
  * the endpoints that are APIs, we avoid redirecting them to the login page, and instead

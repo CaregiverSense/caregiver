@@ -1,5 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 "use strict"
+import TestUtil from "./TestUtil";
 
 import { PhoneNumber } from "../routes/dial/Dial";
 import { expect } from "chai"
@@ -8,34 +9,41 @@ import * as chai from "chai"
 import db from "../routes/dao/db";
 db.init("test/databaseSettings.json");
 
-import User, { UserService, IUser } from "../routes/user/User";
-import TestUtil from "./TestUtil"
+import UserService from "../routes/user/User";
+import { User, IUser } from "../routes/user/User";
+
 
 chai.use(require("chai-as-promised"))
 chai.should()
 
+let userA: User, userB: User, supervisorA: User;
+
+function createTestUsers(done) {
+    console.log("Created test users");
+    userA = new User({fbId : "P1"})
+    userB = new User({fbId : "P2"})
+    supervisorA = new User({fbId : "S1", role : 'caregiver'})
+    return db.getConnection(c => {
+        return TestUtil.resetDatabase(c).then(
+            () => Promise.all([
+                UserService.addUser(c, userA),
+                UserService.addUser(c, userB),
+                UserService.addUser(c, supervisorA),
+            ])
+        ).then(() => supervisorA.makeSupervisorOf(c, userA.userId)
+        ).then(() => done())
+    }).catch(done)
+}
+
 describe("User", function() {
 
-    let userA   = new User({fbId : "P1"})
-    let userB   = new User({fbId : "P2"})
+    beforeEach(createTestUsers)
 
-    beforeEach(function() {
-        return db.getConnection(c => {
-            return TestUtil.resetDatabase(c).then(
-                () => Promise.all([
-                        UserService.addUser(c, userA),
-                        UserService.addUser(c, userB)
-                    ])
-            )
-        })
-    })
+    describe("#makeSupervisorOf(userId)", function () {
 
-    describe("#makeSupervisorOf(userId)", function() {
-
-        it("should make a user a supervisor of another", function(done) {
-            db.getConnection(c => {
-                return userA.makeSupervisorOf(c, userB.userId).
-                then(() => {
+        it("should make a user a supervisor of another", function (done) {
+            return db.getConnection(c => {
+                return userA.makeSupervisorOf(c, userB.userId).then(() => {
                     userA.isSupervisorOf(c, userB.userId).should.eventually.equal(true)
                     userB.isSupervisorOf(c, userA.userId).should.eventually.equal(false)
                     done()
@@ -44,32 +52,20 @@ describe("User", function() {
         })
     })
 
-    describe("#isSupervisorOf(userId)", function() {
+    describe("#isSupervisorOf(userId)", function () {
 
-
-        let supervisorA = new User({fbId : "S1"})
-
-
-        before(function() {
+        it("resolves to true if this is a supervisor of the user", function (done) {
             return db.getConnection(c => {
-                return UserService.addUser(c, supervisorA)
-            })
-        })
-
-        it("resolves to true if this is a supervisor of the user", function(done) {
-            db.getConnection(c => {
-                supervisorA.makeSupervisorOf(c, userA.userId).
-                    then(() => {
-                        expect(supervisorA.isSupervisorOf(c, userA.userId)).to.equal(true)
-                        done()
-                    })
+                supervisorA.makeSupervisorOf(c, userA.userId).then(() => {
+                    expect(supervisorA.isSupervisorOf(c, userA.userId)).to.equal(true)
+                    done()
+                })
             }).catch(done)
         })
 
-        it("resolves to false if this is not a supervisor of the user", function(done) {
-            db.getConnection(c => {
-                supervisorA.makeSupervisorOf(c, userA.userId).
-                then(() => {
+        it("resolves to false if this is not a supervisor of the user", function (done) {
+            return db.getConnection(c => {
+                supervisorA.makeSupervisorOf(c, userA.userId).then(() => {
                     expect(supervisorA.isSupervisorOf(c, userB.userId)).to.equal(false)
                     done()
                 })
@@ -77,19 +73,10 @@ describe("User", function() {
         })
     })
 
-    describe("#hasAccessTo(userId)", function() {
+    describe("#hasAccessTo(userId)", function () {
 
-        it("allows the user to access themself ", function(done) {
-            db.getConnection(c => {
-                return userA.hasAccessTo(c, userB.userId).then((result) => {
-                    expect(result).to.equal(false)
-                    done()
-                })
-            }).catch(done)
-        })
-
-        it("prevents the user from accessing another user", function(done) {
-            db.getConnection(c => {
+        it("allows the user to access themself ", function (done) {
+            return db.getConnection(c => {
                 return userA.hasAccessTo(c, userA.userId).then((result) => {
                     expect(result).to.equal(true)
                     done()
@@ -97,15 +84,34 @@ describe("User", function() {
             }).catch(done)
         })
 
-        it("allows access if this is a caregiver of the userId", function() {
-
+        it("prevents the user from accessing another user", function (done) {
+            return db.getConnection(c => {
+                return userA.hasAccessTo(c, userB.userId).then((result) => {
+                    expect(result).to.equal(false)
+                    done()
+                })
+            }).catch(done)
         })
 
-        it("denies access if this is a caregiver, but not of the user", function() {
-
+        it("allows access if this user supervises the other", function (done) {
+            return db.getConnection(c => {
+                return supervisorA.hasAccessTo(c, userA.userId).then((result) => {
+                    expect(result).to.equal(true)
+                    done()
+                })
+            }).catch(done)
         })
 
-        it("allows access if the user is an admin", function() {
+        it("denies access if this is a supervisor, but not of the user", function (done) {
+            return db.getConnection(c => {
+                return supervisorA.hasAccessTo(c, userB.userId).then((result) => {
+                    expect(result).to.equal(false)
+                    done()
+                })
+            }).catch(done)
+        })
+
+        it.skip("allows access if the user is an admin", function(done) {
 
         })
 
@@ -115,13 +121,11 @@ describe("User", function() {
 
 describe("UserService", function() {
 
-    before(function() {
-        return db.getConnection(c => TestUtil.resetDatabase(c))
-    })
+    beforeEach(createTestUsers)
 
     describe("#addUser(IUser)", function() {
         it("can save a user with all properties", function(done) {
-            db.getConnection(c => {
+            return db.getConnection(c => {
                 var user : IUser = {
                     tagId      : "A",
                     name       : "B",
@@ -132,9 +136,10 @@ describe("UserService", function() {
                     first_name : "G",
                     last_name  : "H",
                     locale     : "I",
-                    timezone   : "J"
+                    timezone   : "J",
+                    patientId  : 101
                 }
-                UserService.addUser(c, user).then(() => {
+                return UserService.addUser(c, user).then(() => {
                         console.log("selecting user")
 
                         // Check that it is saved
@@ -153,10 +158,10 @@ describe("UserService", function() {
                         expect(user.last_name).to.equal("H")
                         expect(user.locale).to.equal("I")
                         expect(user.timezone).to.equal("J")
-                        console.log("calling done")
+                        expect(user.patientId).to.equal(101)
                         done()
-                    }).catch(done)
-            })
+                    })
+            }).catch(done)
             // check there is a user id
         })
     })
@@ -182,5 +187,22 @@ describe("UserService", function() {
                 }).catch(done)
             })
         })
-    });
+    })
+
+    describe("#loadUsersByRole(..)", function() {
+        it("should load only users with a given role", function(done) {
+            return db.getConnection(c => {
+
+                return UserService.loadUsersByRole(c, 'caregiver').
+                    then((users) => {
+                    expect(users).to.be.an("array")
+                    expect(users.length).to.equal(1)
+                    expect(users[0].fbId).to.equal('S1')
+                    expect(users[0].role).to.equal('caregiver')
+                    done()
+                })
+
+            }).catch(done)
+        })
+    })
 })
