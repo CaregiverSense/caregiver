@@ -18,7 +18,7 @@ router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
 function onFail(res) {
     return function (err) {
-        log_1["default"]("Error: " + log_1["default"](err));
+        log_1.default("Error: " + log_1.default(err));
         res.send({ error: true });
     };
 }
@@ -29,13 +29,13 @@ function onFail(res) {
  *
  */
 router.post("/add", function (req, res) {
-    log_1["default"]("/dial/add");
+    log_1.default("/dial/add");
     var c = req["c"];
     var o = req.body;
     var phoneNum = new Dial_2.PhoneNumber(o.label, o.phone, o.userId);
     var user = req.session["user"];
     user.hasAccessTo(c, o.userId).
-        then(function () { return Dial_1["default"].addNumber(c, phoneNum); }).
+        then(function () { return Dial_1.default.addNumber(c, phoneNum); }).
         then(function () { return res.send({ dialId: phoneNum.dialId }); }).
         catch(onFail(res));
 });
@@ -48,13 +48,13 @@ router.post("/add", function (req, res) {
  *  }
  */
 router.post("/delete", function (req, res) {
-    log_1["default"]("/dial/delete");
+    log_1.default("/dial/delete");
     var c = req["c"];
     var o = req.body;
     var user = req.session["user"];
-    Dial_1["default"].loadNumber(c, o.dialId).
+    Dial_1.default.loadNumber(c, o.dialId).
         then(function (num) { return user.hasAccessTo(c, num.userId); }).
-        then(function () { return Dial_1["default"].deleteNumber(c, o.dialId); }).
+        then(function () { return Dial_1.default.deleteNumber(c, o.dialId); }).
         then(function () { return res.send({ ok: true }); }).
         catch(onFail(res));
 });
@@ -66,15 +66,15 @@ router.post("/delete", function (req, res) {
  * }
  */
 router.post("/load", function (req, res) {
-    log_1["default"]("/dial/load");
+    log_1.default("/dial/load");
     var c = req["c"];
     var o = req.body;
     var user = req.session['user'];
     user.hasAccessTo(c, o.userId).
-        then(function () { return Dial_1["default"].loadNumbers(c, o.userId); }).
+        then(function () { return Dial_1.default.loadNumbers(c, o.userId); }).
         then(function (users) { return res.send(users); }).
         catch(onFail(res));
 });
-exports.__esModule = true;
-exports["default"] = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = router;
 //# sourceMappingURL=csDial.js.map

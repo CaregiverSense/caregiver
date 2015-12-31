@@ -24,7 +24,7 @@ var Service = (function () {
      */
     Service.addNumber = function (c, number) {
         console.log("Dial.Service.addNumber( c, number = ", number, ")");
-        return db_1["default"].query(c, "insert into dial (userId, phone, label) " +
+        return db_1.default.query(c, "insert into dial (userId, phone, label) " +
             "values (?, ?, ?)", [number.userId, number.phone, number.label]).then(function (rs) {
             number.dialId = rs.insertId;
             return number.dialId;
@@ -32,7 +32,7 @@ var Service = (function () {
     };
     Service.loadNumbers = function (c, userId) {
         console.log("Dial.Service.loadNumbers( c, userId = ", userId, ")");
-        return db_1["default"].query(c, "select * from dial where userId = ? order by rank, dialId", [userId]).then(function (rs) {
+        return db_1.default.query(c, "select * from dial where userId = ? order by rank, dialId", [userId]).then(function (rs) {
             var result = rs.map(function (row) {
                 return new PhoneNumber(row.label, row.phone, row.userId, row.dialId);
             });
@@ -41,16 +41,16 @@ var Service = (function () {
     };
     Service.deleteNumber = function (c, dialId) {
         console.log("Dial.Service.deleteNumber( c, dialId = ", dialId, ")");
-        return db_1["default"].query(c, "delete from dial where dialId = ?", [dialId]);
+        return db_1.default.query(c, "delete from dial where dialId = ?", [dialId]);
     };
     Service.loadNumber = function (c, dialId) {
-        return db_1["default"].queryOne(c, "select * from dial where dialId = ?", [dialId]).
+        return db_1.default.queryOne(c, "select * from dial where dialId = ?", [dialId]).
             then(function (row) { return new PhoneNumber(row.label, row.phone, row.userId, row.dialId); });
     };
     return Service;
 })();
-exports.__esModule = true;
-exports["default"] = Service;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = Service;
 var PhoneNumber = (function () {
     function PhoneNumber(label, phone, userId, dialId) {
         this.label = label;

@@ -96,9 +96,9 @@ define(['angular', 'app/phone', 'moment'], function (angular, phone, moment) {
                 };
                 getNotesForDay(newNote, false).unshift(newNote);
 
-                $http.post("/notes/save", newNote).then(function(r) {
+                $http.post("/notes/add", newNote).then(function(r) {
                     var data = r.data;
-                    console.log("Note saved");
+                    console.log("Note added");
                 });
 
             }

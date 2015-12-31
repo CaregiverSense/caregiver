@@ -8,17 +8,17 @@ var router = express.Router();
 // TODO refactor so that this is replaced by csLogin.ts
 router.post('/loginUser', function (req, res) {
     // TODO register user if necessary.
-    log_1["default"](req.body);
+    log_1.default(req.body);
     // TODO verify the fbId with facebook.
-    log_1["default"]("/loginUser fbId is " + req.body.fbId);
-    User_1["default"].loadUserByFbId(req["c"], req.body.fbId).then(function (user) {
+    log_1.default("/loginUser fbId is " + req.body.fbId);
+    User_1.default.loadUserByFbId(req["c"], req.body.fbId).then(function (user) {
         console.log("User for fbId " + req.body.fbId + " is " + JSON.stringify(user));
         if (user != null) {
             req.session["userId"] = user.userId;
             req.session["patientId"] = user.patientId;
             var patient = null;
             Promise.resolve((user.patientId) ?
-                User_1["default"].loadUserByUserId(req["c"], user.patientId).then(function (p) { patient = p; })
+                User_1.default.loadUserByUserId(req["c"], user.patientId).then(function (p) { patient = p; })
                 : null).then(function () { return res.status(200).send({ patient: patient, user: user }); });
         }
     });
@@ -27,7 +27,7 @@ router.post('/tap', function (req, res) {
     var tagId = req.body.tagId;
     console.log('tap post tagId: ', tagId);
     tagId ?
-        tag_1["default"].loadTag(req["c"], tagId).then(function (tag) {
+        tag_1.default.loadTag(req["c"], tagId).then(function (tag) {
             console.log("tag loaded: ", tag);
             res.status(200).send({ tags: tag });
         })
@@ -50,6 +50,8 @@ router.get('/profile', function (req, res) { return res.render('template/profile
 router.get('/laundry', function (req, res) { return res.render('template/laundry'); });
 router.get('/schedule', function (req, res) { return res.render('template/schedule'); });
 router.get('/moca', function (req, res) { return res.render('template/moca'); });
-exports.__esModule = true;
-exports["default"] = router;
+router.get('/userLookup', function (req, res) { return res.render('template/userLookup'); });
+router.get('/view/:someView', function (req, res) { return res.render('view/' + req.params.someView); });
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = router;
 //# sourceMappingURL=csIndex.js.map

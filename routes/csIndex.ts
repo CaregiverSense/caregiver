@@ -68,6 +68,9 @@ router.get('/profile',              (req, res) => res.render('template/profile')
 router.get('/laundry',              (req, res) => res.render('template/laundry'))
 router.get('/schedule',             (req, res) => res.render('template/schedule'))
 router.get('/moca',                 (req, res) => res.render('template/moca'))
+router.get('/userLookup',           (req, res) => res.render('template/userLookup'))
+
+router.get('/view/:someView',   (req, res) => res.render('view/' + req.params.someView))
 
 
 export default router

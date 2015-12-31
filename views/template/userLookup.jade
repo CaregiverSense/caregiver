@@ -1,0 +1,11 @@
+script(type="text/ng-template" id="userTemplate.html")
+    a
+        table(ng-cloak)
+            tr
+                td
+                    img(ng-if='match.model.fbId' ng-src="//graph.facebook.com/{{match.model.fbId}}/picture?type=small")
+                td
+                    .dropdownName(ng-bind-html="match.label | uibTypeaheadHighlight:query")
+span.userLookup
+    input.searchBox(placeholder='{{label}}' uib-typeahead="lookup.name for lookup in lookup.getUsers($viewValue)" ng-model='lookup.selectedUserId' typeahead-loading="lookup.loading" typeahead-on-select='onSelect($item,$model,$label)' typeahead-template-url="userTemplate.html")
+    span.icon

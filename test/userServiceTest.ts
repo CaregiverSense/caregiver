@@ -20,9 +20,9 @@ let userA: User, userB: User, supervisorA: User;
 
 function createTestUsers(done) {
     console.log("Created test users");
-    userA = new User({fbId : "P1"})
-    userB = new User({fbId : "P2"})
-    supervisorA = new User({fbId : "S1", role : 'caregiver'})
+    userA = new User({fbId : "P1", name:"User A", role:'patient'})
+    userB = new User({fbId : "P2", name:"User B", role:'patient'})
+    supervisorA = new User({fbId : "S1", name:"Supervisor A", role : 'caregiver'})
     return db.getConnection(c => {
         return TestUtil.resetDatabase(c).then(
             () => Promise.all([
@@ -49,6 +49,18 @@ describe("User", function() {
                     done()
                 })
             }).catch(done)
+        })
+    })
+
+    describe("#ifAdmin", function() {
+        it("should return true if the user is an admin", function() {
+            let admin = new User({fbId : "C1", name:"User A", role : 'admin'})
+            return admin.ifAdmin()
+        })
+
+        it("should return false if the user has a non-admin role", function() {
+            let user = new User({fbId : "C1", name:"User A", role : 'caregiver'})
+            user.ifAdmin().should.be.rejected
         })
     })
 
@@ -172,10 +184,10 @@ describe("UserService", function() {
 
             db.getConnection(c => {
                 Promise.all([
-                    UserService.addUser(c, {fbId: "U1", name : "A"}),
-                    UserService.addUser(c, {fbId: "U2", name : "B"}),
-                    UserService.addUser(c, {fbId: "U3", name : "C"}),
-                    UserService.addUser(c, {fbId: "U4", name : "D"})
+                    UserService.addUser(c, {fbId: "U1", name : "A", role:'patient'}),
+                    UserService.addUser(c, {fbId: "U2", name : "B", role:'patient'}),
+                    UserService.addUser(c, {fbId: "U3", name : "C", role:'patient'}),
+                    UserService.addUser(c, {fbId: "U4", name : "D", role:'patient'})
                 ]).then(() => {
                     return UserService.loadUserByFbId(c, "U3").then((user) => {
                         expect(user).to.not.be.a('null')
@@ -203,6 +215,46 @@ describe("UserService", function() {
                 })
 
             }).catch(done)
+        })
+    })
+
+    describe("#loadAllMasked", function() {
+        it("should return sorted by name", function() {
+            return db.getConnection(c => {
+                return UserService.loadAllMasked(c, null).
+                    then((users) => {
+
+                        expect(users).to.be.an('array')
+                        expect(users.length).to.equal(3)
+                        expect(users[0].name).to.equal('Supervisor A')
+                        expect(users[1].name).to.equal('User A')
+                        expect(users[2].name).to.equal('User B')
+                    })
+            })
+        })
+        it("should just return properties specified in the mask", function() {
+            return db.getConnection(c => {
+                return UserService.loadAllMasked(c, "name,email").
+                then((users) => {
+
+                    expect(users).to.be.an('array')
+                    expect(users.length).to.equal(3)
+
+                    let u = users[0]
+                    expect(u.userId).to.be.undefined
+                    expect(u.tagId).to.be.undefined
+                    expect(u.name).to.equal('Supervisor A')
+                    expect(u.email).to.be.null
+                    expect(u.fbId).to.be.undefined
+                    expect(u.fbLink).to.be.undefined
+                    expect(u.role).to.be.undefined
+                    expect(u.first_name).to.be.undefined
+                    expect(u.last_name).to.be.undefined
+                    expect(u.locale).to.be.undefined
+                    expect(u.timezone).to.be.undefined
+                    expect(u.patientId).to.be.undefined
+                })
+            })
         })
     })
 })

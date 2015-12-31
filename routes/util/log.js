@@ -8,6 +8,6 @@ function log(item) {
         return JSON.stringify(item);
     }
 }
-exports.__esModule = true;
-exports["default"] = log;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = log;
 //# sourceMappingURL=log.js.map

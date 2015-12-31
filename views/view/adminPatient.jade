@@ -1,0 +1,26 @@
+.container-fluid
+     .row
+        .col-xs-12.col-lg-offset-1.col-lg-10.profileArea
+            img(ng-if='ap.displayedPatient.pic' src='{{ap.displayedPatient.pic}}')
+            .profilePicInfo
+                .user
+                    .userType.patient Patient
+                    .userName {{ap.displayedPatient.name}}
+                .addr {{ap.displayedPatient.email}}
+
+    .row
+        .col-xs-12.col-lg-offset-1.col-lg-10
+            .panel.panel-default
+                .panel-heading
+                    .panel-title Caregivers
+                    .addCaregiverLookup
+                        user-lookup(roles='caregiver' label='Add Caregiver')
+                .panel-body
+                    table.table.table-striped
+                        tr(ng-repeat="cg in ap.displayedPatient.caregivers")
+                            td
+                                img(src='//graph.facebook.com/{{cg.fbId}}/picture?type=small')
+                            td
+                                h4 {{cg.name}}
+                            td
+                                button.btn.btn-md.btn-default.pull-right.fa.fa-times.fa-1x(ng-click='ap.unassignCaregiver(cg)')

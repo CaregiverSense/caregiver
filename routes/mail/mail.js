@@ -32,7 +32,7 @@ var MailService = (function () {
             to: headers.to,
             subject: headers.subject,
             priority: 'high',
-            html: renderedEmail
+            html: renderedEmail,
         }, function (error, response) {
             if (error) {
                 console.log(error);
@@ -45,8 +45,8 @@ var MailService = (function () {
     };
     return MailService;
 })();
-exports.__esModule = true;
-exports["default"] = MailService;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = MailService;
 var MailHeaders = (function () {
     function MailHeaders(to, // The email address
         subject // The subject

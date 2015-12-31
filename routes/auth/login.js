@@ -27,7 +27,7 @@ var LoginService = (function () {
     */
     LoginService.verifyAccessToken = function (accessToken) {
         // TODO Is an https Agent pool needed here, since this will default to using the global agent which may be a bottleneck.
-        log_1["default"]("LoginService # verifyAccessToken");
+        log_1.default("LoginService # verifyAccessToken");
         return new Promise(function (resolve, reject) {
             request.get({
                 url: "https://graph.facebook.com/me",
@@ -72,24 +72,24 @@ var LoginService = (function () {
         return LoginService.verifyAccessToken(auth.accessToken).
             then(function (fbUser) {
             status.accessTokenVerified = true;
-            log_1["default"]("Access token verified for fbUser.id: " + fbUser.id);
-            return User_1["default"].loadUserByFbId(c, fbUser.id);
+            log_1.default("Access token verified for fbUser.id: " + fbUser.id);
+            return User_1.default.loadUserByFbId(c, fbUser.id);
         }).then(function (user) {
-            log_1["default"]("Loaded user: " + log_1["default"](user));
+            log_1.default("Loaded user: " + log_1.default(user));
             status.userIsRegistered = true;
             session["user"] = user;
         }, function () {
             // TODO The user was not found, record the login attempt.
         }).then(function () {
-            log_1["default"]("login.js # login(): Returning " + log_1["default"](status));
+            log_1.default("login.js # login(): Returning " + log_1.default(status));
             return status;
         }).catch(function (e) {
-            log_1["default"]("login.js # login() error: " + log_1["default"](e));
+            log_1.default("login.js # login() error: " + log_1.default(e));
             return status;
         });
     };
     return LoginService;
 })();
-exports.__esModule = true;
-exports["default"] = LoginService;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = LoginService;
 //# sourceMappingURL=login.js.map

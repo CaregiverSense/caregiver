@@ -8,7 +8,7 @@ create table user (
 	fbId 		varchar(20) not null unique key,
 	fbLink		varchar(128),
 
-	role		varchar(20),
+	role		varchar(20) not null,
 
 	first_name  varchar(100),
 	last_name   varchar(100),

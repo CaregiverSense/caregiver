@@ -9,11 +9,11 @@ var RegisterService = (function () {
      * A promise of the registration corresponding to the given registrationId
      */
     RegisterService.loadRegistration = function (c, registrationId) {
-        return db_1["default"].queryOne(c, "select * from registration where registrationId = ?", [registrationId]);
+        return db_1.default.queryOne(c, "select * from registration where registrationId = ?", [registrationId]);
     };
     // Adds a registration entry for the new user and returns the registration link.
     RegisterService.addRegistration = function (c, name, email, phoneNumber) {
-        return db_1["default"].query(c, "select md5(uuid()) as id", []).
+        return db_1.default.query(c, "select md5(uuid()) as id", []).
             then(function (rs) {
             var registrationId = rs[0].id;
             var registrationLink = "http://52.88.50.116:7000/register?id=" + registrationId;
@@ -40,9 +40,9 @@ var RegisterService = (function () {
      */
     RegisterService.registerUser = function (c, auth, registrationId, role) {
         // Load the registration
-        return db_1["default"].queryOne(c, "select * from registration where registrationId = ?", [registrationId]).then(function (registration) {
+        return db_1.default.queryOne(c, "select * from registration where registrationId = ?", [registrationId]).then(function (registration) {
             // Insert the user
-            return User_1["default"].addUser(c, {
+            return User_1.default.addUser(c, {
                 tagId: '',
                 name: auth.name,
                 email: registration.email,
@@ -57,11 +57,11 @@ var RegisterService = (function () {
             });
         }).then(function () {
             // Mark the registration as complete
-            return db_1["default"].query(c, "update registration set hasRegistered = 'Y', registrationDate = ? where registrationId = ?", [new Date(), registrationId]);
+            return db_1.default.query(c, "update registration set hasRegistered = 'Y', registrationDate = ? where registrationId = ?", [new Date(), registrationId]);
         });
     };
     return RegisterService;
 })();
-exports.__esModule = true;
-exports["default"] = RegisterService;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = RegisterService;
 //# sourceMappingURL=register.js.map

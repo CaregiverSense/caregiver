@@ -1,7 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict"
 
-import db from "../../routes/dao/db";
+import db from "../../routes/dao/db"
+let jsonMask = require("json-mask")
 
 export interface IUser {
     userId     ?: number
@@ -10,7 +11,7 @@ export interface IUser {
     email      ?: string
     fbId        : string
     fbLink     ?: string
-    role       ?: string
+    role        : string
     first_name ?: string
     last_name  ?: string
     locale     ?: string
@@ -55,6 +56,14 @@ export class User implements IUser {
         } else {
             return this.isSupervisorOf(c, userId)
         }
+    }
+
+    /**
+     * Returns a promise that resolves iff the user is an admin.
+     * @param userId
+     */
+    ifAdmin() : Promise<boolean> {
+        return new Promise((y,n) => (this.role == 'admin' ? y() : n()))
     }
 
     /**
@@ -145,7 +154,7 @@ export default class UserService {
             ]).
         then((results) => {
             user.userId = results.insertId
-            console.log("Added user ", user.name, " with id ", user.userId)
+            console.log("Added user with name ", user.name, " with id ", user.userId)
         })
     }
 
@@ -170,7 +179,7 @@ export default class UserService {
     // TODO Add communityId
     static loadUsersByRole(c : any, role : string) : Promise<User[]> {
         return (db.
-            query(c, "select * from user where role " + ((role == null) ? "is null":"=?"), [role]).
+            query(c, "select * from user where role = ? order by name", [role]).
             then((results) => {
                 console.log("Loaded users for role " + role)
                 console.dir(results)
@@ -197,6 +206,26 @@ export default class UserService {
             then((results) => {
                 return results.map((row) => new User(row))
             }) as Promise<User[]>)
+    }
+
+    /**
+     * Loads all non-admin users, ordered by name.
+     * A json-mask can be specified to return only specific properties.
+     *
+     * TODO Add support for a community id.
+     *
+     * @param c
+     * @param projection
+     */
+
+    static loadAllMasked(c : any, mask ?: Object) : Promise<User[]> {
+        return (db.
+        query(c,
+            "select * from user where role <> 'admin' order by name", []).
+        then((results) => {
+            console.dir(results)
+            return mask ? results.map((row) => jsonMask(new User(row), mask)) : results
+        }) as Promise<User[]>)
     }
 
 

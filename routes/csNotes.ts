@@ -1,4 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
+import NoteService from "./notes/notes";
 "use strict"
 
 import express = require('express')
@@ -6,6 +7,7 @@ let router = express.Router()
 import db from "./dao/db"
 import l from "./util/log";
 import { User } from "./user/User";
+import { Note } from "./notes/notes";
 
 
 /*
@@ -44,69 +46,57 @@ function onFail(res) {
 
 
 /**
- *  content
- *  patientVisible
+ * Adds a new note
+ *
+ * {
+ *      content         :string,
+ *      patientId       :number,
+ *      patientVisible  :boolean
+ * }
  *
  */
-router.post("/save", function(req, res) {
-    l("/notes/save");
+router.post("/add", function(req, res) {
+    l("/notes/add");
+    let o = req.body;
+    let user : User = req.session['user']
+    let c = req['c']
 
-    var o = req.body;
-    var content = o.content;
-    var patientId = o.patientId;
-    var patientVisible = o.patientVisible;
-    var user : User = req.session['user']
-    var userId = user.userId;
-
-    user.hasAccessTo(req['c'], patientId).
+    user.hasAccessTo(c, o.patientId).
+    then(() =>
+        NoteService.addNote(c, new Note(
+            o.content,
+            new Date(),
+            user.userId,
+            o.patientId,
+            !!o.patientVisible))).
     then(() => {
-        return db.query(
-            req['c'],
-            "insert into notes (content, lastUpdated, byUserId, forUserId, patientVisible) values (?, ?, ?, ?, ?)",
-            [content,
-                new Date(),
-                userId,
-                patientId || userId,                // If the user does not have a patient, then the note is a personal one.
-                (patientVisible) ? true : false
-            ]
-        )}).
-    then(() => {
-        l("inserted note " + l(o));
+        l("inserted note " + l(o))
         res.send({"inserted": "true"})
     }).catch(onFail(res))
-});
+})
 
 
 /**
  * Load notes for the current patient of the logged in user.
  */
 router.post("/load", function(req, res) {       // TODO convert to get with patientId in the path.
-    l("/notes/load");
-    var patientId = req.body.patientId;
-    var user : User = req.session['user']
-    var userId = user.userId;
-    var loadNotesForUserId = patientId || userId;
+    l("/notes/load")
+    let user : User = req.session['user']
+    let userId = user.userId
+    let loadedForPatient = !req.body.patientId
+    let loadForUserId = req.body.patientId || userId
+    let c = req['c']
 
-    user.hasAccessTo(req['c'], patientId).
-    then(() => {
-        return db.query(req['c'],
-            "select n.*, f.name as fromUserName from notes n, user f where n.byUserId = f.userId and n.forUserId = ? order by lastUpdated desc",
-            [loadNotesForUserId]
-        )}).
-    then((rs) => {
-        l("Loaded " + l(rs));
-        var filtered = [];
-        for (var i = 0; i < rs.length; i++) {
-            var row = rs[i];
-
-            var isNotPatient = userId != row.forUserId;
-
-            if (isNotPatient || row.patientVisible) {
-                filtered.push(row);
-            }
+    user.hasAccessTo(c, loadForUserId).
+    then(() => NoteService.loadNotesForUser(c, loadForUserId)).
+    then((notes) => {
+        l("Loaded " + l(notes))
+        if (loadedForPatient) {
+            notes = notes.filter(note => note.patientVisible)
         }
-        res.send(filtered)
-    }).catch(onFail(res))
-});
+        res.send(notes)
+    }).
+    catch(onFail(res))
+})
 
 export default router

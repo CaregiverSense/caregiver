@@ -16,9 +16,9 @@ var TagService = (function () {
     function TagService() {
     }
     TagService.loadTag = function (c, tagId) {
-        return db_1["default"].query(c, "select * from tag where tagId = ?", [tagId]).
+        return db_1.default.query(c, "select * from tag where tagId = ?", [tagId]).
             then(function (rs) {
-            log_1["default"]("Loaded tag: " + log_1["default"](rs));
+            log_1.default("Loaded tag: " + log_1.default(rs));
             if (rs.length == 0) {
                 throw "Tag not found " + tagId;
             }
@@ -27,6 +27,6 @@ var TagService = (function () {
     };
     return TagService;
 })();
-exports.__esModule = true;
-exports["default"] = TagService;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = TagService;
 //# sourceMappingURL=tag.js.map

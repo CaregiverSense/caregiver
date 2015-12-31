@@ -8,7 +8,7 @@ var log_1 = require("./util/log");
 var router = express.Router();
 router.get("/", function (req, res) {
     var registrationId = req.query.id;
-    register_1["default"].loadRegistration(req.c, registrationId).
+    register_1.default.loadRegistration(req.c, registrationId).
         then(function (reg) {
         if (reg) {
             res.render("web/welcomeCaregiver", { registrationId: registrationId, name: reg.name });
@@ -30,13 +30,13 @@ router.post("/", function (req, res) {
     var auth = req.body.auth;
     var registrationId = req.body.registrationId;
     // contact facebook to see if the access token is valid
-    log_1["default"]("POST /register called with: " + log_1["default"](req.body));
-    log_1["default"]("Validating access token " + auth.accessToken);
-    login_1["default"].verifyAccessToken(auth.accessToken).then(function (fbUser) {
-        log_1["default"]("User verified by facebook, loading by fbId " + fbUser.id);
-        User_1["default"].loadUserByFbId(req["c"], fbUser.id).then(function (user) {
+    log_1.default("POST /register called with: " + log_1.default(req.body));
+    log_1.default("Validating access token " + auth.accessToken);
+    login_1.default.verifyAccessToken(auth.accessToken).then(function (fbUser) {
+        log_1.default("User verified by facebook, loading by fbId " + fbUser.id);
+        User_1.default.loadUserByFbId(req["c"], fbUser.id).then(function (user) {
             if (user) {
-                log_1["default"]("The user " + user.name + " already exists with the userId " + fbUser.id);
+                log_1.default("The user " + user.name + " already exists with the userId " + fbUser.id);
                 // User is already registered, let them in.
                 // TODO update user information.
                 // If they are a caregiver then let them in.
@@ -47,21 +47,21 @@ router.post("/", function (req, res) {
                 }
             }
             else {
-                log_1["default"]("registerUser called for " + fbUser.name + " with userId " + fbUser.id + " for registrationId " + registrationId);
-                register_1["default"].registerUser(req["c"], fbUser, registrationId, 'caregiver').
+                log_1.default("registerUser called for " + fbUser.name + " with userId " + fbUser.id + " for registrationId " + registrationId);
+                register_1.default.registerUser(req["c"], fbUser, registrationId, 'caregiver').
                     then(function () {
                     // TODO notify the admin of the registration by email
-                    log_1["default"]("Registered!");
+                    log_1.default("Registered!");
                     res.send({ userStatus: "registered" });
                 }).catch(function (err) {
-                    log_1["default"]("Error: " + log_1["default"](err)); // TODO add proper handling
+                    log_1.default("Error: " + log_1.default(err)); // TODO add proper handling
                 });
             }
         });
     }, function (err) {
-        log_1["default"]("Error: " + log_1["default"](err)); // TODO add proper handling
+        log_1.default("Error: " + log_1.default(err)); // TODO add proper handling
     });
 });
-exports.__esModule = true;
-exports["default"] = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = router;
 //# sourceMappingURL=csRegister.js.map

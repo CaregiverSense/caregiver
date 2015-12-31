@@ -55,7 +55,7 @@ module db {
         return new Promise((resolve, reject) => {
             getPool().getConnection(function (err, c) {
 
-                var release = (endedWell : boolean) => {
+                var release = (endedWell : boolean, results ?: any) => {
                     return function(err? : any) {
                         if (err) {
                             l(err);
@@ -63,7 +63,7 @@ module db {
                         l("Connection released");
                         c.release();
                         if (endedWell) {
-                            resolve();
+                            resolve(results);
                         } else {
                             reject(err);
                         }
@@ -81,7 +81,7 @@ module db {
                                 "connection is immediately released.");
                             (release(false))()
                         } else {
-                            return result.then(release(true)).catch(release(false));
+                            return result.then(release(true, result)).catch(release(false));
                         }
                     } catch (e) {
                         (release(false))(e)

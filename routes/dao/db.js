@@ -31,7 +31,7 @@ var db;
                 path = "databaseSettings.json";
             }
             settings = require("../../" + path);
-            log_1["default"]("Loaded database settings " + log_1["default"](settings));
+            log_1.default("Loaded database settings " + log_1.default(settings));
         }
         return me;
     }
@@ -49,15 +49,15 @@ var db;
         }
         return new Promise(function (resolve, reject) {
             getPool().getConnection(function (err, c) {
-                var release = function (endedWell) {
+                var release = function (endedWell, results) {
                     return function (err) {
                         if (err) {
-                            log_1["default"](err);
+                            log_1.default(err);
                         }
-                        log_1["default"]("Connection released");
+                        log_1.default("Connection released");
                         c.release();
                         if (endedWell) {
-                            resolve();
+                            resolve(results);
                         }
                         else {
                             reject(err);
@@ -65,27 +65,27 @@ var db;
                     };
                 };
                 if (!err) {
-                    log_1["default"]("Connection obtained");
+                    log_1.default("Connection obtained");
                     try {
                         var result = cb(c);
                         if (!result || !result.then) {
-                            log_1["default"]("Error: callback did not return a promise, " +
+                            log_1.default("Error: callback did not return a promise, " +
                                 "connection is immediately released.");
                             (release(false))();
                         }
                         else {
-                            return result.then(release(true)).catch(release(false));
+                            return result.then(release(true, result)).catch(release(false));
                         }
                     }
                     catch (e) {
                         (release(false))(e);
                         console.log(e);
                         console.dir(e);
-                        log_1["default"]("Connection problem" + log_1["default"](e));
+                        log_1.default("Connection problem" + log_1.default(e));
                     }
                 }
                 else {
-                    log_1["default"]("Error obtaining connection" + log_1["default"](err));
+                    log_1.default("Error obtaining connection" + log_1.default(err));
                 }
             });
         });
@@ -94,18 +94,18 @@ var db;
     function go(cb) {
         getPool().getConnection(function (err, c) {
             if (!err) {
-                log_1["default"]("Connection obtained");
+                log_1.default("Connection obtained");
                 try {
                     cb(c);
                     c.release();
-                    log_1["default"]("Connection released");
+                    log_1.default("Connection released");
                 }
                 catch (e) {
-                    log_1["default"]("Connection problem" + log_1["default"](e));
+                    log_1.default("Connection problem" + log_1.default(e));
                 }
             }
             else {
-                log_1["default"]("Error obtaining connection" + log_1["default"](err));
+                log_1.default("Error obtaining connection" + log_1.default(err));
             }
         });
     }
@@ -114,11 +114,11 @@ var db;
         return new Promise(function (yes, no) {
             c.query(sql, params, function (err, rs) {
                 if (err) {
-                    log_1["default"]("Error : " + log_1["default"](err));
+                    log_1.default("Error : " + log_1.default(err));
                     no(err);
                 }
                 else {
-                    log_1["default"]("Resolved : " + log_1["default"](rs));
+                    log_1.default("Resolved : " + log_1.default(rs));
                     yes(rs);
                 }
             });
@@ -142,6 +142,6 @@ var db;
     }
     db.queryOne = queryOne;
 })(db || (db = {}));
-exports.__esModule = true;
-exports["default"] = db;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = db;
 //# sourceMappingURL=db.js.map

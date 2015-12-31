@@ -12,57 +12,6 @@ import User from "./user/User";
 import RegisterService from "./register/register";
 let router = express.Router()
 
-
-var dao = {};
-require("extend")(dao,
-    require("./dao/register-dao"),
-    {
-        loadPatients : (c, cb) => {
-            c.query("select userId, name, email, fbId, fbLink from user where role is null", [], db.wrap(rs => cb(rs) ));
-        },
-        loadCaregivers : (c, cb) => {
-            c.query("select userId, name, email, fbId, fbLink from user where role = 'caregiver'", [], db.wrap(rs => cb(rs) ));
-        },
-        loadUser : (c, userId, cb) => {
-            c.query("select userId, name, email, fbId, fbLink from user where userId = ?", [userId], db.wrap(rs => cb(rs.length ? rs[0] : null) ));
-        },
-        addCaregiver : (c, name, email, cb) => {
-            c.query("insert into user (name, email) values (?, ?)", [name, email], db.wrap(rs => cb(rs)));
-        },
-        assignPatientToCaregiver : (c, userId, patientId) => {
-            return db.query(c, "select count(*) as found from user_patient up where userId = ? and patientId = ?", [userId, patientId]).then(
-                (rs) => {
-                    if (!rs[0].found) {
-                        return db.query(c, "insert into user_patient (userId, patientId) values (?,?)", [userId, patientId]);
-                    }
-                }
-            );
-        },
-
-        unassignCaregiverFromPatient : (c, userId, patientId) => {
-            return db.query(c, "delete from user_patient where userId = ? and patientId = ?", [userId, patientId]).catch((err) => {
-                console.log(err);
-                throw err;
-            });
-        },
-
-        loadCaregiversForPatient : (c, patientId) => {
-            return db.query(c, "select u.* from user u, user_patient up where u.userId = up.userId and up.patientId = ?", [patientId]).catch((err) => {
-                console.log(err);
-                throw err;
-            });
-        },
-
-        // TODO add tenantId everywhere
-        loadPatientsForCaregiver : (c, caregiverId) => {
-            return db.query(c, "select u.* from user u, user_patient up where u.userId = up.patientId and up.userId = ?", [caregiverId]).catch(err => {
-                console.log(err);
-                throw err;
-            });
-        }
-    }
-);
-
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
 router.use(require("./middleware/checkIsAdmin"));
@@ -82,7 +31,7 @@ router.post("/api/getCaregivers", (req, res) => {
 
 router.post("/api/getPatients", (req, res) => {
 
-    UserService.loadUsersByRole(req["c"], null).
+    UserService.loadUsersByRole(req["c"], 'patient').
         then((users) => res.send(users)).
         catch((e) => l(e))
 })

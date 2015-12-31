@@ -1,6 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict";
 var db_1 = require("../../routes/dao/db");
+var jsonMask = require("json-mask");
 var User = (function () {
     function User(row) {
         this.userId = row.userId;
@@ -25,6 +26,14 @@ var User = (function () {
         }
     };
     /**
+     * Returns a promise that resolves iff the user is an admin.
+     * @param userId
+     */
+    User.prototype.ifAdmin = function () {
+        var _this = this;
+        return new Promise(function (y, n) { return (_this.role == 'admin' ? y() : n()); });
+    };
+    /**
      * Make this user a supervisor of the given one.
      *
      * @param c         The connection
@@ -36,7 +45,7 @@ var User = (function () {
         return this.isSupervisorOf(c, userId).
             then(function (isSupervisor) {
             if (!isSupervisor) {
-                return db_1["default"].query(c, "insert into user_patient (userId, patientId) values (?,?)", [_this.userId, userId]);
+                return db_1.default.query(c, "insert into user_patient (userId, patientId) values (?,?)", [_this.userId, userId]);
             }
         }).then(function () { });
     };
@@ -48,7 +57,7 @@ var User = (function () {
      * @returns {Promise<TResult>|Promise<U>} to allow chaining
      */
     User.prototype.isSupervisorOf = function (c, userId) {
-        return db_1["default"].query(c, "select * from user_patient where userId = ? and patientId = ?", [this.userId, userId]).then(function (results) {
+        return db_1.default.query(c, "select * from user_patient where userId = ? and patientId = ?", [this.userId, userId]).then(function (results) {
             console.log('user patients for userId: ', results.length);
             return (results.length == 1);
         });
@@ -61,7 +70,7 @@ var User = (function () {
      * @returns {Promise<any>}
      */
     User.prototype.unassignPatient = function (c, userId) {
-        return db_1["default"].query(c, "delete from user_patient where userId = ? and patientId = ?", [this.userId, userId]);
+        return db_1.default.query(c, "delete from user_patient where userId = ? and patientId = ?", [this.userId, userId]);
     };
     return User;
 })();
@@ -78,7 +87,7 @@ var UserService = (function () {
      */
     UserService.addUser = function (c, user) {
         console.log("UserService.addUser: Adding ", JSON.stringify(user));
-        return db_1["default"].query(c, "insert into user (" +
+        return db_1.default.query(c, "insert into user (" +
             "tagId," +
             "name," +
             "email," +
@@ -105,27 +114,27 @@ var UserService = (function () {
         ]).
             then(function (results) {
             user.userId = results.insertId;
-            console.log("Added user ", user.name, " with id ", user.userId);
+            console.log("Added user with name ", user.name, " with id ", user.userId);
         });
     };
     UserService.loadUserByFbId = function (c, fbId) {
         console.log("UserService.loadUserByFbId: Loading user with fbId " + fbId);
-        return db_1["default"].queryOne(c, "select * from user where fbId = ?", [fbId]).
+        return db_1.default.queryOne(c, "select * from user where fbId = ?", [fbId]).
             then(function (row) {
             return new User(row);
         });
     };
     UserService.loadUserByUserId = function (c, userId) {
         console.log("UserService.loadUserByUserId: Loading user with userId " + userId);
-        return db_1["default"].queryOne(c, "select * from user where userId = ?", [userId]).
+        return db_1.default.queryOne(c, "select * from user where userId = ?", [userId]).
             then(function (row) {
             return new User(row);
         });
     };
     // TODO Add communityId
     UserService.loadUsersByRole = function (c, role) {
-        return db_1["default"].
-            query(c, "select * from user where role " + ((role == null) ? "is null" : "=?"), [role]).
+        return db_1.default.
+            query(c, "select * from user where role = ? order by name", [role]).
             then(function (results) {
             console.log("Loaded users for role " + role);
             console.dir(results);
@@ -133,7 +142,7 @@ var UserService = (function () {
         });
     };
     UserService.loadCaregiversForPatient = function (c, patientId) {
-        return db_1["default"].
+        return db_1.default.
             query(c, "select u.* from user u, user_patient up where " +
             "u.userId = up.userId and up.patientId = ?", [patientId]).
             then(function (results) {
@@ -141,14 +150,31 @@ var UserService = (function () {
         });
     };
     UserService.loadPatientsForCaregiver = function (c, caregiverId) {
-        return db_1["default"].
+        return db_1.default.
             query(c, "select u.* from user u, user_patient up where u.userId = up.patientId and up.userId = ?", [caregiverId]).
             then(function (results) {
             return results.map(function (row) { return new User(row); });
         });
     };
+    /**
+     * Loads all non-admin users, ordered by name.
+     * A json-mask can be specified to return only specific properties.
+     *
+     * TODO Add support for a community id.
+     *
+     * @param c
+     * @param projection
+     */
+    UserService.loadAllMasked = function (c, mask) {
+        return db_1.default.
+            query(c, "select * from user where role <> 'admin' order by name", []).
+            then(function (results) {
+            console.dir(results);
+            return mask ? results.map(function (row) { return jsonMask(new User(row), mask); }) : results;
+        });
+    };
     return UserService;
 })();
-exports.__esModule = true;
-exports["default"] = UserService;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = UserService;
 //# sourceMappingURL=User.js.map

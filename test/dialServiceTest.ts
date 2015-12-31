@@ -20,7 +20,7 @@ let clear = () => {
         console.log("TestUtil is " + TestUtil)
         return TestUtil.resetDatabase(c).then(() => {
             console.log("Adding user")
-            return db.query(c, "insert into user (userId, fbId) values (" + TEST_USER_ID + ",2)")
+            return db.query(c, "insert into user (userId, fbId, role) values (" + TEST_USER_ID + ",2,'patient')")
         })
     })
 }
@@ -29,16 +29,15 @@ let clear = () => {
 
 describe('DialService', function() {
 
-    beforeEach(function(done) {
+    beforeEach(function() {
         console.log("Calling before each")
         return clear().then(function() {
-            done();
         });
     })
 
     describe('#addNumber()', function() {
 
-        it('should save a new number', function (done) {
+        it('should save a new number', function () {
 
             return db.getConnection((c) => {
                 return dial.addNumber(c, new PhoneNumber("TestHome", "1-755-855-9555", TEST_USER_ID)).then(() => {
@@ -50,11 +49,10 @@ describe('DialService', function() {
                             expect(rs[0].phone).equals("1-755-855-9555")
                             expect(rs[0].label).equals("TestHome")
                             expect(rs[0].rank).equals(0)
-                            done()
                         }
                     )
                 });
-            }).catch(done)
+            })
         });
 
     })

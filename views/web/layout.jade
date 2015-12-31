@@ -8,12 +8,16 @@ html
     body()
         div(ng-controller="GroundWebCtrl as main" ng-cloak style="height:100%")
             nav.navbar.navbar-inverse.navbar-fixed-top
-                button.button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#ga-navbar-collapse" aria-expanded="false")
-                    span.sr-only Toggle navigation
-                    span.icon-bar
-                    span.icon-bar
-                    span.icon-bar
-                a.navbar-brand(href="#") CaregiverSense
+                .navbar-header
+                    button.button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#ga-navbar-collapse" aria-expanded="false")
+                        span.sr-only Toggle navigation
+                        span.icon-bar
+                        span.icon-bar
+                        span.icon-bar
+                    a.navbar-brand(href="#") Caregiver Sense
+                .collapse.navbar-collapse
+                    form.navbar-form.navbar-left(role="search")
+                        user-lookup(roles='{{main.roles}}' label='Search' callback='showUser(item)')
+
             .ga-body
                 block content
-        

@@ -7,12 +7,13 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var log_1 = require("./routes/util/log");
 var db_1 = require("./routes/dao/db");
-db_1["default"].init("databaseSettings.json");
+db_1.default.init("databaseSettings.json");
 var csIndex_1 = require('./routes/csIndex');
 var csAdmin_1 = require('./routes/csAdmin');
 var csLogin_1 = require('./routes/csLogin');
 var csNotes_1 = require('./routes/csNotes');
 var csRegister_1 = require('./routes/csRegister');
+var csUser_1 = require('./routes/csUser');
 var profile = require('./routes/csProfile');
 var schedule = require('./routes/csSchedule');
 var app = express();
@@ -63,13 +64,13 @@ if (app.get('env') === 'production') {
 }
 // The first middleware chain link establishes a database connection.
 app.use(function (req, res, next) {
-    log_1["default"]("Path:   ");
-    log_1["default"](req.path);
-    log_1["default"]("Params: ");
-    log_1["default"](req.params);
-    log_1["default"]("Body:   ");
-    log_1["default"](req.body);
-    db_1["default"].getPool().getConnection(function (err, c) {
+    log_1.default("Path:   ");
+    log_1.default(req.path);
+    log_1.default("Params: ");
+    log_1.default(req.params);
+    log_1.default("Body:   ");
+    log_1.default(req.body);
+    db_1.default.getPool().getConnection(function (err, c) {
         if (!err) {
             // l("Connection obtained");
             req["c"] = c;
@@ -83,13 +84,14 @@ app.use(function (req, res, next) {
         }
     });
 });
-app.use('/', csIndex_1["default"]);
+app.use('/', csIndex_1.default);
 app.use('/profile', profile);
 app.use('/schedule', schedule);
-app.use('/notes', csNotes_1["default"]);
-app.use('/admin', csAdmin_1["default"]);
-app.use('/register', csRegister_1["default"]);
-app.use('/login', csLogin_1["default"]);
+app.use('/notes', csNotes_1.default);
+app.use('/admin', csAdmin_1.default);
+app.use('/register', csRegister_1.default);
+app.use('/login', csLogin_1.default);
+app.use('/user', csUser_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -103,7 +105,7 @@ app.use((function (err, req, res, next) {
     next(err);
 }));
 app.use(function (err, req, res, next) {
-    log_1["default"]("Error is " + log_1["default"](err));
+    log_1.default("Error is " + log_1.default(err));
     var stack = (app.get('env') === 'development') ? err : {};
     if (req["redirectToLogin"]) {
         if (req["isAPI"]) {

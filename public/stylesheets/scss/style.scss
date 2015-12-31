@@ -10,9 +10,25 @@
     vertical-align: top;
     margin-left:1em;
 
-    .name {
+    .user {
       display: block;
-      font-size: 1.5em;
+
+      .userType {
+        @extend .alert;
+        display:inline-block;
+        font-weight:bold;
+      }
+      .userType.patient {
+        @extend .alert-info;
+      }
+      .userType.caregiver {
+        @extend .alert-success;
+      }
+      .userName {
+        padding-left:.5em;
+        font-size: 1.5em;
+        display:inline-block;
+      }
     }
     .addr {
       display: block;
@@ -20,8 +36,34 @@
   }
 }
 
+.panel-title {
+  display:inline;
+}
 
+.userLookup {
+  display:inline;
+  .searchBox {
+    @extend .form-control;
+    display:inline-block;
+  }
+  .icon {
+    @extend .fa, .fa-search;
+    display:inline-block;
+    color:#888888;
+    position:relative;
+    left:-1.25em;
+    font-size:1.25em;
+    vertical-align:middle;
+  }
+}
 
+.addCaregiverLookup {
+  position:absolute;
+  right:2em;
+  white-space:nowrap;
+  display:inline;
+  top:.2em;
+}
 
 
 
@@ -56,11 +98,6 @@ body {
   overflow: hidden;
 }
 
-ng-view {
-  height: calc(100% - 50px);
-  overflow-y: auto;
-}
-
 body {
   font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
@@ -73,16 +110,12 @@ header {
   font-size: 1.5em;
 }
 
-ng-view {
-  display: block;
-}
-
 a {
   color: #00B7FF;
 }
 
 .ga-body {
-  margin-top:8em;
+  margin-top:6em;
 }
 
 .btn {
@@ -127,11 +160,6 @@ button i {
   background-repeat: repeat-x;
   border-color: #245580;
   color: white;
-}
-
-input.form-control {
-  font-size: 1.4em;
-  padding: 2.5rem;
 }
 
 .form-group label {

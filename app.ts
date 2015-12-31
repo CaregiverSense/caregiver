@@ -15,14 +15,15 @@ import l from "./routes/util/log";
 import db from "./routes/dao/db";
 db.init("databaseSettings.json");
 
-import index from './routes/csIndex'
-import admin from './routes/csAdmin'
-import login from './routes/csLogin'
-import notes from './routes/csNotes'
+import index    from './routes/csIndex'
+import admin    from './routes/csAdmin'
+import login    from './routes/csLogin'
+import notes    from './routes/csNotes'
 import register from './routes/csRegister'
+import user     from './routes/csUser'
 
-var profile = require('./routes/csProfile')
-var schedule = require('./routes/csSchedule')
+let profile = require('./routes/csProfile')
+let schedule = require('./routes/csSchedule')
 
 var app = express();
 
@@ -99,14 +100,14 @@ app.use(function(req, res, next) {
 
 
 
-app.use('/', index);
-app.use('/profile', profile);
-app.use('/schedule', schedule);
-app.use('/notes', notes);
-app.use('/admin', admin);
-app.use('/register', register);
-app.use('/login', login);
-
+app.use('/',            index)
+app.use('/profile',     profile)
+app.use('/schedule',    schedule)
+app.use('/notes',       notes)
+app.use('/admin',       admin)
+app.use('/register',    register)
+app.use('/login',       login)
+app.use('/user',        user)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

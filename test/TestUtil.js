@@ -6,12 +6,13 @@ var TestUtil = (function () {
     }
     TestUtil.resetDatabase = function (c) {
         return Promise.resolve().
-            then(function () { return db_1["default"].query(c, "delete from dial"); }).
-            then(function () { return db_1["default"].query(c, "delete from user_patient"); }).
-            then(function () { return db_1["default"].query(c, "delete from user"); });
+            then(function () { return db_1.default.query(c, "delete from notes"); }).
+            then(function () { return db_1.default.query(c, "delete from dial"); }).
+            then(function () { return db_1.default.query(c, "delete from user_patient"); }).
+            then(function () { return db_1.default.query(c, "delete from user"); });
     };
     return TestUtil;
 })();
-exports.__esModule = true;
-exports["default"] = TestUtil;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = TestUtil;
 //# sourceMappingURL=TestUtil.js.map
