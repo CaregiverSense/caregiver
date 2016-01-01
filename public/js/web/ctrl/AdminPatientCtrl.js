@@ -8,7 +8,6 @@ define(["angular"], function() {
             $scope.userLookupOnSelect = function($item) {
                 alert("TODO - in AdminPatientCtrl.js \u2665")
             }
-
             this.addCaregiver = {
                 role : 'caregiver',
                 placeholder : 'Add Caregiver'

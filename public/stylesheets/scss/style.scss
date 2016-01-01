@@ -1,5 +1,15 @@
 @import "../../bower_components/components-font-awesome/scss/font-awesome";
 @import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+
+.navbar-form {
+
+  padding-top:0;
+  padding-bottom:0;
+}
+.navbar-inverse .navbar-brand {
+  color:#00B7FF;
+}
 
 .profileArea {
 
@@ -36,6 +46,8 @@
   }
 }
 
+
+
 .panel-title {
   display:inline;
 }
@@ -54,6 +66,58 @@
     left:-1.25em;
     font-size:1.25em;
     vertical-align:middle;
+  }
+}
+
+.patientNotes {
+  .addSection {
+    textarea {
+      @extend .form-control;
+      display:inline-block;
+      vertical-align:middle;
+      max-width:20em;
+    }
+
+    button {
+      @extend .btn, .btn-primary;
+      display:inline-block;
+      vertical-align:middle;
+      margin-left:1em;
+    }
+  }
+  .note {
+    display:inline-block;
+    clear:both;
+    background-color:$well-bg;
+    // box-shadow:2px 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding:.75em;
+    margin:.5em;
+    position:relative;
+    border-width:1px;
+    border-style:solid;
+    border-color:#EEE #CCC #BBB #DDD;
+    max-width:20em;
+
+    .body {
+      .content {
+        display: block;
+        float:left;
+      }
+      .writtenBy, .lastUpdated {
+        color:#333;
+        clear: both;
+        display: block;
+        float: right;
+        font-style: italic;
+      }
+      .writtenBy {
+        font-size:.6em;
+        margin-top:.25em;
+      }
+      .lastUpdated {
+        font-size:.6em;
+      }
+    }
   }
 }
 
@@ -79,27 +143,20 @@ Old stuff:
 
 
 
-
 */
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
 
-html,
-body,
-[ng-controller] {
-  height: 95%;
-}
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer;
 }
 
 body {
-  overflow: hidden;
-}
+  font: 16px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-weight:300;
 
-body {
-  font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 0 15px;
 }
 
 header {

@@ -1,6 +1,6 @@
 .container-fluid
      .row
-        .col-xs-12.col-lg-offset-1.col-lg-10.profileArea
+        .col-xs-12.col-md-offset-1.col-md-10.profileArea
             img(ng-if='ap.displayedPatient.pic' src='{{ap.displayedPatient.pic}}')
             .profilePicInfo
                 .user
@@ -9,7 +9,7 @@
                 .addr {{ap.displayedPatient.email}}
 
     .row
-        .col-xs-12.col-lg-offset-1.col-lg-10
+        .col-xs-12.col-md-offset-1.col-md-10
             .panel.panel-default
                 .panel-heading
                     .panel-title Caregivers
@@ -21,6 +21,13 @@
                             td
                                 img(src='//graph.facebook.com/{{cg.fbId}}/picture?type=small')
                             td
-                                h4 {{cg.name}}
+                                | {{cg.name}}
                             td
                                 button.btn.btn-md.btn-default.pull-right.fa.fa-times.fa-1x(ng-click='ap.unassignCaregiver(cg)')
+    .row
+        .col-xs-12.col-md-offset-1.col-md-10
+            .panel.panel-default
+                .panel-heading
+                    .panel-title Notes
+                .panel-body
+                    patient-notes(user-id="{{ap.userId}}")

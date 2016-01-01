@@ -1,14 +1,15 @@
 /// <reference path="../typings/tsd.d.ts" />
-import NoteService from "./notes/notes";
 "use strict"
 
+import NoteService from "./notes/notes";
 import express = require('express')
 let router = express.Router()
 import db from "./dao/db"
 import l from "./util/log";
 import { User } from "./user/User";
 import { Note } from "./notes/notes";
-
+import { error, sendResults } from "./util/util";
+let mask = require("json-mask")
 
 /*
  create table notes (
@@ -22,12 +23,6 @@ import { Note } from "./notes/notes";
 
  */
 
-router.get("/template", function(req, res) {
-    l("/notes/template");
-    res.render("template/patientNotes");
-});
-
-
 /**
  * API section
  */
@@ -35,14 +30,6 @@ router.get("/template", function(req, res) {
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
 // TODO Add configurable tracing of every path as middleware.
-
-
-function onFail(res) {
-    return function(err) {
-        l("Error: " + l(err));
-        res.send({error: true});
-    }
-}
 
 
 /**
@@ -54,6 +41,8 @@ function onFail(res) {
  *      patientVisible  :boolean
  * }
  *
+ * Returns { noteId : number }
+ *
  */
 router.post("/add", function(req, res) {
     l("/notes/add");
@@ -61,7 +50,7 @@ router.post("/add", function(req, res) {
     let user : User = req.session['user']
     let c = req['c']
 
-    user.hasAccessTo(c, o.patientId).
+    new User(user).hasAccessTo(c, o.patientId).
     then(() =>
         NoteService.addNote(c, new Note(
             o.content,
@@ -69,10 +58,8 @@ router.post("/add", function(req, res) {
             user.userId,
             o.patientId,
             !!o.patientVisible))).
-    then(() => {
-        l("inserted note " + l(o))
-        res.send({"inserted": "true"})
-    }).catch(onFail(res))
+    then((note) => mask(note, 'noteId')).
+    then(sendResults(res)).catch(error(res))
 })
 
 
@@ -87,16 +74,15 @@ router.post("/load", function(req, res) {       // TODO convert to get with pati
     let loadForUserId = req.body.patientId || userId
     let c = req['c']
 
-    user.hasAccessTo(c, loadForUserId).
+    new User(user).hasAccessTo(c, loadForUserId).
     then(() => NoteService.loadNotesForUser(c, loadForUserId)).
     then((notes) => {
         l("Loaded " + l(notes))
         if (loadedForPatient) {
             notes = notes.filter(note => note.patientVisible)
         }
-        res.send(notes)
-    }).
-    catch(onFail(res))
+        return notes;
+    }).then(sendResults(res)).catch(error(res))
 })
 
 export default router

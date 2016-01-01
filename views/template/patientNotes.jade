@@ -1,1 +1,13 @@
-| Hello {{notes.patientId}}
+.patientNotes
+    .row
+        .col-xs-12.addSection
+            textarea(rows=2 placeholder="Add Note" ng-model="newNote")
+            button(ng-click="addNote()") Save Note
+            | {{loginService.getUser()}}
+    .row
+        .col-xs-12
+            .note(ng-repeat="note in notes" on-all-notes-rendered="")
+                .body
+                    .content {{ note.content }}
+                    .writtenBy {{ note.writtenBy }}
+                    .lastUpdated {{ note.lastUpdated | date:'EEE MMM d, yyyy' }}

@@ -52,6 +52,7 @@ router.get('/schedule', function (req, res) { return res.render('template/schedu
 router.get('/moca', function (req, res) { return res.render('template/moca'); });
 router.get('/userLookup', function (req, res) { return res.render('template/userLookup'); });
 router.get('/view/:someView', function (req, res) { return res.render('view/' + req.params.someView); });
+router.get('/template/:someTemplate', function (req, res) { return res.render('template/' + req.params.someTemplate); });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = router;
 //# sourceMappingURL=csIndex.js.map

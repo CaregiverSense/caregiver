@@ -54,6 +54,7 @@ define(["facebook"], function() {
                                 onNotRegistered();
                             } else if (res.data.role) {
                                 me.user = res.data;
+                                console.log("Setting user: " + res.data);
                                 onSuccess(me.user);
                             }
                         });

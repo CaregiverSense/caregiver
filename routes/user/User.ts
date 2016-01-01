@@ -51,7 +51,7 @@ export class User implements IUser {
 
 
     hasAccessTo(c, userId : number) : Promise<boolean> {
-        if (this.userId == userId) {
+        if (this.userId == userId || this.role == 'admin') {
             return new Promise((y)=>y(true))
         } else {
             return this.isSupervisorOf(c, userId)

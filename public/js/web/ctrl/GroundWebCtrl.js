@@ -37,8 +37,8 @@ define([
             $httpProvider.interceptors.push(["$q", function($q) {
                 return {
                     'response' : function(response) {
-                        console.log("Response intercepted");
-                        console.dir(response)
+                        //console.log("Response intercepted");
+                        //console.dir(response)
 
                         if (response && response.data && response.data.needsLogin) {
                             // window.location = "/admin";     // TODO use routing instead.

@@ -24,6 +24,7 @@ define(['angular', 'app/phone', 'moment'], function (angular, phone, moment) {
 
             var notesByDate = {};
             this.lookupDates = [];
+            this.newNote = "";
 
             function getNotesForDay(e, shift) {
 
@@ -88,7 +89,7 @@ define(['angular', 'app/phone', 'moment'], function (angular, phone, moment) {
 
                  */
                 var newNote = {
-                    content: this.newNote,
+                    content: me.newNote,
                     lastUpdated: new Date(),
                     byUserId : userInfo.getUser().userId,
                     forUserId : userInfo.getPatient().userId,

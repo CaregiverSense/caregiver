@@ -70,7 +70,8 @@ router.get('/schedule',             (req, res) => res.render('template/schedule'
 router.get('/moca',                 (req, res) => res.render('template/moca'))
 router.get('/userLookup',           (req, res) => res.render('template/userLookup'))
 
-router.get('/view/:someView',   (req, res) => res.render('view/' + req.params.someView))
+router.get('/view/:someView',           (req, res) => res.render('view/' + req.params.someView))
+router.get('/template/:someTemplate',   (req, res) => res.render('template/' + req.params.someTemplate))
 
 
 export default router

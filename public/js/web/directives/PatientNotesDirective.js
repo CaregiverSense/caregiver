@@ -1,28 +1,58 @@
 define([], function() {
 
     return function(module) {
-
-        module.directive('patientNotes', ["$http", function($http) {
+        module.directive('onAllNotesRendered', function ($timeout) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attr) {
+                    if (scope.$last === true) {
+                        $timeout(function () {
+                            scope.$emit('allNotesRendered');
+                        });
+                    }
+                }
+            }
+        });
+        module.directive('patientNotes', ["$http", "LoginService", "$timeout", function($http, loginService, $timeout) {
             return {
                 restrict: 'E',
-                templateUrl : '/notes/template',
+                templateUrl : '/template/patientNotes',
                 scope : {
-                    patientId: '@'
+                    userId: '@'
                 },
-                bindToController: true,
-                controllerAs : "notes",
-                controller : function () {
-                    $http.post("/notes/load", {patientId:this.patientId}).then(function(rs) {
+                link: function(scope, element, attr, ctrl) {
+                    var me = scope;
+                    me.notes = []
+                    me.newNote = "";
 
-                        console.log("Loaded " + JSON.stringify(rs.data));
-                        /*
-                        rs.data.forEach(function(e) {
+                    $http.post("/notes/load", {patientId:me.userId}).then(function(rs) {
+                        me.notes = me.notes.concat(rs.data);
 
-                            getNotesForDay(e, true).push(e);
-                        });
-                        */
+                        console.log("Loaded for ", me.userId);
+                        console.dir(JSON.stringify(rs.data))
                     });
 
+                    me.$on("allNotesRendered", function() {
+                        $(".note").okshadow({color:"#DDD", yMax:8, xMax:8, fuzzMin:4, fuzzMax:8});
+                    });
+
+                    me.addNote = function() {
+                        var newNote = {
+                            content: me.newNote,
+                            patientId : me.userId,
+                            patientVisible : me.sharedWithPatient       // TODO support sharedWithPatient
+                        };
+
+                        $http.post("/notes/add", newNote).then(function (r) {
+                            newNote.noteId = r.data.noteId;
+                            me.notes.unshift(newNote);
+                            $timeout(function () {
+                                // TODO Is this really inefficient?? Will okshadow create multiple animation
+                                // TODO handlers for a single div element?
+                                scope.$emit('allNotesRendered');
+                            });
+                        });
+                    }
                 }
             };
         }]);

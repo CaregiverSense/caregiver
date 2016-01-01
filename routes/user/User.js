@@ -18,7 +18,7 @@ var User = (function () {
         this.patientId = row.patientId;
     }
     User.prototype.hasAccessTo = function (c, userId) {
-        if (this.userId == userId) {
+        if (this.userId == userId || this.role == 'admin') {
             return new Promise(function (y) { return y(true); });
         }
         else {

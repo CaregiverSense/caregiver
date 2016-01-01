@@ -47,7 +47,7 @@ style.
             .pull-right
                 button.btn.btn-lg.btn-primary(ng-click='notes.addNote()' style='margin:2rem 0') Add
 
-    .row
+    .rowdate:'EEE MMM d' }
         .col-xs-12(ng-repeat="lookupDate in notes.lookupDates")
             h2.bg-info.date-title.text-right {{ lookupDate | date:'EEE MMM d' }}
             table.table.table-striped

@@ -2308,8 +2308,9 @@ th {
   .navbar {
     display: none; }
 
-  .btn > .caret,
-  .dropup > .btn > .caret {
+  .btn > .caret, .patientNotes .addSection button > .caret,
+  .dropup > .btn > .caret,
+  .patientNotes .addSection .dropup > button > .caret {
     border-top-color: #000 !important; }
 
   .label {
@@ -4513,7 +4514,7 @@ output {
   line-height: 1.42857;
   color: #555555; }
 
-.form-control, .userLookup .searchBox {
+.form-control, .userLookup .searchBox, .patientNotes .addSection textarea {
   display: block;
   width: 100%;
   height: 34px;
@@ -4530,28 +4531,28 @@ output {
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s; }
-  .form-control:focus, .userLookup .searchBox:focus {
+  .form-control:focus, .userLookup .searchBox:focus, .patientNotes .addSection textarea:focus {
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6); }
-  .form-control::-moz-placeholder, .userLookup .searchBox::-moz-placeholder {
+  .form-control::-moz-placeholder, .userLookup .searchBox::-moz-placeholder, .patientNotes .addSection textarea::-moz-placeholder {
     color: #999;
     opacity: 1; }
-  .form-control:-ms-input-placeholder, .userLookup .searchBox:-ms-input-placeholder {
+  .form-control:-ms-input-placeholder, .userLookup .searchBox:-ms-input-placeholder, .patientNotes .addSection textarea:-ms-input-placeholder {
     color: #999; }
-  .form-control::-webkit-input-placeholder, .userLookup .searchBox::-webkit-input-placeholder {
+  .form-control::-webkit-input-placeholder, .userLookup .searchBox::-webkit-input-placeholder, .patientNotes .addSection textarea::-webkit-input-placeholder {
     color: #999; }
-  .form-control::-ms-expand, .userLookup .searchBox::-ms-expand {
+  .form-control::-ms-expand, .userLookup .searchBox::-ms-expand, .patientNotes .addSection textarea::-ms-expand {
     border: 0;
     background-color: transparent; }
-  .form-control[disabled], .userLookup [disabled].searchBox, .form-control[readonly], .userLookup [readonly].searchBox, fieldset[disabled] .form-control, fieldset[disabled] .userLookup .searchBox, .userLookup fieldset[disabled] .searchBox {
+  .form-control[disabled], .userLookup [disabled].searchBox, .patientNotes .addSection textarea[disabled], .form-control[readonly], .userLookup [readonly].searchBox, .patientNotes .addSection textarea[readonly], fieldset[disabled] .form-control, fieldset[disabled] .userLookup .searchBox, .userLookup fieldset[disabled] .searchBox, fieldset[disabled] .patientNotes .addSection textarea, .patientNotes .addSection fieldset[disabled] textarea {
     background-color: #eeeeee;
     opacity: 1; }
-  .form-control[disabled], .userLookup [disabled].searchBox, fieldset[disabled] .form-control, fieldset[disabled] .userLookup .searchBox, .userLookup fieldset[disabled] .searchBox {
+  .form-control[disabled], .userLookup [disabled].searchBox, .patientNotes .addSection textarea[disabled], fieldset[disabled] .form-control, fieldset[disabled] .userLookup .searchBox, .userLookup fieldset[disabled] .searchBox, fieldset[disabled] .patientNotes .addSection textarea, .patientNotes .addSection fieldset[disabled] textarea {
     cursor: not-allowed; }
 
-textarea.form-control, .userLookup textarea.searchBox {
+textarea.form-control, .userLookup textarea.searchBox, .patientNotes .addSection textarea {
   height: auto; }
 
 input[type="search"] {
@@ -4675,17 +4676,20 @@ input[type="checkbox"] {
   padding-bottom: 7px;
   margin-bottom: 0;
   min-height: 34px; }
-  .form-control-static.input-lg, .input-group-lg > .form-control-static.form-control, .userLookup .input-group-lg > .form-control-static.searchBox,
+  .form-control-static.input-lg, .input-group-lg > .form-control-static.form-control, .userLookup .input-group-lg > .form-control-static.searchBox, .patientNotes .addSection .input-group-lg > textarea.form-control-static,
   .input-group-lg > .form-control-static.input-group-addon,
-  .input-group-lg > .input-group-btn > .form-control-static.btn, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control, .userLookup .input-group-sm > .form-control-static.searchBox,
+  .input-group-lg > .input-group-btn > .form-control-static.btn,
+  .patientNotes .addSection .input-group-lg > .input-group-btn > button.form-control-static, .form-control-static.input-sm, .input-group-sm > .form-control-static.form-control, .userLookup .input-group-sm > .form-control-static.searchBox, .patientNotes .addSection .input-group-sm > textarea.form-control-static,
   .input-group-sm > .form-control-static.input-group-addon,
-  .input-group-sm > .input-group-btn > .form-control-static.btn {
+  .input-group-sm > .input-group-btn > .form-control-static.btn,
+  .patientNotes .addSection .input-group-sm > .input-group-btn > button.form-control-static {
     padding-left: 0;
     padding-right: 0; }
 
-.input-sm, .input-group-sm > .form-control, .userLookup .input-group-sm > .searchBox,
+.input-sm, .input-group-sm > .form-control, .userLookup .input-group-sm > .searchBox, .patientNotes .addSection .input-group-sm > textarea,
 .input-group-sm > .input-group-addon,
-.input-group-sm > .input-group-btn > .btn {
+.input-group-sm > .input-group-btn > .btn,
+.patientNotes .addSection .input-group-sm > .input-group-btn > button {
   height: 30px;
   padding: 5px 10px;
   font-size: 12px;
@@ -4698,7 +4702,7 @@ select.input-sm, .input-group-sm > select.form-control, .userLookup .input-group
   height: 30px;
   line-height: 30px; }
 
-textarea.input-sm, .input-group-sm > textarea.form-control, .userLookup .input-group-sm > textarea.searchBox,
+textarea.input-sm, .input-group-sm > textarea.form-control, .userLookup .input-group-sm > textarea.searchBox, .patientNotes .addSection .input-group-sm > textarea,
 .input-group-sm > textarea.input-group-addon,
 .input-group-sm > .input-group-btn > textarea.btn,
 select[multiple].input-sm,
@@ -4708,7 +4712,7 @@ select[multiple].input-sm,
 .input-group-sm > .input-group-btn > select[multiple].btn {
   height: auto; }
 
-.form-group-sm .form-control, .form-group-sm .userLookup .searchBox, .userLookup .form-group-sm .searchBox {
+.form-group-sm .form-control, .form-group-sm .userLookup .searchBox, .userLookup .form-group-sm .searchBox, .form-group-sm .patientNotes .addSection textarea, .patientNotes .addSection .form-group-sm textarea {
   height: 30px;
   padding: 5px 10px;
   font-size: 12px;
@@ -4717,7 +4721,7 @@ select[multiple].input-sm,
 .form-group-sm select.form-control, .form-group-sm .userLookup select.searchBox, .userLookup .form-group-sm select.searchBox {
   height: 30px;
   line-height: 30px; }
-.form-group-sm textarea.form-control, .form-group-sm .userLookup textarea.searchBox, .userLookup .form-group-sm textarea.searchBox,
+.form-group-sm textarea.form-control, .form-group-sm .userLookup textarea.searchBox, .userLookup .form-group-sm textarea.searchBox, .form-group-sm .patientNotes .addSection textarea, .patientNotes .addSection .form-group-sm textarea,
 .form-group-sm select[multiple].form-control,
 .form-group-sm .userLookup select[multiple].searchBox,
 .userLookup .form-group-sm select[multiple].searchBox {
@@ -4729,9 +4733,10 @@ select[multiple].input-sm,
   font-size: 12px;
   line-height: 1.5; }
 
-.input-lg, .input-group-lg > .form-control, .userLookup .input-group-lg > .searchBox,
+.input-lg, .input-group-lg > .form-control, .userLookup .input-group-lg > .searchBox, .patientNotes .addSection .input-group-lg > textarea,
 .input-group-lg > .input-group-addon,
-.input-group-lg > .input-group-btn > .btn {
+.input-group-lg > .input-group-btn > .btn,
+.patientNotes .addSection .input-group-lg > .input-group-btn > button {
   height: 46px;
   padding: 10px 16px;
   font-size: 18px;
@@ -4744,7 +4749,7 @@ select.input-lg, .input-group-lg > select.form-control, .userLookup .input-group
   height: 46px;
   line-height: 46px; }
 
-textarea.input-lg, .input-group-lg > textarea.form-control, .userLookup .input-group-lg > textarea.searchBox,
+textarea.input-lg, .input-group-lg > textarea.form-control, .userLookup .input-group-lg > textarea.searchBox, .patientNotes .addSection .input-group-lg > textarea,
 .input-group-lg > textarea.input-group-addon,
 .input-group-lg > .input-group-btn > textarea.btn,
 select[multiple].input-lg,
@@ -4754,7 +4759,7 @@ select[multiple].input-lg,
 .input-group-lg > .input-group-btn > select[multiple].btn {
   height: auto; }
 
-.form-group-lg .form-control, .form-group-lg .userLookup .searchBox, .userLookup .form-group-lg .searchBox {
+.form-group-lg .form-control, .form-group-lg .userLookup .searchBox, .userLookup .form-group-lg .searchBox, .form-group-lg .patientNotes .addSection textarea, .patientNotes .addSection .form-group-lg textarea {
   height: 46px;
   padding: 10px 16px;
   font-size: 18px;
@@ -4763,7 +4768,7 @@ select[multiple].input-lg,
 .form-group-lg select.form-control, .form-group-lg .userLookup select.searchBox, .userLookup .form-group-lg select.searchBox {
   height: 46px;
   line-height: 46px; }
-.form-group-lg textarea.form-control, .form-group-lg .userLookup textarea.searchBox, .userLookup .form-group-lg textarea.searchBox,
+.form-group-lg textarea.form-control, .form-group-lg .userLookup textarea.searchBox, .userLookup .form-group-lg textarea.searchBox, .form-group-lg .patientNotes .addSection textarea, .patientNotes .addSection .form-group-lg textarea,
 .form-group-lg select[multiple].form-control,
 .form-group-lg .userLookup select[multiple].searchBox,
 .userLookup .form-group-lg select[multiple].searchBox {
@@ -4777,7 +4782,7 @@ select[multiple].input-lg,
 
 .has-feedback {
   position: relative; }
-  .has-feedback .form-control, .has-feedback .userLookup .searchBox, .userLookup .has-feedback .searchBox {
+  .has-feedback .form-control, .has-feedback .userLookup .searchBox, .userLookup .has-feedback .searchBox, .has-feedback .patientNotes .addSection textarea, .patientNotes .addSection .has-feedback textarea {
     padding-right: 42.5px; }
 
 .form-control-feedback {
@@ -4792,24 +4797,30 @@ select[multiple].input-lg,
   text-align: center;
   pointer-events: none; }
 
-.input-lg + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback, .userLookup .input-group-lg > .searchBox + .form-control-feedback,
+.input-lg + .form-control-feedback, .input-group-lg > .form-control + .form-control-feedback, .userLookup .input-group-lg > .searchBox + .form-control-feedback, .patientNotes .addSection .input-group-lg > textarea + .form-control-feedback,
 .input-group-lg > .input-group-addon + .form-control-feedback,
 .input-group-lg > .input-group-btn > .btn + .form-control-feedback,
+.patientNotes .addSection .input-group-lg > .input-group-btn > button + .form-control-feedback,
 .input-group-lg + .form-control-feedback,
 .form-group-lg .form-control + .form-control-feedback,
 .form-group-lg .userLookup .searchBox + .form-control-feedback,
-.userLookup .form-group-lg .searchBox + .form-control-feedback {
+.userLookup .form-group-lg .searchBox + .form-control-feedback,
+.form-group-lg .patientNotes .addSection textarea + .form-control-feedback,
+.patientNotes .addSection .form-group-lg textarea + .form-control-feedback {
   width: 46px;
   height: 46px;
   line-height: 46px; }
 
-.input-sm + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback, .userLookup .input-group-sm > .searchBox + .form-control-feedback,
+.input-sm + .form-control-feedback, .input-group-sm > .form-control + .form-control-feedback, .userLookup .input-group-sm > .searchBox + .form-control-feedback, .patientNotes .addSection .input-group-sm > textarea + .form-control-feedback,
 .input-group-sm > .input-group-addon + .form-control-feedback,
 .input-group-sm > .input-group-btn > .btn + .form-control-feedback,
+.patientNotes .addSection .input-group-sm > .input-group-btn > button + .form-control-feedback,
 .input-group-sm + .form-control-feedback,
 .form-group-sm .form-control + .form-control-feedback,
 .form-group-sm .userLookup .searchBox + .form-control-feedback,
-.userLookup .form-group-sm .searchBox + .form-control-feedback {
+.userLookup .form-group-sm .searchBox + .form-control-feedback,
+.form-group-sm .patientNotes .addSection textarea + .form-control-feedback,
+.patientNotes .addSection .form-group-sm textarea + .form-control-feedback {
   width: 30px;
   height: 30px;
   line-height: 30px; }
@@ -4821,11 +4832,11 @@ select[multiple].input-lg,
 .has-success .radio-inline,
 .has-success .checkbox-inline, .has-success.radio label, .has-success.checkbox label, .has-success.radio-inline label, .has-success.checkbox-inline label {
   color: #3c763d; }
-.has-success .form-control, .has-success .userLookup .searchBox, .userLookup .has-success .searchBox {
+.has-success .form-control, .has-success .userLookup .searchBox, .userLookup .has-success .searchBox, .has-success .patientNotes .addSection textarea, .patientNotes .addSection .has-success textarea {
   border-color: #3c763d;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); }
-  .has-success .form-control:focus, .has-success .userLookup .searchBox:focus, .userLookup .has-success .searchBox:focus {
+  .has-success .form-control:focus, .has-success .userLookup .searchBox:focus, .userLookup .has-success .searchBox:focus, .has-success .patientNotes .addSection textarea:focus, .patientNotes .addSection .has-success textarea:focus {
     border-color: #2b542c;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168; }
@@ -4843,11 +4854,11 @@ select[multiple].input-lg,
 .has-warning .radio-inline,
 .has-warning .checkbox-inline, .has-warning.radio label, .has-warning.checkbox label, .has-warning.radio-inline label, .has-warning.checkbox-inline label {
   color: #8a6d3b; }
-.has-warning .form-control, .has-warning .userLookup .searchBox, .userLookup .has-warning .searchBox {
+.has-warning .form-control, .has-warning .userLookup .searchBox, .userLookup .has-warning .searchBox, .has-warning .patientNotes .addSection textarea, .patientNotes .addSection .has-warning textarea {
   border-color: #8a6d3b;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); }
-  .has-warning .form-control:focus, .has-warning .userLookup .searchBox:focus, .userLookup .has-warning .searchBox:focus {
+  .has-warning .form-control:focus, .has-warning .userLookup .searchBox:focus, .userLookup .has-warning .searchBox:focus, .has-warning .patientNotes .addSection textarea:focus, .patientNotes .addSection .has-warning textarea:focus {
     border-color: #66512c;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #c0a16b; }
@@ -4865,11 +4876,11 @@ select[multiple].input-lg,
 .has-error .radio-inline,
 .has-error .checkbox-inline, .has-error.radio label, .has-error.checkbox label, .has-error.radio-inline label, .has-error.checkbox-inline label {
   color: #a94442; }
-.has-error .form-control, .has-error .userLookup .searchBox, .userLookup .has-error .searchBox {
+.has-error .form-control, .has-error .userLookup .searchBox, .userLookup .has-error .searchBox, .has-error .patientNotes .addSection textarea, .patientNotes .addSection .has-error textarea {
   border-color: #a94442;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); }
-  .has-error .form-control:focus, .has-error .userLookup .searchBox:focus, .userLookup .has-error .searchBox:focus {
+  .has-error .form-control:focus, .has-error .userLookup .searchBox:focus, .userLookup .has-error .searchBox:focus, .has-error .patientNotes .addSection textarea:focus, .patientNotes .addSection .has-error textarea:focus {
     border-color: #843534;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483; }
@@ -4896,7 +4907,7 @@ select[multiple].input-lg,
     display: inline-block;
     margin-bottom: 0;
     vertical-align: middle; }
-  .form-inline .form-control, .form-inline .userLookup .searchBox, .userLookup .form-inline .searchBox {
+  .form-inline .form-control, .form-inline .userLookup .searchBox, .userLookup .form-inline .searchBox, .form-inline .patientNotes .addSection textarea, .patientNotes .addSection .form-inline textarea {
     display: inline-block;
     width: auto;
     vertical-align: middle; }
@@ -4909,9 +4920,11 @@ select[multiple].input-lg,
     .form-inline .input-group .input-group-btn,
     .form-inline .input-group .form-control,
     .form-inline .input-group .userLookup .searchBox,
-    .userLookup .form-inline .input-group .searchBox {
+    .userLookup .form-inline .input-group .searchBox,
+    .form-inline .input-group .patientNotes .addSection textarea,
+    .patientNotes .addSection .form-inline .input-group textarea {
       width: auto; }
-  .form-inline .input-group > .form-control, .form-inline .userLookup .input-group > .searchBox, .userLookup .form-inline .input-group > .searchBox {
+  .form-inline .input-group > .form-control, .form-inline .userLookup .input-group > .searchBox, .userLookup .form-inline .input-group > .searchBox, .form-inline .patientNotes .addSection .input-group > textarea, .patientNotes .addSection .form-inline .input-group > textarea {
     width: 100%; }
   .form-inline .control-label {
     margin-bottom: 0;
@@ -4966,7 +4979,7 @@ select[multiple].input-lg,
     padding-top: 6px;
     font-size: 12px; } }
 
-.btn {
+.btn, .patientNotes .addSection button {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -4985,19 +4998,19 @@ select[multiple].input-lg,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
-  .btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+  .btn:focus, .patientNotes .addSection button:focus, .btn.focus, .patientNotes .addSection button.focus, .btn:active:focus, .patientNotes .addSection button:active:focus, .btn:active.focus, .patientNotes .addSection button:active.focus, .btn.active:focus, .patientNotes .addSection button.active:focus, .btn.active.focus, .patientNotes .addSection button.active.focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px; }
-  .btn:hover, .btn:focus, .btn.focus {
+  .btn:hover, .patientNotes .addSection button:hover, .btn:focus, .patientNotes .addSection button:focus, .btn.focus, .patientNotes .addSection button.focus {
     color: #333;
     text-decoration: none; }
-  .btn:active, .btn.active {
+  .btn:active, .patientNotes .addSection button:active, .btn.active, .patientNotes .addSection button.active {
     outline: 0;
     background-image: none;
     -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); }
-  .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+  .btn.disabled, .patientNotes .addSection button.disabled, .btn[disabled], .patientNotes .addSection button[disabled], fieldset[disabled] .btn, fieldset[disabled] .patientNotes .addSection button, .patientNotes .addSection fieldset[disabled] button {
     cursor: not-allowed;
     opacity: 0.65;
     filter: alpha(opacity=65);
@@ -5036,32 +5049,32 @@ a.btn.disabled, fieldset[disabled] a.btn {
     color: #fff;
     background-color: #333; }
 
-.btn-primary {
+.btn-primary, .patientNotes .addSection button {
   color: #fff;
   background-color: #337ab7;
   border-color: #2e6da4; }
-  .btn-primary:focus, .btn-primary.focus {
+  .btn-primary:focus, .patientNotes .addSection button:focus, .btn-primary.focus, .patientNotes .addSection button.focus {
     color: #fff;
     background-color: #286090;
     border-color: #122b40; }
-  .btn-primary:hover {
+  .btn-primary:hover, .patientNotes .addSection button:hover {
     color: #fff;
     background-color: #286090;
     border-color: #204d74; }
-  .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
+  .btn-primary:active, .patientNotes .addSection button:active, .btn-primary.active, .patientNotes .addSection button.active, .open > .btn-primary.dropdown-toggle, .patientNotes .addSection .open > button.dropdown-toggle {
     color: #fff;
     background-color: #286090;
     border-color: #204d74; }
-    .btn-primary:active:hover, .btn-primary:active:focus, .btn-primary:active.focus, .btn-primary.active:hover, .btn-primary.active:focus, .btn-primary.active.focus, .open > .btn-primary.dropdown-toggle:hover, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle.focus {
+    .btn-primary:active:hover, .patientNotes .addSection button:active:hover, .btn-primary:active:focus, .patientNotes .addSection button:active:focus, .btn-primary:active.focus, .patientNotes .addSection button:active.focus, .btn-primary.active:hover, .patientNotes .addSection button.active:hover, .btn-primary.active:focus, .patientNotes .addSection button.active:focus, .btn-primary.active.focus, .patientNotes .addSection button.active.focus, .open > .btn-primary.dropdown-toggle:hover, .patientNotes .addSection .open > button.dropdown-toggle:hover, .open > .btn-primary.dropdown-toggle:focus, .patientNotes .addSection .open > button.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle.focus, .patientNotes .addSection .open > button.dropdown-toggle.focus {
       color: #fff;
       background-color: #204d74;
       border-color: #122b40; }
-  .btn-primary:active, .btn-primary.active, .open > .btn-primary.dropdown-toggle {
+  .btn-primary:active, .patientNotes .addSection button:active, .btn-primary.active, .patientNotes .addSection button.active, .open > .btn-primary.dropdown-toggle, .patientNotes .addSection .open > button.dropdown-toggle {
     background-image: none; }
-  .btn-primary.disabled:hover, .btn-primary.disabled:focus, .btn-primary.disabled.focus, .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled].focus, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .btn-primary.focus {
+  .btn-primary.disabled:hover, .patientNotes .addSection button.disabled:hover, .btn-primary.disabled:focus, .patientNotes .addSection button.disabled:focus, .btn-primary.disabled.focus, .patientNotes .addSection button.disabled.focus, .btn-primary[disabled]:hover, .patientNotes .addSection button[disabled]:hover, .btn-primary[disabled]:focus, .patientNotes .addSection button[disabled]:focus, .btn-primary[disabled].focus, .patientNotes .addSection button[disabled].focus, fieldset[disabled] .btn-primary:hover, fieldset[disabled] .patientNotes .addSection button:hover, .patientNotes .addSection fieldset[disabled] button:hover, fieldset[disabled] .btn-primary:focus, fieldset[disabled] .patientNotes .addSection button:focus, .patientNotes .addSection fieldset[disabled] button:focus, fieldset[disabled] .btn-primary.focus, fieldset[disabled] .patientNotes .addSection button.focus, .patientNotes .addSection fieldset[disabled] button.focus {
     background-color: #337ab7;
     border-color: #2e6da4; }
-  .btn-primary .badge {
+  .btn-primary .badge, .patientNotes .addSection button .badge {
     color: #337ab7;
     background-color: #fff; }
 
@@ -5199,19 +5212,19 @@ a.btn.disabled, fieldset[disabled] a.btn {
     color: #777777;
     text-decoration: none; }
 
-.btn-lg, .btn-group-lg > .btn {
+.btn-lg, .btn-group-lg > .btn, .patientNotes .addSection .btn-group-lg > button {
   padding: 10px 16px;
   font-size: 18px;
   line-height: 1.33333;
   border-radius: 6px; }
 
-.btn-sm, .btn-group-sm > .btn {
+.btn-sm, .btn-group-sm > .btn, .patientNotes .addSection .btn-group-sm > button {
   padding: 5px 10px;
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px; }
 
-.btn-xs, .btn-group-xs > .btn {
+.btn-xs, .btn-group-xs > .btn, .patientNotes .addSection .btn-group-xs > button {
   padding: 1px 5px;
   font-size: 12px;
   line-height: 1.5;
@@ -5391,20 +5404,29 @@ tbody.collapse.in {
   position: relative;
   display: inline-block;
   vertical-align: middle; }
-  .btn-group > .btn,
-  .btn-group-vertical > .btn {
+  .btn-group > .btn, .patientNotes .addSection .btn-group > button,
+  .btn-group-vertical > .btn,
+  .patientNotes .addSection .btn-group-vertical > button {
     position: relative;
     float: left; }
-    .btn-group > .btn:hover, .btn-group > .btn:focus, .btn-group > .btn:active, .btn-group > .btn.active,
+    .btn-group > .btn:hover, .patientNotes .addSection .btn-group > button:hover, .btn-group > .btn:focus, .patientNotes .addSection .btn-group > button:focus, .btn-group > .btn:active, .patientNotes .addSection .btn-group > button:active, .btn-group > .btn.active, .patientNotes .addSection .btn-group > button.active,
     .btn-group-vertical > .btn:hover,
+    .patientNotes .addSection .btn-group-vertical > button:hover,
     .btn-group-vertical > .btn:focus,
+    .patientNotes .addSection .btn-group-vertical > button:focus,
     .btn-group-vertical > .btn:active,
-    .btn-group-vertical > .btn.active {
+    .patientNotes .addSection .btn-group-vertical > button:active,
+    .btn-group-vertical > .btn.active,
+    .patientNotes .addSection .btn-group-vertical > button.active {
       z-index: 2; }
 
-.btn-group .btn + .btn,
+.btn-group .btn + .btn, .btn-group .patientNotes .addSection button + .btn, .patientNotes .addSection .btn-group button + .btn, .btn-group .patientNotes .addSection .btn + button, .patientNotes .addSection .btn-group .btn + button, .btn-group .patientNotes .addSection button + button, .patientNotes .addSection .btn-group button + button,
 .btn-group .btn + .btn-group,
+.btn-group .patientNotes .addSection button + .btn-group,
+.patientNotes .addSection .btn-group button + .btn-group,
 .btn-group .btn-group + .btn,
+.btn-group .patientNotes .addSection .btn-group + button,
+.patientNotes .addSection .btn-group .btn-group + button,
 .btn-group .btn-group + .btn-group {
   margin-left: -1px; }
 
@@ -5415,25 +5437,25 @@ tbody.collapse.in {
     display: table; }
   .btn-toolbar:after {
     clear: both; }
-  .btn-toolbar .btn,
+  .btn-toolbar .btn, .btn-toolbar .patientNotes .addSection button, .patientNotes .addSection .btn-toolbar button,
   .btn-toolbar .btn-group,
   .btn-toolbar .input-group {
     float: left; }
-  .btn-toolbar > .btn,
+  .btn-toolbar > .btn, .patientNotes .addSection .btn-toolbar > button,
   .btn-toolbar > .btn-group,
   .btn-toolbar > .input-group {
     margin-left: 5px; }
 
-.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle), .patientNotes .addSection .btn-group > button:not(:first-child):not(:last-child):not(.dropdown-toggle) {
   border-radius: 0; }
 
-.btn-group > .btn:first-child {
+.btn-group > .btn:first-child, .patientNotes .addSection .btn-group > button:first-child {
   margin-left: 0; }
-  .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+  .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle), .patientNotes .addSection .btn-group > button:first-child:not(:last-child):not(.dropdown-toggle) {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0; }
 
-.btn-group > .btn:last-child:not(:first-child),
+.btn-group > .btn:last-child:not(:first-child), .patientNotes .addSection .btn-group > button:last-child:not(:first-child),
 .btn-group > .dropdown-toggle:not(:first-child) {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0; }
@@ -5441,15 +5463,15 @@ tbody.collapse.in {
 .btn-group > .btn-group {
   float: left; }
 
-.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
+.btn-group > .btn-group:not(:first-child):not(:last-child) > .btn, .patientNotes .addSection .btn-group > .btn-group:not(:first-child):not(:last-child) > button {
   border-radius: 0; }
 
-.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child,
+.btn-group > .btn-group:first-child:not(:last-child) > .btn:last-child, .patientNotes .addSection .btn-group > .btn-group:first-child:not(:last-child) > button:last-child,
 .btn-group > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0; }
 
-.btn-group > .btn-group:last-child:not(:first-child) > .btn:first-child {
+.btn-group > .btn-group:last-child:not(:first-child) > .btn:first-child, .patientNotes .addSection .btn-group > .btn-group:last-child:not(:first-child) > button:first-child {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0; }
 
@@ -5457,11 +5479,11 @@ tbody.collapse.in {
 .btn-group.open .dropdown-toggle {
   outline: 0; }
 
-.btn-group > .btn + .dropdown-toggle {
+.btn-group > .btn + .dropdown-toggle, .patientNotes .addSection .btn-group > button + .dropdown-toggle {
   padding-left: 8px;
   padding-right: 8px; }
 
-.btn-group > .btn-lg + .dropdown-toggle, .btn-group-lg.btn-group > .btn + .dropdown-toggle {
+.btn-group > .btn-lg + .dropdown-toggle, .btn-group-lg.btn-group > .btn + .dropdown-toggle, .patientNotes .addSection .btn-group-lg.btn-group > button + .dropdown-toggle {
   padding-left: 12px;
   padding-right: 12px; }
 
@@ -5472,19 +5494,20 @@ tbody.collapse.in {
     -webkit-box-shadow: none;
     box-shadow: none; }
 
-.btn .caret {
+.btn .caret, .patientNotes .addSection button .caret {
   margin-left: 0; }
 
-.btn-lg .caret, .btn-group-lg > .btn .caret {
+.btn-lg .caret, .btn-group-lg > .btn .caret, .patientNotes .addSection .btn-group-lg > button .caret {
   border-width: 5px 5px 0;
   border-bottom-width: 0; }
 
-.dropup .btn-lg .caret, .dropup .btn-group-lg > .btn .caret {
+.dropup .btn-lg .caret, .dropup .btn-group-lg > .btn .caret, .dropup .patientNotes .addSection .btn-group-lg > button .caret, .patientNotes .addSection .dropup .btn-group-lg > button .caret {
   border-width: 0 5px 5px; }
 
-.btn-group-vertical > .btn,
+.btn-group-vertical > .btn, .patientNotes .addSection .btn-group-vertical > button,
 .btn-group-vertical > .btn-group,
-.btn-group-vertical > .btn-group > .btn {
+.btn-group-vertical > .btn-group > .btn,
+.patientNotes .addSection .btn-group-vertical > .btn-group > button {
   display: block;
   float: none;
   width: 100%;
@@ -5494,37 +5517,39 @@ tbody.collapse.in {
   display: table; }
 .btn-group-vertical > .btn-group:after {
   clear: both; }
-.btn-group-vertical > .btn-group > .btn {
+.btn-group-vertical > .btn-group > .btn, .patientNotes .addSection .btn-group-vertical > .btn-group > button {
   float: none; }
-.btn-group-vertical > .btn + .btn,
+.btn-group-vertical > .btn + .btn, .patientNotes .addSection .btn-group-vertical > button + .btn, .patientNotes .addSection .btn-group-vertical > .btn + button, .patientNotes .addSection .btn-group-vertical > button + button,
 .btn-group-vertical > .btn + .btn-group,
+.patientNotes .addSection .btn-group-vertical > button + .btn-group,
 .btn-group-vertical > .btn-group + .btn,
+.patientNotes .addSection .btn-group-vertical > .btn-group + button,
 .btn-group-vertical > .btn-group + .btn-group {
   margin-top: -1px;
   margin-left: 0; }
 
-.btn-group-vertical > .btn:not(:first-child):not(:last-child) {
+.btn-group-vertical > .btn:not(:first-child):not(:last-child), .patientNotes .addSection .btn-group-vertical > button:not(:first-child):not(:last-child) {
   border-radius: 0; }
-.btn-group-vertical > .btn:first-child:not(:last-child) {
+.btn-group-vertical > .btn:first-child:not(:last-child), .patientNotes .addSection .btn-group-vertical > button:first-child:not(:last-child) {
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0; }
-.btn-group-vertical > .btn:last-child:not(:first-child) {
+.btn-group-vertical > .btn:last-child:not(:first-child), .patientNotes .addSection .btn-group-vertical > button:last-child:not(:first-child) {
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px; }
 
-.btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn {
+.btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > .btn, .patientNotes .addSection .btn-group-vertical > .btn-group:not(:first-child):not(:last-child) > button {
   border-radius: 0; }
 
-.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child,
+.btn-group-vertical > .btn-group:first-child:not(:last-child) > .btn:last-child, .patientNotes .addSection .btn-group-vertical > .btn-group:first-child:not(:last-child) > button:last-child,
 .btn-group-vertical > .btn-group:first-child:not(:last-child) > .dropdown-toggle {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0; }
 
-.btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child {
+.btn-group-vertical > .btn-group:last-child:not(:first-child) > .btn:first-child, .patientNotes .addSection .btn-group-vertical > .btn-group:last-child:not(:first-child) > button:first-child {
   border-top-right-radius: 0;
   border-top-left-radius: 0; }
 
@@ -5533,20 +5558,23 @@ tbody.collapse.in {
   width: 100%;
   table-layout: fixed;
   border-collapse: separate; }
-  .btn-group-justified > .btn,
+  .btn-group-justified > .btn, .patientNotes .addSection .btn-group-justified > button,
   .btn-group-justified > .btn-group {
     float: none;
     display: table-cell;
     width: 1%; }
-  .btn-group-justified > .btn-group .btn {
+  .btn-group-justified > .btn-group .btn, .btn-group-justified > .btn-group .patientNotes .addSection button, .patientNotes .addSection .btn-group-justified > .btn-group button {
     width: 100%; }
   .btn-group-justified > .btn-group .dropdown-menu {
     left: auto; }
 
-[data-toggle="buttons"] > .btn input[type="radio"],
+[data-toggle="buttons"] > .btn input[type="radio"], .patientNotes .addSection [data-toggle="buttons"] > button input[type="radio"],
 [data-toggle="buttons"] > .btn input[type="checkbox"],
+.patientNotes .addSection [data-toggle="buttons"] > button input[type="checkbox"],
 [data-toggle="buttons"] > .btn-group > .btn input[type="radio"],
-[data-toggle="buttons"] > .btn-group > .btn input[type="checkbox"] {
+.patientNotes .addSection [data-toggle="buttons"] > .btn-group > button input[type="radio"],
+[data-toggle="buttons"] > .btn-group > .btn input[type="checkbox"],
+.patientNotes .addSection [data-toggle="buttons"] > .btn-group > button input[type="checkbox"] {
   position: absolute;
   clip: rect(0, 0, 0, 0);
   pointer-events: none; }
@@ -5559,26 +5587,30 @@ tbody.collapse.in {
     float: none;
     padding-left: 0;
     padding-right: 0; }
-  .input-group .form-control, .input-group .userLookup .searchBox, .userLookup .input-group .searchBox {
+  .input-group .form-control, .input-group .userLookup .searchBox, .userLookup .input-group .searchBox, .input-group .patientNotes .addSection textarea, .patientNotes .addSection .input-group textarea {
     position: relative;
     z-index: 2;
     float: left;
     width: 100%;
     margin-bottom: 0; }
-    .input-group .form-control:focus, .input-group .userLookup .searchBox:focus, .userLookup .input-group .searchBox:focus {
+    .input-group .form-control:focus, .input-group .userLookup .searchBox:focus, .userLookup .input-group .searchBox:focus, .input-group .patientNotes .addSection textarea:focus, .patientNotes .addSection .input-group textarea:focus {
       z-index: 3; }
 
 .input-group-addon,
 .input-group-btn,
 .input-group .form-control,
 .input-group .userLookup .searchBox,
-.userLookup .input-group .searchBox {
+.userLookup .input-group .searchBox,
+.input-group .patientNotes .addSection textarea,
+.patientNotes .addSection .input-group textarea {
   display: table-cell; }
   .input-group-addon:not(:first-child):not(:last-child),
   .input-group-btn:not(:first-child):not(:last-child),
   .input-group .form-control:not(:first-child):not(:last-child),
   .input-group .userLookup .searchBox:not(:first-child):not(:last-child),
-  .userLookup .input-group .searchBox:not(:first-child):not(:last-child) {
+  .userLookup .input-group .searchBox:not(:first-child):not(:last-child),
+  .input-group .patientNotes .addSection textarea:not(:first-child):not(:last-child),
+  .patientNotes .addSection .input-group textarea:not(:first-child):not(:last-child) {
     border-radius: 0; }
 
 .input-group-addon,
@@ -5597,15 +5629,17 @@ tbody.collapse.in {
   background-color: #eeeeee;
   border: 1px solid #ccc;
   border-radius: 4px; }
-  .input-group-addon.input-sm, .userLookup .input-group-sm > .input-group-addon.searchBox,
+  .input-group-addon.input-sm, .userLookup .input-group-sm > .input-group-addon.searchBox, .patientNotes .addSection .input-group-sm > textarea.input-group-addon,
   .input-group-sm > .input-group-addon,
-  .input-group-sm > .input-group-btn > .input-group-addon.btn {
+  .input-group-sm > .input-group-btn > .input-group-addon.btn,
+  .patientNotes .addSection .input-group-sm > .input-group-btn > button.input-group-addon {
     padding: 5px 10px;
     font-size: 12px;
     border-radius: 3px; }
-  .input-group-addon.input-lg, .userLookup .input-group-lg > .input-group-addon.searchBox,
+  .input-group-addon.input-lg, .userLookup .input-group-lg > .input-group-addon.searchBox, .patientNotes .addSection .input-group-lg > textarea.input-group-addon,
   .input-group-lg > .input-group-addon,
-  .input-group-lg > .input-group-btn > .input-group-addon.btn {
+  .input-group-lg > .input-group-btn > .input-group-addon.btn,
+  .patientNotes .addSection .input-group-lg > .input-group-btn > button.input-group-addon {
     padding: 10px 16px;
     font-size: 18px;
     border-radius: 6px; }
@@ -5613,26 +5647,34 @@ tbody.collapse.in {
   .input-group-addon input[type="checkbox"] {
     margin-top: 0; }
 
-.input-group .form-control:first-child, .input-group .userLookup .searchBox:first-child, .userLookup .input-group .searchBox:first-child,
+.input-group .form-control:first-child, .input-group .userLookup .searchBox:first-child, .userLookup .input-group .searchBox:first-child, .input-group .patientNotes .addSection textarea:first-child, .patientNotes .addSection .input-group textarea:first-child,
 .input-group-addon:first-child,
 .input-group-btn:first-child > .btn,
+.patientNotes .addSection .input-group-btn:first-child > button,
 .input-group-btn:first-child > .btn-group > .btn,
+.patientNotes .addSection .input-group-btn:first-child > .btn-group > button,
 .input-group-btn:first-child > .dropdown-toggle,
 .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle),
-.input-group-btn:last-child > .btn-group:not(:last-child) > .btn {
+.patientNotes .addSection .input-group-btn:last-child > button:not(:last-child):not(.dropdown-toggle),
+.input-group-btn:last-child > .btn-group:not(:last-child) > .btn,
+.patientNotes .addSection .input-group-btn:last-child > .btn-group:not(:last-child) > button {
   border-bottom-right-radius: 0;
   border-top-right-radius: 0; }
 
 .input-group-addon:first-child {
   border-right: 0; }
 
-.input-group .form-control:last-child, .input-group .userLookup .searchBox:last-child, .userLookup .input-group .searchBox:last-child,
+.input-group .form-control:last-child, .input-group .userLookup .searchBox:last-child, .userLookup .input-group .searchBox:last-child, .input-group .patientNotes .addSection textarea:last-child, .patientNotes .addSection .input-group textarea:last-child,
 .input-group-addon:last-child,
 .input-group-btn:last-child > .btn,
+.patientNotes .addSection .input-group-btn:last-child > button,
 .input-group-btn:last-child > .btn-group > .btn,
+.patientNotes .addSection .input-group-btn:last-child > .btn-group > button,
 .input-group-btn:last-child > .dropdown-toggle,
 .input-group-btn:first-child > .btn:not(:first-child),
-.input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
+.patientNotes .addSection .input-group-btn:first-child > button:not(:first-child),
+.input-group-btn:first-child > .btn-group:not(:first-child) > .btn,
+.patientNotes .addSection .input-group-btn:first-child > .btn-group:not(:first-child) > button {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0; }
 
@@ -5643,16 +5685,16 @@ tbody.collapse.in {
   position: relative;
   font-size: 0;
   white-space: nowrap; }
-  .input-group-btn > .btn {
+  .input-group-btn > .btn, .patientNotes .addSection .input-group-btn > button {
     position: relative; }
-    .input-group-btn > .btn + .btn {
+    .input-group-btn > .btn + .btn, .patientNotes .addSection .input-group-btn > button + .btn, .patientNotes .addSection .input-group-btn > .btn + button, .patientNotes .addSection .input-group-btn > button + button {
       margin-left: -1px; }
-    .input-group-btn > .btn:hover, .input-group-btn > .btn:focus, .input-group-btn > .btn:active {
+    .input-group-btn > .btn:hover, .patientNotes .addSection .input-group-btn > button:hover, .input-group-btn > .btn:focus, .patientNotes .addSection .input-group-btn > button:focus, .input-group-btn > .btn:active, .patientNotes .addSection .input-group-btn > button:active {
       z-index: 2; }
-  .input-group-btn:first-child > .btn,
+  .input-group-btn:first-child > .btn, .patientNotes .addSection .input-group-btn:first-child > button,
   .input-group-btn:first-child > .btn-group {
     margin-right: -1px; }
-  .input-group-btn:last-child > .btn,
+  .input-group-btn:last-child > .btn, .patientNotes .addSection .input-group-btn:last-child > button,
   .input-group-btn:last-child > .btn-group {
     z-index: 2;
     margin-left: -1px; }
@@ -5965,7 +6007,7 @@ tbody.collapse.in {
       display: inline-block;
       margin-bottom: 0;
       vertical-align: middle; }
-    .navbar-form .form-control, .navbar-form .userLookup .searchBox, .userLookup .navbar-form .searchBox {
+    .navbar-form .form-control, .navbar-form .userLookup .searchBox, .userLookup .navbar-form .searchBox, .navbar-form .patientNotes .addSection textarea, .patientNotes .addSection .navbar-form textarea {
       display: inline-block;
       width: auto;
       vertical-align: middle; }
@@ -5978,9 +6020,11 @@ tbody.collapse.in {
       .navbar-form .input-group .input-group-btn,
       .navbar-form .input-group .form-control,
       .navbar-form .input-group .userLookup .searchBox,
-      .userLookup .navbar-form .input-group .searchBox {
+      .userLookup .navbar-form .input-group .searchBox,
+      .navbar-form .input-group .patientNotes .addSection textarea,
+      .patientNotes .addSection .navbar-form .input-group textarea {
         width: auto; }
-    .navbar-form .input-group > .form-control, .navbar-form .userLookup .input-group > .searchBox, .userLookup .navbar-form .input-group > .searchBox {
+    .navbar-form .input-group > .form-control, .navbar-form .userLookup .input-group > .searchBox, .userLookup .navbar-form .input-group > .searchBox, .navbar-form .patientNotes .addSection .input-group > textarea, .patientNotes .addSection .navbar-form .input-group > textarea {
       width: 100%; }
     .navbar-form .control-label {
       margin-bottom: 0;
@@ -6031,10 +6075,10 @@ tbody.collapse.in {
 .navbar-btn {
   margin-top: 8px;
   margin-bottom: 8px; }
-  .navbar-btn.btn-sm, .btn-group-sm > .navbar-btn.btn {
+  .navbar-btn.btn-sm, .btn-group-sm > .navbar-btn.btn, .patientNotes .addSection .btn-group-sm > button.navbar-btn {
     margin-top: 10px;
     margin-bottom: 10px; }
-  .navbar-btn.btn-xs, .btn-group-xs > .navbar-btn.btn {
+  .navbar-btn.btn-xs, .btn-group-xs > .navbar-btn.btn, .patientNotes .addSection .btn-group-xs > button.navbar-btn {
     margin-top: 14px;
     margin-bottom: 14px; }
 
@@ -6319,7 +6363,7 @@ tbody.collapse.in {
   border-radius: .25em; }
   .label:empty {
     display: none; }
-  .btn .label {
+  .btn .label, .patientNotes .addSection button .label {
     position: relative;
     top: -1px; }
 
@@ -6373,10 +6417,10 @@ a.label:hover, a.label:focus {
   border-radius: 10px; }
   .badge:empty {
     display: none; }
-  .btn .badge {
+  .btn .badge, .patientNotes .addSection button .badge {
     position: relative;
     top: -1px; }
-  .btn-xs .badge, .btn-group-xs > .btn .badge, .btn-group-xs > .btn .badge {
+  .btn-xs .badge, .btn-group-xs > .btn .badge, .patientNotes .addSection .btn-group-xs > button .badge, .btn-group-xs > .btn .badge, .patientNotes .addSection .btn-group-xs > button .badge {
     top: 0;
     padding: 1px 5px; }
   .list-group-item.active > .badge, .nav-pills > .active > a > .badge {
@@ -7254,10 +7298,10 @@ button.close {
     display: table; }
   .modal-footer:after {
     clear: both; }
-  .modal-footer .btn + .btn {
+  .modal-footer .btn + .btn, .modal-footer .patientNotes .addSection button + .btn, .patientNotes .addSection .modal-footer button + .btn, .modal-footer .patientNotes .addSection .btn + button, .patientNotes .addSection .modal-footer .btn + button, .modal-footer .patientNotes .addSection button + button, .patientNotes .addSection .modal-footer button + button {
     margin-left: 5px;
     margin-bottom: 0; }
-  .modal-footer .btn-group .btn + .btn {
+  .modal-footer .btn-group .btn + .btn, .modal-footer .btn-group .patientNotes .addSection button + .btn, .patientNotes .addSection .modal-footer .btn-group button + .btn, .modal-footer .btn-group .patientNotes .addSection .btn + button, .patientNotes .addSection .modal-footer .btn-group .btn + button, .modal-footer .btn-group .patientNotes .addSection button + button, .patientNotes .addSection .modal-footer .btn-group button + button {
     margin-left: -1px; }
   .modal-footer .btn-block + .btn-block {
     margin-left: 0; }
@@ -7669,7 +7713,7 @@ button.close {
   color: #fff;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
-  .carousel-caption .btn {
+  .carousel-caption .btn, .carousel-caption .patientNotes .addSection button, .patientNotes .addSection .carousel-caption button {
     text-shadow: none; }
 
 @media screen and (min-width: 768px) {
@@ -7911,6 +7955,13 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+.navbar-form {
+  padding-top: 0;
+  padding-bottom: 0; }
+
+.navbar-inverse .navbar-brand {
+  color: #00B7FF; }
+
 .profileArea {
   margin-bottom: 1em; }
   .profileArea .profilePicInfo {
@@ -7944,6 +7995,40 @@ button.close {
     font-size: 1.25em;
     vertical-align: middle; }
 
+.patientNotes .addSection textarea {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 20em; }
+.patientNotes .addSection button {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 1em; }
+.patientNotes .note {
+  display: inline-block;
+  clear: both;
+  background-color: #f5f5f5;
+  padding: .75em;
+  margin: .5em;
+  position: relative;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #EEE #CCC #BBB #DDD;
+  max-width: 20em; }
+  .patientNotes .note .body .content {
+    display: block;
+    float: left; }
+  .patientNotes .note .body .writtenBy, .patientNotes .note .body .lastUpdated {
+    color: #333;
+    clear: both;
+    display: block;
+    float: right;
+    font-style: italic; }
+  .patientNotes .note .body .writtenBy {
+    font-size: .6em;
+    margin-top: .25em; }
+  .patientNotes .note .body .lastUpdated {
+    font-size: .6em; }
+
 .addCaregiverLookup {
   position: absolute;
   right: 2em;
@@ -7963,24 +8048,17 @@ Old stuff:
 
 
 
-
 */
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important; }
-
-html,
-body,
-[ng-controller] {
-  height: 95%; }
 
 .nav, .pagination, .carousel, .panel-title a {
   cursor: pointer; }
 
 body {
-  overflow: hidden; }
-
-body {
-  font: 16px "Lucida Grande", Helvetica, Arial, sans-serif; }
+  font: 16px "Roboto", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  padding: 0 15px; }
 
 header {
   height: 50px;
@@ -7995,7 +8073,7 @@ a {
 .ga-body {
   margin-top: 6em; }
 
-.btn {
+.btn, .patientNotes .addSection button {
   font-size: 18px; }
 
 .btn-block + .btn-block {
@@ -8023,7 +8101,7 @@ button i {
   left: 40px;
   top: 20px; }
 
-.btn-primary {
+.btn-primary, .patientNotes .addSection button {
   background-image: -webkit-linear-gradient(top, #337ab7 0, #265a88 100%);
   background-image: -o-linear-gradient(top, #337ab7 0, #265a88 100%);
   background-image: -webkit-gradient(linear, left top, left bottom, from(#337ab7), to(#265a88));

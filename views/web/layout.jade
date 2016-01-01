@@ -3,19 +3,21 @@ html
     head
         meta(charset='UTF-8')
         base(href="/")
+        link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css")
         link(rel='stylesheet', href='/stylesheets/scss/style.css')
         script(src='js/lib/require.js' data-main='js/web/main-web.js')
     body()
-        div(ng-controller="GroundWebCtrl as main" ng-cloak style="height:100%")
+        div(ng-controller="GroundWebCtrl as main" ng-cloak)
             nav.navbar.navbar-inverse.navbar-fixed-top
                 .navbar-header
-                    button.button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#ga-navbar-collapse" aria-expanded="false")
-                        span.sr-only Toggle navigation
-                        span.icon-bar
-                        span.icon-bar
-                        span.icon-bar
+                    //
+                        button.button.navbar-toggle.collapsed(data-toggle="collapse" data-target="#ga-navbar-collapse" aria-expanded="false")
+                            span.sr-only Toggle navigation
+                            span.icon-bar
+                            span.icon-bar
+                            span.icon-bar
                     a.navbar-brand(href="#") Caregiver Sense
-                .collapse.navbar-collapse
+                    // .collapse.navbar-collapse
                     form.navbar-form.navbar-left(role="search")
                         user-lookup(roles='{{main.roles}}' label='Search' callback='showUser(item)')
 

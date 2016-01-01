@@ -1,10 +1,13 @@
 /// <reference path="../typings/tsd.d.ts" />
-var notes_1 = require("./notes/notes");
 "use strict";
+var notes_1 = require("./notes/notes");
 var express = require('express');
 var router = express.Router();
 var log_1 = require("./util/log");
+var User_1 = require("./user/User");
 var notes_2 = require("./notes/notes");
+var util_1 = require("./util/util");
+var mask = require("json-mask");
 /*
  create table notes (
      noteId		integer auto_increment primary key,
@@ -16,22 +19,12 @@ var notes_2 = require("./notes/notes");
  )
 
  */
-router.get("/template", function (req, res) {
-    log_1.default("/notes/template");
-    res.render("template/patientNotes");
-});
 /**
  * API section
  */
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
 // TODO Add configurable tracing of every path as middleware.
-function onFail(res) {
-    return function (err) {
-        log_1.default("Error: " + log_1.default(err));
-        res.send({ error: true });
-    };
-}
 /**
  * Adds a new note
  *
@@ -41,20 +34,20 @@ function onFail(res) {
  *      patientVisible  :boolean
  * }
  *
+ * Returns { noteId : number }
+ *
  */
 router.post("/add", function (req, res) {
     log_1.default("/notes/add");
     var o = req.body;
     var user = req.session['user'];
     var c = req['c'];
-    user.hasAccessTo(c, o.patientId).
+    new User_1.User(user).hasAccessTo(c, o.patientId).
         then(function () {
         return notes_1.default.addNote(c, new notes_2.Note(o.content, new Date(), user.userId, o.patientId, !!o.patientVisible));
     }).
-        then(function () {
-        log_1.default("inserted note " + log_1.default(o));
-        res.send({ "inserted": "true" });
-    }).catch(onFail(res));
+        then(function (note) { return mask(note, 'noteId'); }).
+        then(util_1.sendResults(res)).catch(util_1.error(res));
 });
 /**
  * Load notes for the current patient of the logged in user.
@@ -66,16 +59,15 @@ router.post("/load", function (req, res) {
     var loadedForPatient = !req.body.patientId;
     var loadForUserId = req.body.patientId || userId;
     var c = req['c'];
-    user.hasAccessTo(c, loadForUserId).
+    new User_1.User(user).hasAccessTo(c, loadForUserId).
         then(function () { return notes_1.default.loadNotesForUser(c, loadForUserId); }).
         then(function (notes) {
         log_1.default("Loaded " + log_1.default(notes));
         if (loadedForPatient) {
             notes = notes.filter(function (note) { return note.patientVisible; });
         }
-        res.send(notes);
-    }).
-        catch(onFail(res));
+        return notes;
+    }).then(util_1.sendResults(res)).catch(util_1.error(res));
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = router;
