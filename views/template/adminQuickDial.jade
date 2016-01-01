@@ -1,0 +1,13 @@
+.adminQuickDial
+    .row
+        .col-xs-12.addSection
+            input(type='text' rows=1 placeholder="Quick Dial #" ng-model="newEntry.label")
+            input(type='text' rows=1 placeholder="Label" ng-model="newEntry.phone")
+            button(ng-click="saveNewEntry()") Add Quick Dial
+    .row
+        .col-xs-12
+            .entry.shadowed(ng-repeat="entry in entries" on-last-row="reapplyShadows")
+                .body
+                    | {{ entry.label }}
+                    | {{ entry.phone }}
+                    .fa.fa-trash-o.delete(ng-click='delete(entry)')

@@ -7,14 +7,76 @@
   padding-top:0;
   padding-bottom:0;
 }
+
 .navbar-inverse .navbar-brand {
   color:#00B7FF;
 }
 
+
+.panel-title {
+  display:inline;
+}
+
+/* Common */
+.userLookup {
+  display:inline;
+  .searchBox {
+    @extend .form-control;
+    display:inline-block;
+  }
+  .icon {
+    @extend .fa, .fa-search;
+    display:inline-block;
+    color:#888888;
+    position:relative;
+    left:-1.25em;
+    font-size:1.25em;
+    vertical-align:middle;
+  }
+}
+
+/* Common */
+.raisedPanel {
+  background-color:$well-bg;
+  // box-shadow:2px 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding:.75em;
+  margin:.5em;
+  border-width:1px;
+  border-style:solid;
+  border-color:#EEE #CCC #BBB #DDD;
+}
+
+/* Common */
+.addSection {
+  margin-bottom:1em;
+
+  textarea {
+    @extend .form-control;
+    display:inline-block;
+    vertical-align:middle;
+    max-width:20em;
+    margin-left:1em;
+  }
+
+  button {
+    @extend .btn, .btn-primary;
+    display:inline-block;
+    vertical-align:middle;
+    margin-left:1em;
+  }
+
+  input[type='text'] {
+    @extend .form-control;
+    display:inline-block;
+    vertical-align:middle;
+    margin-left:1em;
+    max-width:15em;
+  }
+}
+
+/* Styles specific to the profile area of adminPatient.jade */
 .profileArea {
-
   margin-bottom: 1em;
-
   .profilePicInfo {
     display: inline-block;
     vertical-align: top;
@@ -46,56 +108,13 @@
   }
 }
 
-
-
-.panel-title {
-  display:inline;
-}
-
-.userLookup {
-  display:inline;
-  .searchBox {
-    @extend .form-control;
-    display:inline-block;
-  }
-  .icon {
-    @extend .fa, .fa-search;
-    display:inline-block;
-    color:#888888;
-    position:relative;
-    left:-1.25em;
-    font-size:1.25em;
-    vertical-align:middle;
-  }
-}
-
+/* Styles specific to patientNotes.jade */
 .patientNotes {
-  .addSection {
-    textarea {
-      @extend .form-control;
-      display:inline-block;
-      vertical-align:middle;
-      max-width:20em;
-    }
-
-    button {
-      @extend .btn, .btn-primary;
-      display:inline-block;
-      vertical-align:middle;
-      margin-left:1em;
-    }
-  }
   .note {
+    @extend .raisedPanel;
     display:inline-block;
     clear:both;
-    background-color:$well-bg;
-    // box-shadow:2px 4px 8px 0 rgba(0, 0, 0, 0.2);
-    padding:.75em;
-    margin:.5em;
     position:relative;
-    border-width:1px;
-    border-style:solid;
-    border-color:#EEE #CCC #BBB #DDD;
     max-width:20em;
 
     .body {
@@ -116,6 +135,29 @@
       }
       .lastUpdated {
         font-size:.6em;
+      }
+    }
+  }
+}
+
+/* Styles specific to adminQuickDial.jade */
+.adminQuickDial {
+  .entry {
+    @extend .raisedPanel;
+    .body {
+      display:block;
+      line-height:2em;
+
+      .delete {
+        @extend .fa, .fa-trash-o:before, .fa-2x;
+        position:relative;
+        float:right;
+        cursor:pointer;
+        color:#888888;
+
+        &:hover {
+          color:#00B7FF;
+        }
       }
     }
   }

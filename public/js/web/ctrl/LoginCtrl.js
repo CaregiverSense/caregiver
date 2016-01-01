@@ -10,9 +10,10 @@ define(["facebook"], function() {
 
 
             function login() {
+                console.log("LoginCtrl.login");
                 loginService.doLogin(
                     function onNotAuthorized() {
-                        me.showFacebookButton = false;
+                        me.showFacebookButton = true;
                     },
                     function onNotRegistered() {
                         me.showUserNotRegistered = true;

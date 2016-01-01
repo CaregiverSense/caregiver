@@ -1,10 +1,12 @@
 /// <reference path="../typings/tsd.d.ts" />
 "use strict";
+var User_1 = require("./user/User");
 var Dial_1 = require("./dial/Dial");
 var Dial_2 = require("./dial/Dial");
 var express = require('express');
 var router = express.Router();
 var log_1 = require("./util/log");
+var util_1 = require("./util/util");
 // done create the dial table and add it to the schema.
 // todo create a /dial/addNumber api
 // todo update the UI to call the above
@@ -16,12 +18,6 @@ var log_1 = require("./util/log");
  */
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
-function onFail(res) {
-    return function (err) {
-        log_1.default("Error: " + log_1.default(err));
-        res.send({ error: true });
-    };
-}
 /**
  *  Adds a phone number for the given user.
  *
@@ -29,15 +25,16 @@ function onFail(res) {
  *
  */
 router.post("/add", function (req, res) {
-    log_1.default("/dial/add");
+    log_1.default("/dial/add " + log_1.default(req.body));
     var c = req["c"];
     var o = req.body;
     var phoneNum = new Dial_2.PhoneNumber(o.label, o.phone, o.userId);
     var user = req.session["user"];
-    user.hasAccessTo(c, o.userId).
+    new User_1.User(user).hasAccessTo(c, o.userId).
         then(function () { return Dial_1.default.addNumber(c, phoneNum); }).
         then(function () { return res.send({ dialId: phoneNum.dialId }); }).
-        catch(onFail(res));
+        then(util_1.sendResults(res)).
+        catch(util_1.error(res));
 });
 /**
  * Delete a phone number
@@ -53,10 +50,11 @@ router.post("/delete", function (req, res) {
     var o = req.body;
     var user = req.session["user"];
     Dial_1.default.loadNumber(c, o.dialId).
-        then(function (num) { return user.hasAccessTo(c, num.userId); }).
+        then(function (num) { return new User_1.User(user).hasAccessTo(c, num.userId); }).
         then(function () { return Dial_1.default.deleteNumber(c, o.dialId); }).
-        then(function () { return res.send({ ok: true }); }).
-        catch(onFail(res));
+        then(function () { ok: true; }).
+        then(util_1.sendResults(res)).
+        catch(util_1.error(res));
 });
 /**
  * Loads phone numbers for a user
@@ -70,10 +68,10 @@ router.post("/load", function (req, res) {
     var c = req["c"];
     var o = req.body;
     var user = req.session['user'];
-    user.hasAccessTo(c, o.userId).
+    new User_1.User(user).hasAccessTo(c, o.userId).
         then(function () { return Dial_1.default.loadNumbers(c, o.userId); }).
-        then(function (users) { return res.send(users); }).
-        catch(onFail(res));
+        then(util_1.sendResults(res)).
+        catch(util_1.error(res));
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = router;

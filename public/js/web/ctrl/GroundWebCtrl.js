@@ -5,6 +5,8 @@ define([
     'ctrl/AdminPatientCtrl',
     'directives/PatientNotesDirective',
     'directives/UserLookupDirective',
+    'directives/OnLastRowDirective',
+    'directives/AdminQuickDialDirective',
     'svc/LoginService',
     'angular',
     'facebook',
@@ -15,6 +17,8 @@ define([
             adminPatientCtrl,
             patientNotesDirective,
             userLookupDirective,
+            onLastRowDirective,
+            adminQuickDialDirective,
             loginService,
             angular) {
 
@@ -68,6 +72,13 @@ define([
                 }
             }
 
+            $scope.$on("reapplyShadows", function() {
+                console.log("reapplyShadows event caught")
+                // TODO Is this really inefficient?? Will okshadow create multiple animation
+                // TODO handlers for a single div element?
+                $(".shadowed").okshadow({color:"#DDD", yMax:8, xMax:8, fuzzMin:4, fuzzMax:8});
+            });
+
             console.log("In GroundWebCtrl")
         }]);
 
@@ -82,6 +93,8 @@ define([
     adminPatientCtrl(module);
     patientNotesDirective(module);
     userLookupDirective(module);
+    onLastRowDirective(module);
+    adminQuickDialDirective(module);
 
     console.log("Loaded OpalWhale.Web");
 

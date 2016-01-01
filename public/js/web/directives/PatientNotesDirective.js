@@ -1,18 +1,6 @@
 define([], function() {
 
     return function(module) {
-        module.directive('onAllNotesRendered', function ($timeout) {
-            return {
-                restrict: 'A',
-                link: function (scope, element, attr) {
-                    if (scope.$last === true) {
-                        $timeout(function () {
-                            scope.$emit('allNotesRendered');
-                        });
-                    }
-                }
-            }
-        });
         module.directive('patientNotes', ["$http", "LoginService", "$timeout", function($http, loginService, $timeout) {
             return {
                 restrict: 'E',
@@ -32,10 +20,6 @@ define([], function() {
                         console.dir(JSON.stringify(rs.data))
                     });
 
-                    me.$on("allNotesRendered", function() {
-                        $(".note").okshadow({color:"#DDD", yMax:8, xMax:8, fuzzMin:4, fuzzMax:8});
-                    });
-
                     me.addNote = function() {
                         var newNote = {
                             content: me.newNote,
@@ -47,9 +31,7 @@ define([], function() {
                             newNote.noteId = r.data.noteId;
                             me.notes.unshift(newNote);
                             $timeout(function () {
-                                // TODO Is this really inefficient?? Will okshadow create multiple animation
-                                // TODO handlers for a single div element?
-                                scope.$emit('allNotesRendered');
+                                scope.$emit('reapplyShadows');
                             });
                         });
                     }

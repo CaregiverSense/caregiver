@@ -21,6 +21,7 @@ import login    from './routes/csLogin'
 import notes    from './routes/csNotes'
 import register from './routes/csRegister'
 import user     from './routes/csUser'
+import dial     from './routes/csDial'
 
 let profile = require('./routes/csProfile')
 let schedule = require('./routes/csSchedule')
@@ -108,6 +109,7 @@ app.use('/admin',       admin)
 app.use('/register',    register)
 app.use('/login',       login)
 app.use('/user',        user)
+app.use('/dial',        dial)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

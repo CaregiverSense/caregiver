@@ -45,7 +45,7 @@ define(["facebook"], function() {
                  */
                 doLogin : function(onNotAuthorized, onNotRegistered, onSuccess) {
                     // Notify the server that the user is logged in
-
+                    console.log("LoginService#doLogin")
                     var onLoggedIn = function(auth) {
                         $http.post("/login", auth).then(function(res) {
                             if (!res.data.accessTokenVerified) {
@@ -76,7 +76,7 @@ define(["facebook"], function() {
                  */
                 getLoginStatus : function (onLoggedIn, onNotAuthorized) {
                     FB.getLoginStatus(function (response) {
-                        console.log("getLoginStatus");
+                        console.log("LoginService#getLoginStatus");
                         console.dir(response);
 
                         if (response && response.status) {
@@ -87,7 +87,7 @@ define(["facebook"], function() {
                                         if (onLoggedIn) {
                                             onLoggedIn(response.authResponse);
                                         }
-                                    } else if (response.status == "not_authorized") {
+                                    } else if (response.status == "not_authorized" || response.status == "unknown") {
                                         console.log("User is not_authorized");
                                         if (onNotAuthorized) {
                                             onNotAuthorized();

@@ -10,6 +10,7 @@ let router = express.Router()
 
 import db from "./dao/db"
 import l from "./util/log"
+import { error, sendResults } from "./util/util"
 
 
 // done create the dial table and add it to the schema.
@@ -29,14 +30,6 @@ router.use(require("./middleware/setIsAPIFlag"))
 router.use(require("./middleware/checkIsLoggedIn"))
 
 
-function onFail(res) {
-    return function(err) {
-        l("Error: " + l(err))
-        res.send({error: true})
-    }
-}
-
-
 /**
  *  Adds a phone number for the given user.
  *
@@ -44,18 +37,18 @@ function onFail(res) {
  *
  */
 router.post("/add", function(req, res) {
-    l("/dial/add")
+    l("/dial/add " + l(req.body))
     let c = req["c"]
     let o = req.body
     let phoneNum = new PhoneNumber(o.label, o.phone, o.userId)
     let user : User = req.session["user"]
 
-    user.hasAccessTo(c, o.userId).
+    new User(user).hasAccessTo(c, o.userId).
 
         then(() => DialService.addNumber(c, phoneNum) ).
         then(() => res.send( {dialId : phoneNum.dialId} ) ).
-
-        catch(onFail(res))
+        then(sendResults(res)).
+        catch(error(res))
 })
 
 
@@ -75,11 +68,11 @@ router.post("/delete", function(req, res) {
 
     DialService.loadNumber(c, o.dialId).
 
-        then((num) => user.hasAccessTo(c, num.userId)).
+        then((num) => new User(user).hasAccessTo(c, num.userId)).
         then(() => DialService.deleteNumber(c, o.dialId) ).
-        then(() => res.send( {ok:true} ) ).
-
-        catch(onFail(res))
+        then(() => {ok:true} ).
+        then(sendResults(res)).
+        catch(error(res))
 })
 
 /**
@@ -95,10 +88,10 @@ router.post("/load", function(req, res) {
     let o = req.body
     let user : User = req.session['user']
 
-    user.hasAccessTo(c, o.userId).
+    new User(user).hasAccessTo(c, o.userId).
         then(() => DialService.loadNumbers(c, o.userId)).
-        then(users => res.send(users)).
-        catch(onFail(res))
+        then(sendResults(res)).
+        catch(error(res))
 })
 
 
