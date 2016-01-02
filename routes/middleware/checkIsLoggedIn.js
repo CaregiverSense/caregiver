@@ -8,7 +8,8 @@
  */
 module.exports = function(req, res, next) {
 
-    req.session.a = "------------------------------------------";
+    console.log("checkIsLoggedIn invoked for path " + req.path)
+
 
     if (req.session["user"]) {
         next();

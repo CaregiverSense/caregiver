@@ -34,7 +34,7 @@ var Service = (function () {
         console.log("Dial.Service.loadNumbers( c, userId = ", userId, ")");
         return db_1.default.query(c, "select * from dial where userId = ? order by rank, dialId", [userId]).then(function (rs) {
             var result = rs.map(function (row) {
-                return new PhoneNumber(row.label, row.phone, row.userId, row.dialId);
+                return new PhoneNumber(row.label, row.phone, row.userId, row.rank, row.dialId);
             });
             return result;
         });
@@ -45,17 +45,24 @@ var Service = (function () {
     };
     Service.loadNumber = function (c, dialId) {
         return db_1.default.queryOne(c, "select * from dial where dialId = ?", [dialId]).
-            then(function (row) { return new PhoneNumber(row.label, row.phone, row.userId, row.dialId); });
+            then(function (row) { return new PhoneNumber(row.label, row.phone, row.userId, row.rank, row.dialId); });
     };
     return Service;
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = Service;
+// Represents a row of the 'dial' table.
 var PhoneNumber = (function () {
-    function PhoneNumber(label, phone, userId, dialId) {
+    function PhoneNumber(label, // A label to display, instead of the phone number
+        phone, // The phone number
+        userId, // The userId of the user to whom this quick dial is assigned
+        rank, // Used to rank/order quick dial relative to the other quick dials assigned
+        dialId // Primary key, uniquely identifies the record.
+        ) {
         this.label = label;
         this.phone = phone;
         this.userId = userId;
+        this.rank = rank;
         this.dialId = dialId;
     }
     return PhoneNumber;

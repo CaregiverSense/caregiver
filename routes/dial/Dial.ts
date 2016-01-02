@@ -45,7 +45,7 @@ export default class Service {
         return db.query(c, "select * from dial where userId = ? order by rank, dialId", [userId]
         ).then((rs) => {
             var result = rs.map((row) => {
-                return new PhoneNumber(row.label, row.phone, row.userId, row.dialId)
+                return new PhoneNumber(row.label, row.phone, row.userId, row.rank, row.dialId)
             })
             return result;
         })
@@ -58,18 +58,20 @@ export default class Service {
 
     static loadNumber(c : any, dialId : number) : Promise<PhoneNumber> {
         return db.queryOne(c, "select * from dial where dialId = ?", [dialId]).
-            then(row => new PhoneNumber(row.label, row.phone, row.userId, row.dialId))
+            then(row => new PhoneNumber(row.label, row.phone, row.userId, row.rank, row.dialId))
     }
 
 }
 
-
+// Represents a row of the 'dial' table.
 export class PhoneNumber {
     constructor(
-        public label : string,
-        public phone : string,
-        public userId : number,
-        public dialId? : number
+        public label    : string,       // A label to display, instead of the phone number
+        public phone    : string,       // The phone number
+        public userId   : number,       // The userId of the user to whom this quick dial is assigned
+        public rank    ?: number,       // Used to rank/order quick dial relative to the other quick dials assigned
+        public dialId  ?: number        // Primary key, uniquely identifies the record.
+                                        // It should not be specified for new entries, since this value is auto-generated.
     ) {
     }
 }

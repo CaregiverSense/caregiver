@@ -21,8 +21,8 @@ router.use(require("./middleware/checkIsLoggedIn"));
 /**
  *  Adds a phone number for the given user.
  *
- *  { label, phone, userId }
- *
+ *  request { label, phone, userId }
+ *  response { dialId }
  */
 router.post("/add", function (req, res) {
     log_1.default("/dial/add " + log_1.default(req.body));
@@ -32,7 +32,7 @@ router.post("/add", function (req, res) {
     var user = req.session["user"];
     new User_1.User(user).hasAccessTo(c, o.userId).
         then(function () { return Dial_1.default.addNumber(c, phoneNum); }).
-        then(function () { return res.send({ dialId: phoneNum.dialId }); }).
+        then(function () { dialId: phoneNum.dialId; }).
         then(util_1.sendResults(res)).
         catch(util_1.error(res));
 });
@@ -59,9 +59,17 @@ router.post("/delete", function (req, res) {
 /**
  * Loads phone numbers for a user
  *
- * {
+ * request {
  *      userId      // Loads numbers for this user
  * }
+ *
+ * response [{      // See class PhoneNumber for a descripion of these properties
+ *     label        : string
+ *     phone        : string
+ *     rank         : number
+ *     userId       : number
+ *     dialId       : number
+ * }]
  */
 router.post("/load", function (req, res) {
     log_1.default("/dial/load");

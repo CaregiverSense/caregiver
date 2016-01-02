@@ -14,6 +14,7 @@ router.post('/loginUser', function (req, res) {
     User_1.default.loadUserByFbId(req["c"], req.body.fbId).then(function (user) {
         console.log("User for fbId " + req.body.fbId + " is " + JSON.stringify(user));
         if (user != null) {
+            req.session["user"] = user;
             req.session["userId"] = user.userId;
             req.session["patientId"] = user.patientId;
             var patient = null;

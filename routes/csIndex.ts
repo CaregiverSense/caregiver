@@ -21,6 +21,7 @@ router.post('/loginUser', (req : any, res) => {
     UserService.loadUserByFbId(req["c"], req.body.fbId).then((user) => {
         console.log(`User for fbId ${req.body.fbId} is ${JSON.stringify(user)}`)
         if (user != null) {
+            req.session["user"] = user;
             req.session["userId"] = user.userId;
             req.session["patientId"] = user.patientId;
 

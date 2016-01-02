@@ -32,9 +32,9 @@ div(style='height:calc(100% - 50px);position:relative;padding:15px')
         table
             tr
                 td
-                    img.icon(src="{{number.link}}")
+                    // img.icon(src="{{number.link}}")
                 td
-                    .title {{ number.title }}
+                    .title {{ number.label }}
             // .number {{ number.number }}
 
     button.btn.btn-block.btn-default.bigButton.btn-primary(
@@ -44,12 +44,12 @@ div(style='height:calc(100% - 50px);position:relative;padding:15px')
 .slide-out-form(ng-class="{ active: dial.addingNumber }")
     .form-group
         label Name
-        input.form-control(type='text' ng-model='dial.newNumber.title' placeholder='Enter name..')
+        input.form-control(type='text' ng-model='dial.newNumber.label' placeholder='Enter name..')
 
         br
 
         label Number
-        input.form-control(type='text' ng-model='dial.newNumber.number' placeholder='Enter number..')
+        input.form-control(type='text' ng-model='dial.newNumber.phone' placeholder='Enter number..')
 
     button.btn.btn-block.btn-default.bigButton.btn-success(
         ng-click="dial.addNumber(dial.newNumber)"

@@ -2,8 +2,18 @@
 
 define(['angular'], function (angular) {
     return function (module) {
-        module.controller('DialCtrl', ['$scope', function ($scope) {
+        module.controller('DialCtrl', ['$scope', '$http', 'userInfo', function ($scope, $http, userInfo) {
             var me = this;
+
+            var userId = userInfo.getUser().userId;
+            this.numbers = [];
+
+            $http.post("/dial/load", {userId : userId}).
+                then(function(rs) {
+                    me.numbers = rs.data;
+                })
+
+            /*
             this.numbers = [
                 {
                     title: 'Home',
@@ -26,9 +36,10 @@ define(['angular'], function (angular) {
                     link : '/img/nurse.gif'
                 }
             ]
+            */
 
             this.call = function (number) {
-                window.parent.location.href = 'tel:' + number.number
+                window.parent.location.href = 'tel:' + number.phone
             }
 
             this.addNumber = function (number) {
@@ -36,11 +47,18 @@ define(['angular'], function (angular) {
 
                 // client
 
-                if (number.title && number.number) {
-                    me.numbers.push({
-                        title: number.title,
-                        number: number.number
-                    })
+                if (number.label && number.phone) {
+                    var newQuickDialEntry = {
+                        label:  number.label,
+                        phone:  number.phone,
+                        userId: userId
+                    };
+
+                    $http.post("/dial/add", newQuickDialEntry).
+                        then(function(rs) {
+                            newQuickDialEntry.dialId = rs.data.dialId;
+                            me.numbers.push(newQuickDialEntry);
+                        })
                 }
 
                 me.addingNumber = false
@@ -51,7 +69,7 @@ define(['angular'], function (angular) {
             }
 
             this.removeNumber = function (number) {
-                this.numbers = this.numbers.filter(function (x) {
+                this.numbers = this.numbers.filter(function(x) {
                     return x.title !== number.title
                 })
             }
