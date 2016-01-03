@@ -13,6 +13,8 @@ define(['angular'], function (angular) {
                     me.numbers = rs.data;
                 })
 
+
+
             /*
             this.numbers = [
                 {

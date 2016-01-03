@@ -97,6 +97,21 @@ create table dial (
 	phone		varchar(30) not null,							-- the phone number (without the tel:// prefix)
 	label		varchar(80) not null,							-- the label to use for the phone number
 	rank		integer not null default 0						-- used to sort and reorder the numbers for a user
-)
+);
 
+-- Places that can be associated to users.
+create table place (
+	placeId		integer not null primary key auto_increment,	-- primary key
+	placeName	varchar(200) not null,							-- the name of the placd
+	address		varchar(400) not null							-- the address of the place
+);
+
+-- Places associated to users.  The label field allows a place to be renamed for a user.
+create table user_place (
+	uaId		integer not null primary key auto_increment,	-- primary key
+	userId		integer not null references user(userId),		-- the user to whom the place is assigsned
+	placeId		integer not null references place(placeId),		-- the address of the place
+	label		varchar(80) not null,							-- the label to represent the address
+	rank		integer not null default 0						-- used to sort and re-order
+);
 
