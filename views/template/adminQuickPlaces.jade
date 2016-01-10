@@ -1,13 +1,27 @@
 .adminQuickPlaces
-    .row
-        .col-xs-12.addSection
-            input(type='text' rows=1 placeholder="Quick Dial #" ng-model="newEntry.phone")
-            input(type='text' rows=1 placeholder="Label" ng-model="newEntry.label")
-            button(ng-click="saveNewEntry()") Add Quick Dial
-    .row
-        .col-xs-12
+    script(type="text/ng-template" id="adminQuickPlacesModal.html")
+        .modal-header
+            .modal-title Add a place
+        .modal-body
+            .placeSelector
+                .row
+                    .col-md-6
+                    .col-md-6
+                        input.mapLookup.form-control(id='autocompleteSearch' type='text')
+
+                        google-map.map
+        .modal-footer
+            button.btn.btn-primary(ng-click="close()") Close
+
+    //
             .entry.shadowed(ng-repeat="entry in entries" on-last-row="reapplyShadows")
                 .body
                     | {{ entry.label }}
                     | {{ entry.phone }}
                     .fa.fa-trash-o.delete(ng-click='delete(entry)')
+
+    .row
+        .col-xs-12.addSection
+            button(ng-click="openAddPlaceDialog()") Add Place
+    .row
+        .col-xs-12

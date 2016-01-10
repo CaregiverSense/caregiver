@@ -12,6 +12,7 @@ requirejs.config({
         'angular-animate': '/bower_components/angular-animate/angular-animate.min',
         'okshadow' : '/js/lib/okshadow.min',
         'facebook': '//connect.facebook.net/en_US/sdk',
+        'googleMaps' : '//maps.googleapis.com/maps/api/js?key=AIzaSyB-t3Vx0r6XYbDogrE5K7A3v6-RKiptZ7A&libraries=places',
         'ui.bootstrap' : '/bower_components/angular-bootstrap/ui-bootstrap-tpls.min'
 
     },
@@ -50,7 +51,8 @@ requirejs([
     'ui.bootstrap',
     'ctrl/GroundWebCtrl',
     'fb',
-    'okshadow'
+    'okshadow',
+    'googleMaps'
 ], function (angular, $) {
     console.log('Have angular? ' + typeof (angular))
 

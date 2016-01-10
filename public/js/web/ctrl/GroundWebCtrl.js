@@ -7,6 +7,7 @@ define([
     'directives/UserLookupDirective',
     'directives/OnLastRowDirective',
     'directives/AdminQuickDialDirective',
+    'directives/AdminQuickPlacesDirective',
     'svc/LoginService',
     'angular',
     'facebook',
@@ -19,6 +20,7 @@ define([
             userLookupDirective,
             onLastRowDirective,
             adminQuickDialDirective,
+            adminQuickPlacesDirective,
             loginService,
             angular) {
 
@@ -95,6 +97,7 @@ define([
     userLookupDirective(module);
     onLastRowDirective(module);
     adminQuickDialDirective(module);
+    adminQuickPlacesDirective(module);
 
     console.log("Loaded OpalWhale.Web");
 

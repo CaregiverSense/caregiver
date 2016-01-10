@@ -163,6 +163,26 @@
   }
 }
 
+/* Styles specific to adminQuickPlaces.jade */
+.adminQuickPlaces {
+}
+
+.placeSelector {
+  .map {
+    display: block;
+    height: 20em;
+  }
+  .mapLookup {
+    @extend .form-control;
+    width:70%;
+    margin-top:.5em;
+  }
+
+}
+.pac-container {
+  z-index: 10000 !important;
+}
+
 .addCaregiverLookup {
   position:absolute;
   right:2em;

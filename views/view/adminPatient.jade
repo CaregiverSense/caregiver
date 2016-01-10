@@ -38,6 +38,13 @@
                     .panel-title Quick Dials for {{ap.displayedPatient.name}}
                 .panel-body
                     admin-quick-dial(user-id="{{ap.userId}}")
+    .row
+        .col-xs-12.col-md-offset-1.col-md-10
+            .panel.panel-default
+                .panel-heading
+                    .panel-title Places for {{ap.displayedPatient.name}}
+                .panel-body
+                    admin-quick-places(user-id="{{ap.userId}}")
 br
 br
 br
