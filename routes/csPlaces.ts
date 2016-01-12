@@ -18,21 +18,41 @@ import { error, sendResults } from "./util/util"
 router.use(require("./middleware/setIsAPIFlag"))
 router.use(require("./middleware/checkIsLoggedIn"))
 
-
 /**
- *  Adds a place
+ * Finds a place given its latitude and longitude.
  *
- *  request { placeName, address }
- *  response { placeId }
+ * request { lat, lng }
+ * response { found : boolean, placeName }
  */
-router.post("/add", function(req, res) {
-    l("/places/add " + l(req.body))
+router.post("/find", function(req, res) {
+    l("/places/find " + l(req.body))
     let c = req["c"]
     let o = req.body
 
-    let place = new Place(o.placeName, o.address)
+    PlacesService.findPlace(c, o.lat, o.lng).
+        then(place => {
+            return (place == null) ?
+                { found : false } :
+                { found : true, placeName : place.placeName }
+        }).
+        then(sendResults(res)).
+        catch(error(res))
+})
 
-    PlacesService.addPlace(c, place).
+/**
+ *  Inserts or updates a place
+ *
+ *  request { placeName, address, lat, lng }
+ *  response { placeId }
+ */
+router.post("/save", function(req, res) {
+    l("/places/save " + l(req.body))
+    let c = req["c"]
+    let o = req.body
+
+    let place = new Place(o.placeName, o.address, o.lat, o.lng)
+
+    PlacesService.savePlace(c, place).
         then(sendResults(res)).
         catch(error(res))
 })

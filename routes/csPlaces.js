@@ -12,17 +12,36 @@ var util_1 = require("./util/util");
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
 /**
- *  Adds a place
+ * Finds a place given its latitude and longitude.
  *
- *  request { placeName, address }
- *  response { placeId }
+ * request { lat, lng }
+ * response { found : boolean, placeName }
  */
-router.post("/add", function (req, res) {
-    log_1.default("/places/add " + log_1.default(req.body));
+router.post("/find", function (req, res) {
+    log_1.default("/places/find " + log_1.default(req.body));
     var c = req["c"];
     var o = req.body;
-    var place = new Places_1.Place(o.placeName, o.address);
-    Places_1.default.addPlace(c, place).
+    Places_1.default.findPlace(c, o.lat, o.lng).
+        then(function (place) {
+        return (place == null) ?
+            { found: false } :
+            { found: true, placeName: place.placeName };
+    }).
+        then(util_1.sendResults(res)).
+        catch(util_1.error(res));
+});
+/**
+ *  Inserts or updates a place
+ *
+ *  request { placeName, address, lat, lng }
+ *  response { placeId }
+ */
+router.post("/save", function (req, res) {
+    log_1.default("/places/save " + log_1.default(req.body));
+    var c = req["c"];
+    var o = req.body;
+    var place = new Places_1.Place(o.placeName, o.address, o.lat, o.lng);
+    Places_1.default.savePlace(c, place).
         then(util_1.sendResults(res)).
         catch(util_1.error(res));
 });

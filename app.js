@@ -15,6 +15,7 @@ var csNotes_1 = require('./routes/csNotes');
 var csRegister_1 = require('./routes/csRegister');
 var csUser_1 = require('./routes/csUser');
 var csDial_1 = require('./routes/csDial');
+var csPlaces_1 = require('./routes/csPlaces');
 var profile = require('./routes/csProfile');
 var schedule = require('./routes/csSchedule');
 var app = express();
@@ -86,14 +87,15 @@ app.use(function (req, res, next) {
     });
 });
 app.use('/', csIndex_1.default);
-app.use('/profile', profile);
-app.use('/schedule', schedule);
-app.use('/notes', csNotes_1.default);
 app.use('/admin', csAdmin_1.default);
-app.use('/register', csRegister_1.default);
-app.use('/login', csLogin_1.default);
-app.use('/user', csUser_1.default);
 app.use('/dial', csDial_1.default);
+app.use('/login', csLogin_1.default);
+app.use('/notes', csNotes_1.default);
+app.use('/places', csPlaces_1.default);
+app.use('/profile', profile);
+app.use('/register', csRegister_1.default);
+app.use('/schedule', schedule);
+app.use('/user', csUser_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

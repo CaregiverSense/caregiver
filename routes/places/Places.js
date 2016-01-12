@@ -9,19 +9,47 @@ var PlacesService = (function () {
     function PlacesService() {
     }
     /**
-     * Inserts a phone number and decorates the given number with
-     * the dialId assigned during the insert.
+     * Finds a place given latitude and longitude coordinates.
+     */
+    PlacesService.findPlace = function (c, lat, lng) {
+        console.log("PlaceService.addPlace( c, lat = ", lat, ", lng = ", lng, ")");
+        return db_1.default.queryOne(c, "select * from place where lat = ? and lng = ?", [lat, lng]).
+            then(function (row) {
+            return new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress);
+        }).catch(function () { return null; });
+    };
+    /**
+     * Saves a place.  If the placeId is provided then
+     * the existing row is updated, otherwise the place is inserted.
      *
      * @param c         The connection
      * @param place     The Place to insert
      * @returns A promise of the placeId of the place inserted
      */
-    PlacesService.addPlace = function (c, place) {
-        console.log("PlaceService.addPlace( c, place = ", place, ")");
-        return db_1.default.query(c, "insert into place (placeName, address) " +
-            "values (?, ?)", [place.placeName, place.address]).then(function (rs) {
-            place.placeId = rs.insertId;
-            return place.placeId;
+    PlacesService.savePlace = function (c, place) {
+        console.log("PlaceService.savePlace( c, place = ", place, ")");
+        return new Promise(function (y, n) {
+            if (typeof (place.placeId) !== "undefined") {
+                y(db_1.default.query(c, "update place set " +
+                    "placeName = ?, " +
+                    "address = ?, " +
+                    "lat = ?, " +
+                    "lng = ? " +
+                    "where placeId = ?", [
+                    place.placeName,
+                    place.address,
+                    place.lat,
+                    place.lng,
+                    place.placeId
+                ]).then(function () { return place; }));
+            }
+            else {
+                y(db_1.default.query(c, "insert into place (placeName, address, lat, lng) " +
+                    "values (?, ?, ?, ?)", [place.placeName, place.address, place.lat, place.lng]).then(function (rs) {
+                    place.placeId = rs.insertId;
+                    return place;
+                }));
+            }
         });
     };
     /**
@@ -67,13 +95,13 @@ var PlacesService = (function () {
      */
     PlacesService.loadUserPlaces = function (c, userId) {
         console.log("PlacesService.loadUserPlaces( c, userId = ", userId, ")");
-        return db_1.default.query(c, "select u.*, p.placeName, p.address " +
+        return db_1.default.query(c, "select u.*, p.placeName, p.address, p.lat, p.lng " +
             "from user_place up, place p " +
             "where up.placeId = p.placeId and " +
             "up.userId = ?" +
             "order by rank, upId", [userId]).then(function (rs) {
             return rs.map(function (row) {
-                var place = new Place(row.placeId, row.placeName, row.placeAddress);
+                var place = new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress);
                 return new UserPlace(row.userId, place.placeId, row.label, row.rank, row.upId, place);
             });
         });
@@ -85,10 +113,14 @@ exports.default = PlacesService;
 var Place = (function () {
     function Place(placeName, // the name of the place
         address, // the address of the place
+        lat, // latitude
+        lng, // longitude
         placeId // primary key
         ) {
         this.placeName = placeName;
         this.address = address;
+        this.lat = lat;
+        this.lng = lng;
         this.placeId = placeId;
     }
     return Place;

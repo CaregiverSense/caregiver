@@ -10,22 +10,52 @@ import db from "../../routes/dao/db";
 export default class PlacesService {
 
     /**
-     * Inserts a phone number and decorates the given number with
-     * the dialId assigned during the insert.
+     * Finds a place given latitude and longitude coordinates.
+     */
+    static findPlace(c : any, lat : number, lng : number) : Promise<Place> {
+        console.log("PlaceService.addPlace( c, lat = ", lat, ", lng = ", lng, ")")
+        return db.queryOne(c, "select * from place where lat = ? and lng = ?", [lat, lng]).
+            then(row => {
+                return new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress)
+            }).catch(() => null)
+    }
+
+    /**
+     * Saves a place.  If the placeId is provided then
+     * the existing row is updated, otherwise the place is inserted.
      *
      * @param c         The connection
      * @param place     The Place to insert
      * @returns A promise of the placeId of the place inserted
      */
-    static addPlace(c : any, place:  Place) : Promise<number> {
-        console.log("PlaceService.addPlace( c, place = ", place, ")")
-        return db.query(c, "insert into place (placeName, address) " +
-            "values (?, ?)",
-            [place.placeName, place.address]
-        ).then((rs) => {
-            place.placeId = rs.insertId
-            return place.placeId
-        });
+    static savePlace(c : any, place:  Place) : Promise<number> {
+        console.log("PlaceService.savePlace( c, place = ", place, ")")
+
+        return new Promise((y,n) => {
+            if (typeof(place.placeId) !== "undefined") {
+                y(db.query(c, "update place set " +
+                    "placeName = ?, " +
+                    "address = ?, " +
+                    "lat = ?, " +
+                    "lng = ? " +
+                    "where placeId = ?", [
+                        place.placeName,
+                        place.address,
+                        place.lat,
+                        place.lng,
+                        place.placeId
+                    ]
+                ).then(() => place))
+            } else {
+                y(db.query(c, "insert into place (placeName, address, lat, lng) " +
+                    "values (?, ?, ?, ?)",
+                    [place.placeName, place.address, place.lat, place.lng]
+                ).then((rs) => {
+                    place.placeId = rs.insertId
+                    return place
+                }));
+            }
+        })
     }
 
     /**
@@ -75,14 +105,14 @@ export default class PlacesService {
      */
     static loadUserPlaces(c : any, userId : number) : Promise<UserPlace[]> {
         console.log("PlacesService.loadUserPlaces( c, userId = ", userId, ")")
-        return db.query(c, "select u.*, p.placeName, p.address " +
+        return db.query(c, "select u.*, p.placeName, p.address, p.lat, p.lng " +
             "from user_place up, place p " +
             "where up.placeId = p.placeId and " +
             "up.userId = ?" +
             "order by rank, upId", [userId]
         ).then((rs) => {
             return rs.map((row) => {
-                let place = new Place(row.placeId, row.placeName, row.placeAddress)
+                let place = new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress)
                 return new UserPlace(row.userId, place.placeId, row.label, row.rank, row.upId, place)
             })
         })
@@ -94,6 +124,8 @@ export class Place {
     constructor(
         public placeName    :string,        // the name of the place
         public address      :string,        // the address of the place
+        public lat          :number,        // latitude
+        public lng          :number,        // longitude
         public placeId     ?:number 	    // primary key
     ) {}
 }

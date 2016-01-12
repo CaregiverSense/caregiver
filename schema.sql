@@ -103,7 +103,9 @@ create table dial (
 create table place (
 	placeId		integer not null primary key auto_increment,	-- primary key
 	placeName	varchar(200) not null,							-- the name of the placd
-	address		varchar(400) not null							-- the address of the place
+	address		varchar(400) not null,							-- the address of the place
+	lat			float not null,
+	lng			float not null
 );
 
 -- Places associated to users.  The label field allows a place to be renamed for a user.

@@ -12,8 +12,11 @@ define(["jquery", ], function($) {
                 link: function(scope, element, attr, ctrl) {
                     var me = scope;
                     me.entries = []
-                    me.newEntry = {
-                        label : ""
+                    me.newPlace = {
+                        label : "",
+                        // lat,
+                        // lng,
+                        // address
                     };
                     me.modal = null;
 
@@ -21,8 +24,9 @@ define(["jquery", ], function($) {
                         var instance = $uibModal.open({
                             animation   : true,
                             templateUrl : 'adminQuickPlacesModal.html',
-                            controllerAs : 'qp',
-                            controller  : 'QuickPlacesCtrl',
+                            scope : scope,
+                            controllerAs : 'qpm',
+                            controller  : 'QuickPlacesModalCtrl',
                             size    : "lg"
                         });
                         instance.result.then(function() {
@@ -32,6 +36,7 @@ define(["jquery", ], function($) {
 
                         })
                     }
+
                 }
             };
         }]).
@@ -40,13 +45,14 @@ define(["jquery", ], function($) {
                 restrict: 'E',
                 controller : 'GoogleMapCtrl',
                 scope : {
+                    onPlaceSelected : '&'
                 },
                 link : function(scope, element, attrs, googleMapCtrl) {
                     googleMapCtrl.init(element);
                 }
             }
         }]).
-        controller("GoogleMapCtrl", ["$timeout", function($timeout) {
+        controller("GoogleMapCtrl", ["$scope", "$timeout", function($scope, $timeout) {
             var self = this;
 
             this.init = function(element) {
@@ -62,6 +68,15 @@ define(["jquery", ], function($) {
                     autocomplete.addListener('place_changed', function(e) {
                         var place = autocomplete.getPlace();
                         if (place.geometry) {
+                            var loc = place.geometry.location;
+
+                            $scope.$apply(function() {
+                                $scope.onPlaceSelected({
+                                    latlong: {lat:loc.lat(), lng:loc.lng()},
+                                    address: place.formatted_address
+                                });
+                            })
+
                             map.panTo(place.geometry.location);
                             map.setZoom(15);
                         }
@@ -69,8 +84,70 @@ define(["jquery", ], function($) {
                 }, 0);
             }
         }]).
-        controller('QuickPlacesCtrl', ["$document", function($document) {
+        controller('QuickPlacesModalCtrl', ["$document", "$scope", "$http", "$uibModalInstance",
+            function($document, $scope, $http, $uibModalInstance) {
 
+            var self = this;
+
+            self.enableUseThisPlaceButton = false;
+            self.showPlaceNameTextField = false;
+            self.entry = null;
+            self.originalPlaceName = null;
+            self.newPlaceName = null;           // Only needs to be populated by the user for new additions
+            self.isNewEntry = true;             // True, unless a call to /places/find shows the lat/lng was previously stored.
+
+            self.close = function() {
+                $uibModalInstance.close();
+            }
+
+            self.placeSelected = function(latlong, address) {
+                console.log("Place selected");
+
+                self.entry = {
+                    lat : latlong.lat,
+                    lng : latlong.lng,
+                    address : address
+                };
+
+                console.dir(self.entry);
+
+                // A place was selected using the map widget.
+                // See if the server already knows about this place.  If so, use its label.
+                // If not, then prompt the user to enter a name for the place and save it.
+
+                // Here we check the server to see if the place is already known
+                $http.post("/places/find", {lat : latlong.lat, lng : latlong.lng}).
+                    then(function(results) {
+                        if (results.found) {
+                            self.originalPlaceName = self.newPlaceName = self.entry.placeName = results.placeName;
+                            self.isNewEntry = false;
+                        }
+                        self.showPlaceNameTextField = true;
+                    })
+
+            }
+
+            self.isEdited = function() {
+                return self.originalPlaceName != self.newPlaceName;
+            }
+
+            self.useThisPlace = function() {
+                self.entry.placeName = self.newPlaceName;
+
+                function pushAndClose() {
+                    $scope.entries.push(self.entry);
+                    self.close();
+                }
+
+                if (self.isEdited()) {
+                    $http.post("/places/save", self.entry).
+                        then(() => {
+                            pushAndClose();
+                        })
+                } else {
+                    pushAndClose();
+                }
+            }
         }]);
     };
 });
