@@ -33,6 +33,9 @@ var db;
             settings = require("../../" + path);
             log_1.default("Loaded database settings " + log_1.default(settings));
         }
+        else {
+            log_1.default("using db " + log_1.default(settings));
+        }
         return me;
     }
     db.init = init;

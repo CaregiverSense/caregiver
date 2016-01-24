@@ -12,6 +12,7 @@ export default class TestUtil {
             then(() => db.query(c, "delete from notes")).
             then(() => db.query(c, "delete from dial")).
             then(() => db.query(c, "delete from user_patient")).
-            then(() => db.query(c, "delete from user"))
+            then(() => db.query(c, "delete from user")).
+            then(() => db.query(c, "delete from place"))
     }
 }

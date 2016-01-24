@@ -59,8 +59,8 @@ describe('DialService', function() {
 
 
     describe("#loadNumbers()", function() {
-        it('should load numbers for a user', function(done) {
-            db.getConnection((c) => {
+        it('should load numbers for a user', function() {
+            return db.getConnection((c) => {
                 return dial.addNumber(c, new PhoneNumber("NumberA", "1-234-567-8910", TEST_USER_ID)).
                     then(() => {
                         return dial.addNumber(c, new PhoneNumber("NumberB", "9-876-543-2198", TEST_USER_ID))
@@ -76,14 +76,14 @@ describe('DialService', function() {
                         expect(numbers[1].label).to.equal("NumberB")
                         expect(numbers[1].phone).to.equal("9-876-543-2198")
                         expect(numbers[1].userId).to.equal(TEST_USER_ID)
-                        done()
+                        return true;
                     })
-            }).catch(done)
+            })
         });
     });
 
     describe("#deleteNumber()", function() {
-        it('should just delete the one number', function(done) {
+        it('should just delete the one number', function() {
             let dialId : number = null;
             db.getConnection((c) => {
                 return dial.addNumber(c, new PhoneNumber("NumberA", "1-234-567-8910", TEST_USER_ID)).
@@ -104,9 +104,8 @@ describe('DialService', function() {
                     expect(numbers[0].label).to.equal("NumberA")
                     expect(numbers[0].phone).to.equal("1-234-567-8910")
                     expect(numbers[0].userId).to.equal(TEST_USER_ID)
-                    done()
                 })
-            }).catch(done)
+            })
         });
     });
 

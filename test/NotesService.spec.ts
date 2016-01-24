@@ -1,12 +1,13 @@
 /// <reference path="../typings/tsd.d.ts" />
 "use strict"
 
-import db from "../routes/dao/db";
-import UserService from "../routes/user/User";
-import NoteService from "../routes/notes/notes";
-import { Note } from "../routes/notes/notes";
-import { User, IUser } from "../routes/user/User";
-import TestUtil from "./TestUtil";
+let moment = require("moment")
+import db from "../routes/dao/db"
+import UserService from "../routes/user/User"
+import NoteService from "../routes/notes/notes"
+import { Note } from "../routes/notes/notes"
+import { User, IUser } from "../routes/user/User"
+import TestUtil from "./TestUtil"
 import { expect } from "chai"
 
 db.init("test/databaseSettings.json");
@@ -91,16 +92,16 @@ describe("NotesService", function() {
 
         it("should load notes for the right user", function() {
 
-            let note1 = new Note("Note 1", new Date(),
+            let note1 = new Note("Note 1", moment("2021-01-01").toDate(),
                 userA.userId, userB.userId, true)
 
-            let note2 = new Note("Note 2", new Date(),
+            let note2 = new Note("Note 2", moment("2022-01-01").toDate(),
                 userC.userId, userB.userId, true)
 
-            let note3 = new Note("Note 3", new Date(),
+            let note3 = new Note("Note 3", moment("2023-01-01").toDate(),
                 userB.userId, userA.userId, true)
 
-            let note4 = new Note("Note 4", new Date(),
+            let note4 = new Note("Note 4", moment("2024-01-01").toDate(),
                 userB.userId, userB.userId, true)
 
             return db.getConnection(c => { return (
@@ -112,9 +113,9 @@ describe("NotesService", function() {
                     then(() => NoteService.loadNotesForUser(c, userB.userId)).
                     then((notes) => {
                         expect(notes.length).to.equal(3)
-                        expect(notes[0].content).to.equal("Note 1")
+                        expect(notes[0].content).to.equal("Note 4")
                         expect(notes[1].content).to.equal("Note 2")
-                        expect(notes[2].content).to.equal("Note 4")
+                        expect(notes[2].content).to.equal("Note 1")
                     })
             )})
         })

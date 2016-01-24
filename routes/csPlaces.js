@@ -1,13 +1,14 @@
 /// <reference path="../typings/tsd.d.ts" />
 "use strict";
-var User_1 = require("./user/User");
 var Places_1 = require("./places/Places");
-var express = require('express');
-var router = express.Router();
-var log_1 = require("./util/log");
+var PlacesEndpointSvc_1 = require("./places/PlacesEndpointSvc");
 var util_1 = require("./util/util");
+var router = require('express').Router();
+var endpoint = new util_1.default(router).endpoint;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = router;
 /**
- * API section
+ * Add some middleware
  */
 router.use(require("./middleware/setIsAPIFlag"));
 router.use(require("./middleware/checkIsLoggedIn"));
@@ -17,18 +18,8 @@ router.use(require("./middleware/checkIsLoggedIn"));
  * request { lat, lng }
  * response { found : boolean, placeName }
  */
-router.post("/find", function (req, res) {
-    log_1.default("/places/find " + log_1.default(req.body));
-    var c = req["c"];
-    var o = req.body;
-    Places_1.default.findPlace(c, o.lat, o.lng).
-        then(function (place) {
-        return (place == null) ?
-            { found: false } :
-            { found: true, placeName: place.placeName };
-    }).
-        then(util_1.sendResults(res)).
-        catch(util_1.error(res));
+endpoint("/find", function (c, o) {
+    return PlacesEndpointSvc_1.default.find(c, o.lat, o.lng);
 });
 /**
  *  Inserts or updates a place
@@ -36,48 +27,25 @@ router.post("/find", function (req, res) {
  *  request { placeName, address, lat, lng }
  *  response { placeId }
  */
-router.post("/save", function (req, res) {
-    log_1.default("/places/save " + log_1.default(req.body));
-    var c = req["c"];
-    var o = req.body;
-    var place = new Places_1.Place(o.placeName, o.address, o.lat, o.lng);
-    Places_1.default.savePlace(c, place).
-        then(util_1.sendResults(res)).
-        catch(util_1.error(res));
+endpoint("/save", function (c, o) {
+    return PlacesEndpointSvc_1.default.save(c, new Places_1.Place(o.placeName, o.address, o.lat, o.lng));
 });
 /**
- * Assigns a place to a user
+ *  Inserts or updates a place, and assigns it to a user
  *
- * { patientId, placeId, label }
+ *  request { placeName, address, lat, lng, patientId }
+ *  response { placeId }
  */
-router.post("/assign", function (req, res) {
-    log_1.default("/places/assign " + log_1.default(req.body));
-    var c = req["c"];
-    var o = req.body;
-    var user = req.session["user"];
-    var assignment = new Places_1.UserPlace(o.patientId, o.placeId, o.label);
-    new User_1.User(user).
-        hasAccessTo(c, o.patientId).
-        then(function () { return Places_1.default.assignPlace(c, assignment); }).
-        then(util_1.sendResults(res)).
-        then(util_1.error(res));
+endpoint("/saveAndAssign", function (c, o, user) {
+    return PlacesEndpointSvc_1.default.saveAndAssign(c, new Places_1.Place(o.placeName, o.address, o.lat, o.lng), user, o.placeLabel || o.placeName);
 });
 /**
  * Unassigns a place from a user
  *
  * { patientId, upId }
  */
-router.post("/unassign", function (req, res) {
-    log_1.default("/places/unassign");
-    var c = req["c"];
-    var o = req.body;
-    var user = req.session["user"];
-    new User_1.User(user).
-        hasAccessTo(c, o.patientId).
-        then(function () { return Places_1.default.unassignPlace(c, o.upId, o.patientId); }).
-        then(function () { ok: true; }).
-        then(util_1.sendResults(res)).
-        catch(util_1.error(res));
+endpoint("/unassign", function (c, o, user) {
+    return PlacesEndpointSvc_1.default.unassign(c, user, o.upId);
 });
 /**
  * Loads user_places for a user, ordered by (rank, upId)
@@ -96,16 +64,7 @@ router.post("/unassign", function (req, res) {
         place      ?:Place         // Not persisted, but may be decorated by API during load.
    }]
  */
-router.post("/load", function (req, res) {
-    log_1.default("/places/load");
-    var c = req["c"];
-    var o = req.body;
-    var user = req.session['user'];
-    new User_1.User(user).hasAccessTo(c, o.userId).
-        then(function () { return Places_1.default.loadUserPlaces(c, o.userId); }).
-        then(util_1.sendResults(res)).
-        catch(util_1.error(res));
+endpoint("/load", function (c, o, user) {
+    return PlacesEndpointSvc_1.default.loadUserPlaces(c, user);
 });
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = router;
 //# sourceMappingURL=csPlaces.js.map

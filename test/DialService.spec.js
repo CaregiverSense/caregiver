@@ -41,8 +41,8 @@ describe('DialService', function () {
         });
     });
     describe("#loadNumbers()", function () {
-        it('should load numbers for a user', function (done) {
-            db_1.default.getConnection(function (c) {
+        it('should load numbers for a user', function () {
+            return db_1.default.getConnection(function (c) {
                 return Dial_2.default.addNumber(c, new Dial_1.PhoneNumber("NumberA", "1-234-567-8910", TEST_USER_ID)).
                     then(function () {
                     return Dial_2.default.addNumber(c, new Dial_1.PhoneNumber("NumberB", "9-876-543-2198", TEST_USER_ID));
@@ -58,13 +58,13 @@ describe('DialService', function () {
                     chai_1.expect(numbers[1].label).to.equal("NumberB");
                     chai_1.expect(numbers[1].phone).to.equal("9-876-543-2198");
                     chai_1.expect(numbers[1].userId).to.equal(TEST_USER_ID);
-                    done();
+                    return true;
                 });
-            }).catch(done);
+            });
         });
     });
     describe("#deleteNumber()", function () {
-        it('should just delete the one number', function (done) {
+        it('should just delete the one number', function () {
             var dialId = null;
             db_1.default.getConnection(function (c) {
                 return Dial_2.default.addNumber(c, new Dial_1.PhoneNumber("NumberA", "1-234-567-8910", TEST_USER_ID)).
@@ -85,10 +85,9 @@ describe('DialService', function () {
                     chai_1.expect(numbers[0].label).to.equal("NumberA");
                     chai_1.expect(numbers[0].phone).to.equal("1-234-567-8910");
                     chai_1.expect(numbers[0].userId).to.equal(TEST_USER_ID);
-                    done();
                 });
-            }).catch(done);
+            });
         });
     });
 });
-//# sourceMappingURL=dialServiceTest.js.map
+//# sourceMappingURL=DialService.spec.js.map

@@ -11,7 +11,7 @@
   src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.5.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff2?v=4.5.0") format("woff2"), url("../fonts/fontawesome-webfont.woff?v=4.5.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.5.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.5.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal; }
-.fa, .userLookup .icon, .adminQuickDial .entry .body .delete {
+.fa, .userLookup .icon, .adminQuickDial .entry .body .delete, .adminQuickPlaces .entry .body .delete {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;
@@ -25,7 +25,7 @@
   line-height: 0.75em;
   vertical-align: -15%; }
 
-.fa-2x, .adminQuickDial .entry .body .delete {
+.fa-2x, .adminQuickDial .entry .body .delete, .adminQuickPlaces .entry .body .delete {
   font-size: 2em; }
 
 .fa-3x {
@@ -68,9 +68,9 @@
 .fa-pull-right {
   float: right; }
 
-.fa.fa-pull-left, .userLookup .fa-pull-left.icon, .adminQuickDial .entry .body .fa-pull-left.delete {
+.fa.fa-pull-left, .userLookup .fa-pull-left.icon, .adminQuickDial .entry .body .fa-pull-left.delete, .adminQuickPlaces .entry .body .fa-pull-left.delete {
   margin-right: .3em; }
-.fa.fa-pull-right, .userLookup .fa-pull-right.icon, .adminQuickDial .entry .body .fa-pull-right.delete {
+.fa.fa-pull-right, .userLookup .fa-pull-right.icon, .adminQuickDial .entry .body .fa-pull-right.delete, .adminQuickPlaces .entry .body .fa-pull-right.delete {
   margin-left: .3em; }
 
 /* Deprecated as of 4.4.0 */
@@ -80,9 +80,9 @@
 .pull-left {
   float: left; }
 
-.fa.pull-left, .userLookup .pull-left.icon, .adminQuickDial .entry .body .pull-left.delete {
+.fa.pull-left, .userLookup .pull-left.icon, .adminQuickDial .entry .body .pull-left.delete, .adminQuickPlaces .entry .body .pull-left.delete {
   margin-right: .3em; }
-.fa.pull-right, .userLookup .pull-right.icon, .adminQuickDial .entry .body .pull-right.delete {
+.fa.pull-right, .userLookup .pull-right.icon, .adminQuickDial .entry .body .pull-right.delete, .adminQuickPlaces .entry .body .pull-right.delete {
   margin-left: .3em; }
 
 .fa-spin {
@@ -229,7 +229,7 @@
 .fa-cog:before {
   content: ""; }
 
-.fa-trash-o:before, .adminQuickDial .entry .body .delete {
+.fa-trash-o:before, .adminQuickDial .entry .body .delete, .adminQuickPlaces .entry .body .delete {
   content: ""; }
 
 .fa-home:before {
@@ -8027,7 +8027,7 @@ button.close {
     vertical-align: middle; }
 
 /* Common */
-.raisedPanel, .patientNotes .note, .adminQuickDial .entry {
+.raisedPanel, .patientNotes .note, .adminQuickDial .entry, .adminQuickPlaces .entry {
   background-color: #f5f5f5;
   padding: .75em;
   margin: .5em;
@@ -8106,12 +8106,25 @@ button.close {
       color: #00B7FF; }
 
 /* Styles specific to adminQuickPlaces.jade */
+.adminQuickPlaces .entry .body {
+  display: block;
+  line-height: 2em; }
+  .adminQuickPlaces .entry .body .placeName {
+    display: inline; }
+  .adminQuickPlaces .entry .body .delete {
+    position: relative;
+    float: right;
+    cursor: pointer;
+    color: #888888; }
+    .adminQuickPlaces .entry .body .delete:hover {
+      color: #00B7FF; }
+
 .placeSelector .map {
   display: block;
   height: 20em; }
 .placeSelector .mapLookup {
   width: 70%;
-  margin-top: 0.5em; }
+  margin-top: .5em; }
 
 .pac-container {
   z-index: 10000 !important; }

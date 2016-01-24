@@ -97,8 +97,11 @@ describe("User", function () {
                 });
             }).catch(done);
         });
-        it.skip("allows access if the user is an admin", function (done) {
-        });
+        /** TODO
+        it.skip("allows access if the user is an admin", function(done) {
+
+        })
+        */
     });
 });
 describe("UserService", function () {
@@ -214,4 +217,4 @@ describe("UserService", function () {
         });
     });
 });
-//# sourceMappingURL=userServiceTest.js.map
+//# sourceMappingURL=UserService.spec.js.map

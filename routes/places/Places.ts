@@ -1,7 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 "use strict"
 
-import db from "../../routes/dao/db";
+import db from "../../routes/dao/db"
+import l from "../util/log"
 
 /**
  * A service for managing the PLACE and USER_PLACE tables.
@@ -12,12 +13,14 @@ export default class PlacesService {
     /**
      * Finds a place given latitude and longitude coordinates.
      */
-    static findPlace(c : any, lat : number, lng : number) : Promise<Place> {
-        console.log("PlaceService.addPlace( c, lat = ", lat, ", lng = ", lng, ")")
+    findPlace(c : any, lat : number, lng : number) : Promise<Place> {
+        console.log("PlaceService.findPlace( c, lat = ", lat, ", lng = ", lng, ")")
+
         return db.queryOne(c, "select * from place where lat = ? and lng = ?", [lat, lng]).
             then(row => {
-                return new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress)
-            }).catch(() => null)
+                l("Found: " + l(row))
+                return new Place(row.placeName, row.address, row.lat, row.lng, row.placeId)
+            })
     }
 
     /**
@@ -26,9 +29,9 @@ export default class PlacesService {
      *
      * @param c         The connection
      * @param place     The Place to insert
-     * @returns A promise of the placeId of the place inserted
+     * @returns A promise of the place inserted
      */
-    static savePlace(c : any, place:  Place) : Promise<number> {
+    savePlace(c : any, place:  Place) : Promise<Place> {
         console.log("PlaceService.savePlace( c, place = ", place, ")")
 
         return new Promise((y,n) => {
@@ -51,6 +54,7 @@ export default class PlacesService {
                     "values (?, ?, ?, ?)",
                     [place.placeName, place.address, place.lat, place.lng]
                 ).then((rs) => {
+                    l("Inserted place with placeId " + rs.insertId)
                     place.placeId = rs.insertId
                     return place
                 }));
@@ -70,30 +74,42 @@ export default class PlacesService {
      * @param userPlace The entry to insert.
      * @returns A promise of upId of the user_place inserted
      */
-    static assignPlace(c : any, userPlace : UserPlace) : Promise<number> {
+    assignPlace(c : any, userPlace : UserPlace) : Promise<number> {
         console.log("PlaceService.addUserPlace( c, userPlace = ", userPlace, ")")
         return db.query(c, "insert into user_place " +
-                "(userId, placeId, label, rank) values (?, ?, ?, ?)",
-                [userPlace.userId, userPlace.placeId, userPlace.label, userPlace.rank]).
+                "(userId, placeId, label) values (?, ?, ?)",
+                [userPlace.userId, userPlace.placeId, userPlace.label]).
             then((rs) => {
                 userPlace.upId = rs.insertId
                 return userPlace.upId
             })
-
     }
 
     /**
-     * Deletes a user_place identified by its upId primary key if it represents
-     * an assignment to the given userId.
+     * Unassigns a place from a user.
      *
      * @param c         The connection
-     * @param upId      The id of the user_place to delete
      * @param userId    The userId who is assigned the user_place identified by the upId
+     * @param placeId   The id of the place to unassign from the user
      * @returns {Promise<any>}
      */
-    static unassignPlace(c : any, upId : number, userId : number) : Promise<any[]> {
-        console.log("PlacesService.deleteUserPlace( c, upId = ", upId, ")")
-        return db.query(c, "delete from user_place where upId = ? and userId = ?", [upId, userId]);
+    unassignPlace(c : any, userId : number, placeId : number) : Promise<any[]> {
+        console.log("PlacesService.deleteUserPlace( c, userId = ", userId, ", placeId = ", placeId, ")")
+        return db.query(c, "delete from user_place where userId = ? and placeId = ?", [userId, placeId]);
+    }
+
+    /**
+     * Promises to return whether or not the given userId is assigned to the
+     * given placeId.
+     *
+     * @param c         A database connection
+     * @param userId    The userId
+     * @param placeId   The placeId
+     */
+    isAssigned(c : any, userId :number, placeId : number) : Promise<boolean> {
+        console.log("PlacesService.isAssigned(c, userId = " + userId + ", " + placeId);
+        return db.query(c, "select * from user_place where userId = ? and placeId = ?", [userId, placeId]).
+            then(rows => rows.length > 0)
     }
 
     /**
@@ -103,7 +119,7 @@ export default class PlacesService {
      * @param userId    The id of the user
      * @returns {Promise<TResult>|Promise<U>}
      */
-    static loadUserPlaces(c : any, userId : number) : Promise<UserPlace[]> {
+    loadUserPlaces(c : any, userId : number) : Promise<UserPlace[]> {
         console.log("PlacesService.loadUserPlaces( c, userId = ", userId, ")")
         return db.query(c, "select u.*, p.placeName, p.address, p.lat, p.lng " +
             "from user_place up, place p " +
@@ -121,6 +137,7 @@ export default class PlacesService {
 }
 
 export class Place {
+
     constructor(
         public placeName    :string,        // the name of the place
         public address      :string,        // the address of the place

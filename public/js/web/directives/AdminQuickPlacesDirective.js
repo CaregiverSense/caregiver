@@ -140,7 +140,8 @@ define(["jquery", ], function($) {
                 }
 
                 if (self.isEdited()) {
-                    $http.post("/places/save", self.entry).
+                    self.entry["userId"] = $scope.userId;
+                    $http.post("/places/saveAndAssign", self.entry).
                         then(() => {
                             pushAndClose();
                         })

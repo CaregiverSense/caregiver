@@ -140,6 +140,18 @@
   }
 }
 
+@mixin deleteIcon() {
+  @extend .fa, .fa-trash-o:before, .fa-2x;
+  position:relative;
+  float:right;
+  cursor:pointer;
+  color:#888888;
+
+  &:hover {
+    color:#00B7FF;
+  }
+}
+
 /* Styles specific to adminQuickDial.jade */
 .adminQuickDial {
   .entry {
@@ -149,15 +161,7 @@
       line-height:2em;
 
       .delete {
-        @extend .fa, .fa-trash-o:before, .fa-2x;
-        position:relative;
-        float:right;
-        cursor:pointer;
-        color:#888888;
-
-        &:hover {
-          color:#00B7FF;
-        }
+        @include deleteIcon()
       }
     }
   }
@@ -165,6 +169,21 @@
 
 /* Styles specific to adminQuickPlaces.jade */
 .adminQuickPlaces {
+  .entry {
+    @extend .raisedPanel;
+    .body {
+      display:block;
+      line-height:2em;
+
+      .placeName {
+        display:inline;
+      }
+
+      .delete {
+        @include deleteIcon()
+      }
+    }
+  }
 }
 
 .placeSelector {

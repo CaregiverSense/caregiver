@@ -1,22 +1,24 @@
 /// <reference path="../typings/tsd.d.ts" />
 "use strict"
 
-import { User } from "./user/User"
-import PlacesService, {Place, UserPlace} from "./places/Places"
-import express = require('express')
-let router = express.Router()
+import {User} from "./user/User"
+import {Place, UserPlace} from "./places/Places"
+import svc from "./places/PlacesEndpointSvc"
+import endpointBuilder from "./util/util"
+let router = require('express').Router()
+let endpoint = new endpointBuilder(router).endpoint;
+export default router
 
-import db from "./dao/db"
-import l from "./util/log"
-import { error, sendResults } from "./util/util"
 
 
 /**
- * API section
+ * Add some middleware
  */
-
 router.use(require("./middleware/setIsAPIFlag"))
 router.use(require("./middleware/checkIsLoggedIn"))
+
+
+
 
 /**
  * Finds a place given its latitude and longitude.
@@ -24,20 +26,11 @@ router.use(require("./middleware/checkIsLoggedIn"))
  * request { lat, lng }
  * response { found : boolean, placeName }
  */
-router.post("/find", function(req, res) {
-    l("/places/find " + l(req.body))
-    let c = req["c"]
-    let o = req.body
+endpoint("/find", (c, o) =>
+    svc.find(c, o.lat, o.lng)
+)
 
-    PlacesService.findPlace(c, o.lat, o.lng).
-        then(place => {
-            return (place == null) ?
-                { found : false } :
-                { found : true, placeName : place.placeName }
-        }).
-        then(sendResults(res)).
-        catch(error(res))
-})
+
 
 /**
  *  Inserts or updates a place
@@ -45,56 +38,37 @@ router.post("/find", function(req, res) {
  *  request { placeName, address, lat, lng }
  *  response { placeId }
  */
-router.post("/save", function(req, res) {
-    l("/places/save " + l(req.body))
-    let c = req["c"]
-    let o = req.body
+endpoint("/save", (c, o) =>
+    svc.save(c, new Place(o.placeName, o.address, o.lat, o.lng))
+)
 
-    let place = new Place(o.placeName, o.address, o.lat, o.lng)
 
-    PlacesService.savePlace(c, place).
-        then(sendResults(res)).
-        catch(error(res))
-})
 
 /**
- * Assigns a place to a user
+ *  Inserts or updates a place, and assigns it to a user
  *
- * { patientId, placeId, label }
+ *  request { placeName, address, lat, lng, patientId }
+ *  response { placeId }
  */
-router.post("/assign", function(req, res) {
-    l("/places/assign " + l(req.body))
-    let c = req["c"]
-    let o = req.body
-    let user : User = req.session["user"]
+endpoint("/saveAndAssign", (c, o, user) =>
+    svc.saveAndAssign(c,
+            new Place(o.placeName, o.address, o.lat, o.lng),
+            user,
+            o.placeLabel || o.placeName)
+)
 
-    let assignment = new UserPlace(o.patientId, o.placeId, o.label)
 
-    new User(user).
-        hasAccessTo(c, o.patientId).
-        then(() => PlacesService.assignPlace(c, assignment)).
-        then(sendResults(res)).
-        then(error(res))
-})
 
 /**
  * Unassigns a place from a user
  *
  * { patientId, upId }
  */
-router.post("/unassign", function(req, res) {
-    l("/places/unassign")
-    let c = req["c"]
-    let o = req.body
-    let user : User = req.session["user"]
+endpoint("/unassign", (c, o, user) =>
+    svc.unassign(c, user, o.upId)
+)
 
-    new User(user).
-        hasAccessTo(c, o.patientId).
-        then(() => PlacesService.unassignPlace(c, o.upId, o.patientId)).
-        then(() => {ok:true}).
-        then(sendResults(res)).
-        catch(error(res))
-})
+
 
 /**
  * Loads user_places for a user, ordered by (rank, upId)
@@ -113,17 +87,10 @@ router.post("/unassign", function(req, res) {
         place      ?:Place         // Not persisted, but may be decorated by API during load.
    }]
  */
-router.post("/load", function(req, res) {
-    l("/places/load")
-    let c = req["c"]
-    let o = req.body
-    let user : User = req.session['user']
-
-    new User(user).hasAccessTo(c, o.userId).
-        then(() => PlacesService.loadUserPlaces(c, o.userId)).
-        then(sendResults(res)).
-        catch(error(res))
-})
+endpoint("/load", (c, o, user) =>
+    svc.loadUserPlaces(c, user)
+)
 
 
-export default router
+
+

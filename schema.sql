@@ -59,7 +59,7 @@ create table notes (
 	byUserId	integer not null references user(userId),
 	forUserId	integer not null references user(userId),
 	patientVisible  varchar(10)
-)
+);
 
 
 drop table schedule;
@@ -74,7 +74,7 @@ create table schedule (
         date datetime not null,
         completed integer not null default 0,
         directions varchar(1000)
-)
+);
 
 
 create table registration (
@@ -86,7 +86,7 @@ create table registration (
     wasEmailed char(1) not null default 'N',
     hasRegistered char(1) not null default 'N',
     registrationLink varchar(200) not null
-)
+);
 
 alter table user add column registration_date datetime;
 
@@ -104,8 +104,8 @@ create table place (
 	placeId		integer not null primary key auto_increment,	-- primary key
 	placeName	varchar(200) not null,							-- the name of the placd
 	address		varchar(400) not null,							-- the address of the place
-	lat			float not null,
-	lng			float not null
+	lat			numeric(15,12) not null,
+	lng			numeric(15,12) not null
 );
 
 -- Places associated to users.  The label field allows a place to be renamed for a user.

@@ -34,6 +34,8 @@ module db {
                 }
                 settings = require("../../" + path);
                 l("Loaded database settings "  + l(settings));
+            } else {
+                l("using db " + l(settings))
             }
             return me;
         }

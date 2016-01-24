@@ -26,5 +26,5 @@
         .col-xs-12
             .entry.shadowed(ng-repeat="entry in entries" on-last-row="reapplyShadows")
                 .body
-                    | {{ entry.placeName }}
+                    .placeName {{ entry.placeName }}
                     .fa.fa-trash-o.delete(ng-click='delete(entry)')

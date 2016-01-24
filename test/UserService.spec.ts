@@ -123,9 +123,11 @@ describe("User", function() {
             }).catch(done)
         })
 
+        /** TODO
         it.skip("allows access if the user is an admin", function(done) {
 
         })
+        */
 
     })
 
