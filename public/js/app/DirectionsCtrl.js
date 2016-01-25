@@ -3,29 +3,43 @@
 define(['angular', 'jquery', 'app/util', 'app/phone'],
     function (angular, $, util, phone) {
         return function (module) {
-            module.controller('DirectionsCtrl', ['$scope', function ($scope) {
-                this.locations = [
+            module.controller('DirectionsCtrl', ['$scope', '$http', 'userInfo', function ($scope, $http, userInfo) {
+                var self = this;
+                this.locations = []
+
+                $http.post("/places/load", {userId:userInfo.getPatient().userId}).then(
+                    function(rs) {
+                        console.dir(rs);
+                        for (var i = 0; i < rs.data.length; i++) {
+                            self.locations.push(rs.data[i]);
+                        }
+                    }
+                )
+
+                /*
+                [
                     {
-                        name: 'Home',
+                        label: 'Home',
                         address: 'Square One Mall, Mississauga, ON'
                     },
                     {
-                        name: 'Clinic',
+                        label: 'Clinic',
                         address: 'Alzheimer Society of Toronto, Eglinton Avenue West, Toronto, ON'
                     },
                     {
-                        name: 'Church',
+                        label: 'Church',
                         address: 'Metropolitan United Church, Queen Street East, Toronto, ON'
                     },
                     {
-                        name: 'The Legion',
+                        label: 'The Legion',
                         address: 'Royal Canadian Legion Branch 344, Lake Shore Boulevard West, Toronto, ON'
                     }
                 ]
+                */
 
                 this.navigate = function (loc) {
                     var launchNavigator = phone.getLaunchNavigator()
-                    launchNavigator && launchNavigator.navigate(loc.address, null, util.success(), util.failed(), {
+                    launchNavigator && launchNavigator.navigate(loc.place.address, null, util.success(), util.failed(), {
                         navigationMode: 'turn-by-turn',
                         transportMode: 'transit'
                     })

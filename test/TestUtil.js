@@ -9,6 +9,7 @@ var TestUtil = (function () {
             then(function () { return db_1.default.query(c, "delete from notes"); }).
             then(function () { return db_1.default.query(c, "delete from dial"); }).
             then(function () { return db_1.default.query(c, "delete from user_patient"); }).
+            then(function () { return db_1.default.query(c, "delete from user_place"); }).
             then(function () { return db_1.default.query(c, "delete from user"); }).
             then(function () { return db_1.default.query(c, "delete from place"); });
     };

@@ -19,7 +19,7 @@ class PlacesEndpointSvc {
      * @param lat latitude
      * @param lng longitude
      */
-    find(c, lat:number, lng:number) : Promise<{found: boolean, placeName ?: string}> {
+    find(c, lat:string, lng:string) : Promise<{found: boolean, placeName ?: string}> {
         return this.placesSvc.
             findPlace(c, lat, lng).
             then(place => {
@@ -37,24 +37,30 @@ class PlacesEndpointSvc {
      * Save a place and assign the user to that place
      * @param c
      * @param place
-     * @param user
-     * @returns {Promise<number>}
+     * @param user      The user performing the assignment.
+     * @param userId    The user being assigned the place
+     * @param placeLabel
+     * @returns {Promise<UserPlace>}
      */
-    saveAndAssign(c, place : Place, user : User, placeLabel : string) {
+    saveAndAssign(c, place : Place, user : User, userId : number, placeLabel : string) : Promise<UserPlace> {
         let self = this
-        let userId = user.userId
         return user.
-            hasAccessTo(c, user.userId).
+            hasAccessTo(c, userId).
             then(() => self.placesSvc.savePlace(c, place)).
-            then((place) => self.placesSvc.assignPlace(c, new UserPlace(userId, place.placeId, placeLabel)))
+            then((place) => {
+                let assignment = new UserPlace(userId, place.placeId, placeLabel)
+                assignment.place = place;
+                return self.placesSvc.assignPlace(c, assignment)
+            })
     }
 
     /**
      * Unassigns a place from a user
 
      * @param c
-     * @param userId
-     * @param placeId
+     * @param user      The user performing the assignment.
+     * @param userId    The user being assigned the place
+     * @param placeId   The id of the place
      * @returns {ok : true}
      */
     unassign(c, user : User, userId : number, placeId : number) {
@@ -67,21 +73,16 @@ class PlacesEndpointSvc {
     /**
      * Loads user_places for a user, ordered by (rank, upId)
      *
-     * response [{      // See class UserPlace for a description of these properties
-        userId	    :number,        // the user to whom the place is assigsned
-        placeId	    :number,        // the placeId
-        label	    :string,        // the label to represent the address
-
-        rank	   ?:number,        // used to sort and re-order
-        upId	   ?:number, 	    // primary key
-        place      ?:Place         // Not persisted, but may be decorated by API during load.
-       }]
+     * @param c
+     * @param user
+     * @param userId
+     * @returns {Promise<UserPlace[]>}
      */
-    loadUserPlaces(c, user : User) {
+    loadUserPlaces(c, user : User, userId : number) : Promise<UserPlace[]> {
         let self = this;
         return new User(user).
-            hasAccessTo(c, user.userId).
-            then(() => self.placesSvc.loadUserPlaces(c, user.userId))
+            hasAccessTo(c, userId).
+            then(() => self.placesSvc.loadUserPlaces(c, userId))
     }
 
 }

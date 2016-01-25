@@ -13,11 +13,12 @@ var PlacesService = (function () {
      * Finds a place given latitude and longitude coordinates.
      */
     PlacesService.prototype.findPlace = function (c, lat, lng) {
+        var _this = this;
         console.log("PlaceService.findPlace( c, lat = ", lat, ", lng = ", lng, ")");
         return db_1.default.queryOne(c, "select * from place where lat = ? and lng = ?", [lat, lng]).
             then(function (row) {
             log_1.default("Found: " + log_1.default(row));
-            return new Place(row.placeName, row.address, row.lat, row.lng, row.placeId);
+            return new Place(row.placeName, row.address, _this.format(row.lat), _this.format(row.lng), row.placeId);
         });
     };
     /**
@@ -59,13 +60,11 @@ var PlacesService = (function () {
      * Assigns a place to a user, stored as a user_place record.
      *
      * Note:  The upId of the given userPlace will be ignored and
-     * a new one will be written to the object upon insert and will
-     * be returned as a promise.
-     *
+     * a new one will be written to the object upon insert.
      *
      * @param c         The connection
      * @param userPlace The entry to insert.
-     * @returns A promise of upId of the user_place inserted
+     * @returns A promise of the saved UserPlace with the upId field populated.
      */
     PlacesService.prototype.assignPlace = function (c, userPlace) {
         console.log("PlaceService.addUserPlace( c, userPlace = ", userPlace, ")");
@@ -73,7 +72,7 @@ var PlacesService = (function () {
             "(userId, placeId, label) values (?, ?, ?)", [userPlace.userId, userPlace.placeId, userPlace.label]).
             then(function (rs) {
             userPlace.upId = rs.insertId;
-            return userPlace.upId;
+            return userPlace;
         });
     };
     /**
@@ -110,16 +109,19 @@ var PlacesService = (function () {
      */
     PlacesService.prototype.loadUserPlaces = function (c, userId) {
         console.log("PlacesService.loadUserPlaces( c, userId = ", userId, ")");
-        return db_1.default.query(c, "select u.*, p.placeName, p.address, p.lat, p.lng " +
+        return db_1.default.query(c, "select up.*, p.placeId, p.placeName, p.address, p.lat, p.lng " +
             "from user_place up, place p " +
             "where up.placeId = p.placeId and " +
-            "up.userId = ?" +
+            "up.userId = ? " +
             "order by rank, upId", [userId]).then(function (rs) {
             return rs.map(function (row) {
-                var place = new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress);
+                var place = new Place(row.placeName, row.address, row.lat, row.lng, row.placeId);
                 return new UserPlace(row.userId, place.placeId, row.label, row.rank, row.upId, place);
             });
         });
+    };
+    PlacesService.prototype.format = function (num) {
+        return new Number(num).toFixed(9);
     };
     return PlacesService;
 })();

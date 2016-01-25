@@ -1,15 +1,14 @@
+/**
+ * csPlaces.ts: REST endpoints for map places and place assignments.
+ */
 /// <reference path="../typings/tsd.d.ts" />
 "use strict"
-
 import {User} from "./user/User"
 import {Place, UserPlace} from "./places/Places"
 import svc from "./places/PlacesEndpointSvc"
 import endpointBuilder from "./util/util"
 let router = require('express').Router()
 let endpoint = new endpointBuilder(router).endpoint;
-export default router
-
-
 
 /**
  * Add some middleware
@@ -47,13 +46,14 @@ endpoint("/save", (c, o) =>
 /**
  *  Inserts or updates a place, and assigns it to a user
  *
- *  request { placeName, address, lat, lng, patientId }
+ *  request { placeName, address, lat, lng, userId }
  *  response { placeId }
  */
 endpoint("/saveAndAssign", (c, o, user) =>
     svc.saveAndAssign(c,
             new Place(o.placeName, o.address, o.lat, o.lng),
             user,
+            o.userId,
             o.placeLabel || o.placeName)
 )
 
@@ -62,10 +62,10 @@ endpoint("/saveAndAssign", (c, o, user) =>
 /**
  * Unassigns a place from a user
  *
- * { patientId, upId }
+ * request { userId, placeId }
  */
 endpoint("/unassign", (c, o, user) =>
-    svc.unassign(c, user, o.upId)
+    svc.unassign(c, user, o.userId, o.placeId)
 )
 
 
@@ -77,20 +77,20 @@ endpoint("/unassign", (c, o, user) =>
  *      userId      // Loads numbers for this user
  * }
  *
- * response [{      // See class UserPlace for a description of these properties
-        userId	    :number,        // the user to whom the place is assigsned
-        placeId	    :number,        // the placeId
-        label	    :string,        // the label to represent the address
+ * response [{
+        userId	    :number,   // the user to whom the place is assigned
+        placeId	    :number,   // the placeId
+        label	    :string,   // the label to represent the address
 
-        rank	   ?:number,        // used to sort and re-order
-        upId	   ?:number, 	    // primary key
-        place      ?:Place         // Not persisted, but may be decorated by API during load.
+        rank       ?:number,   // used to sort and re-order
+        upId       ?:number,   // primary key of the assignment
+        place      ?:Place     // The place itself
    }]
  */
 endpoint("/load", (c, o, user) =>
-    svc.loadUserPlaces(c, user)
+    svc.loadUserPlaces(c, user, o.userId)
 )
 
 
 
-
+export default router

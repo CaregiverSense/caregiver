@@ -5,10 +5,10 @@
         .modal-body
             .placeSelector
                 .row
-                    .col-md-6
+                    .col-xs-12
                         | {{latlong}}
                         | {{addresss}}
-                    .col-md-6
+                    .col-xs-12
                         input.mapLookup.form-control(id='autocompleteSearch' type='text')
                         google-map.map(on-place-selected="qpm.placeSelected(latlong, address)")
 
@@ -26,5 +26,5 @@
         .col-xs-12
             .entry.shadowed(ng-repeat="entry in entries" on-last-row="reapplyShadows")
                 .body
-                    .placeName {{ entry.placeName }}
+                    .placeName {{ entry.label }}
                     .fa.fa-trash-o.delete(ng-click='delete(entry)')

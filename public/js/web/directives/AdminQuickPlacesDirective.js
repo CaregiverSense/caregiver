@@ -20,6 +20,31 @@ define(["jquery", ], function($) {
                     };
                     me.modal = null;
 
+                    $http.post("/places/load", {userId:scope.userId}).
+                        then(function(rs) {
+                            console.group("/places/load " + me.userId);
+                            console.dir(JSON.stringify(rs.data))
+                            console.groupEnd();
+
+                            for (var i = 0; i < rs.data.length; i++) {
+                                me.entries.push(rs.data[i]);
+                            }
+                        });
+
+                    me.delete = function(entry) {
+                        console.log(entry);
+                        $http.post("/places/unassign", {userId:entry.userId, placeId:entry.placeId}).
+                            then((rs) => {
+                                console.log(rs.data);
+                                for (var i = 0; i < me.entries.length; i++) {
+                                    if (me.entries[i].upId == entry.upId) {
+                                        me.entries.splice(i,1);
+                                        break;
+                                    }
+                                }
+                            })
+                    }
+
                     me.openAddPlaceDialog = function() {
                         var instance = $uibModal.open({
                             animation   : true,
@@ -27,7 +52,7 @@ define(["jquery", ], function($) {
                             scope : scope,
                             controllerAs : 'qpm',
                             controller  : 'QuickPlacesModalCtrl',
-                            size    : "lg"
+                            size    : "md"
                         });
                         instance.result.then(function() {
                             console.log("Add Places Dialog closed");
@@ -98,6 +123,7 @@ define(["jquery", ], function($) {
 
             self.close = function() {
                 $uibModalInstance.close();
+                console.log("Modal close requested");
             }
 
             self.placeSelected = function(latlong, address) {
@@ -119,7 +145,7 @@ define(["jquery", ], function($) {
                 $http.post("/places/find", {lat : latlong.lat, lng : latlong.lng}).
                     then(function(results) {
                         if (results.found) {
-                            self.originalPlaceName = self.newPlaceName = self.entry.placeName = results.placeName;
+                            self.originalPlaceName = self.newPlaceName = self.entry.label = results.placeName;
                             self.isNewEntry = false;
                         }
                         self.showPlaceNameTextField = true;
@@ -132,7 +158,7 @@ define(["jquery", ], function($) {
             }
 
             self.useThisPlace = function() {
-                self.entry.placeName = self.newPlaceName;
+                self.entry.label = self.newPlaceName;
 
                 function pushAndClose() {
                     $scope.entries.push(self.entry);
@@ -143,6 +169,7 @@ define(["jquery", ], function($) {
                     self.entry["userId"] = $scope.userId;
                     $http.post("/places/saveAndAssign", self.entry).
                         then(() => {
+                            console.log("saveAndAssign complete");
                             pushAndClose();
                         })
                 } else {

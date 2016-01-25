@@ -13,13 +13,13 @@ export default class PlacesService {
     /**
      * Finds a place given latitude and longitude coordinates.
      */
-    findPlace(c : any, lat : number, lng : number) : Promise<Place> {
+    findPlace(c : any, lat : string, lng : string) : Promise<Place> {
         console.log("PlaceService.findPlace( c, lat = ", lat, ", lng = ", lng, ")")
 
         return db.queryOne(c, "select * from place where lat = ? and lng = ?", [lat, lng]).
             then(row => {
                 l("Found: " + l(row))
-                return new Place(row.placeName, row.address, row.lat, row.lng, row.placeId)
+                return new Place(row.placeName, row.address, this.format(row.lat), this.format(row.lng), row.placeId)
             })
     }
 
@@ -66,22 +66,20 @@ export default class PlacesService {
      * Assigns a place to a user, stored as a user_place record.
      *
      * Note:  The upId of the given userPlace will be ignored and
-     * a new one will be written to the object upon insert and will
-     * be returned as a promise.
-     *
+     * a new one will be written to the object upon insert.
      *
      * @param c         The connection
      * @param userPlace The entry to insert.
-     * @returns A promise of upId of the user_place inserted
+     * @returns A promise of the saved UserPlace with the upId field populated.
      */
-    assignPlace(c : any, userPlace : UserPlace) : Promise<number> {
+    assignPlace(c : any, userPlace : UserPlace) : Promise<UserPlace> {
         console.log("PlaceService.addUserPlace( c, userPlace = ", userPlace, ")")
         return db.query(c, "insert into user_place " +
                 "(userId, placeId, label) values (?, ?, ?)",
                 [userPlace.userId, userPlace.placeId, userPlace.label]).
             then((rs) => {
                 userPlace.upId = rs.insertId
-                return userPlace.upId
+                return userPlace
             })
     }
 
@@ -121,17 +119,21 @@ export default class PlacesService {
      */
     loadUserPlaces(c : any, userId : number) : Promise<UserPlace[]> {
         console.log("PlacesService.loadUserPlaces( c, userId = ", userId, ")")
-        return db.query(c, "select u.*, p.placeName, p.address, p.lat, p.lng " +
+        return db.query(c, "select up.*, p.placeId, p.placeName, p.address, p.lat, p.lng " +
             "from user_place up, place p " +
             "where up.placeId = p.placeId and " +
-            "up.userId = ?" +
+            "up.userId = ? " +
             "order by rank, upId", [userId]
         ).then((rs) => {
             return rs.map((row) => {
-                let place = new Place(row.placeId, row.placeName, row.lat, row.lng, row.placeAddress)
+                let place = new Place(row.placeName, row.address, row.lat, row.lng, row.placeId)
                 return new UserPlace(row.userId, place.placeId, row.label, row.rank, row.upId, place)
             })
         })
+    }
+
+    private format(num : string) : string {
+        return new Number(num).toFixed(9);
     }
 
 }
@@ -141,8 +143,8 @@ export class Place {
     constructor(
         public placeName    :string,        // the name of the place
         public address      :string,        // the address of the place
-        public lat          :number,        // latitude
-        public lng          :number,        // longitude
+        public lat          :string,        // latitude
+        public lng          :string,        // longitude
         public placeId     ?:number 	    // primary key
     ) {}
 }

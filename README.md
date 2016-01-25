@@ -19,4 +19,4 @@ Caregiver Sense also provides a platform for caregivers to:
 Caregiver Sense can be launched from NFC wearable bracelets!
  - Emergency/medial personnel could scan the tag to access the patient's profile.
  - A self-scan of an NFC tag by the patient's phone brings up the app for them.
- 
+

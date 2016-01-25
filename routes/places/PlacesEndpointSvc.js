@@ -30,23 +30,29 @@ var PlacesEndpointSvc = (function () {
      * Save a place and assign the user to that place
      * @param c
      * @param place
-     * @param user
-     * @returns {Promise<number>}
+     * @param user      The user performing the assignment.
+     * @param userId    The user being assigned the place
+     * @param placeLabel
+     * @returns {Promise<UserPlace>}
      */
-    PlacesEndpointSvc.prototype.saveAndAssign = function (c, place, user, placeLabel) {
+    PlacesEndpointSvc.prototype.saveAndAssign = function (c, place, user, userId, placeLabel) {
         var self = this;
-        var userId = user.userId;
         return user.
-            hasAccessTo(c, user.userId).
+            hasAccessTo(c, userId).
             then(function () { return self.placesSvc.savePlace(c, place); }).
-            then(function (place) { return self.placesSvc.assignPlace(c, new Places_1.UserPlace(userId, place.placeId, placeLabel)); });
+            then(function (place) {
+            var assignment = new Places_1.UserPlace(userId, place.placeId, placeLabel);
+            assignment.place = place;
+            return self.placesSvc.assignPlace(c, assignment);
+        });
     };
     /**
      * Unassigns a place from a user
 
      * @param c
-     * @param userId
-     * @param placeId
+     * @param user      The user performing the assignment.
+     * @param userId    The user being assigned the place
+     * @param placeId   The id of the place
      * @returns {ok : true}
      */
     PlacesEndpointSvc.prototype.unassign = function (c, user, userId, placeId) {
@@ -58,21 +64,16 @@ var PlacesEndpointSvc = (function () {
     /**
      * Loads user_places for a user, ordered by (rank, upId)
      *
-     * response [{      // See class UserPlace for a description of these properties
-        userId	    :number,        // the user to whom the place is assigsned
-        placeId	    :number,        // the placeId
-        label	    :string,        // the label to represent the address
-
-        rank	   ?:number,        // used to sort and re-order
-        upId	   ?:number, 	    // primary key
-        place      ?:Place         // Not persisted, but may be decorated by API during load.
-       }]
+     * @param c
+     * @param user
+     * @param userId
+     * @returns {Promise<UserPlace[]>}
      */
-    PlacesEndpointSvc.prototype.loadUserPlaces = function (c, user) {
+    PlacesEndpointSvc.prototype.loadUserPlaces = function (c, user, userId) {
         var self = this;
         return new User_1.User(user).
-            hasAccessTo(c, user.userId).
-            then(function () { return self.placesSvc.loadUserPlaces(c, user.userId); });
+            hasAccessTo(c, userId).
+            then(function () { return self.placesSvc.loadUserPlaces(c, userId); });
     };
     return PlacesEndpointSvc;
 })();

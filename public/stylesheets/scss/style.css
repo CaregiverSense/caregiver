@@ -8101,7 +8101,9 @@ button.close {
     position: relative;
     float: right;
     cursor: pointer;
-    color: #888888; }
+    color: #888888;
+    font-size: 1.2em;
+    top: .3em; }
     .adminQuickDial .entry .body .delete:hover {
       color: #00B7FF; }
 
@@ -8115,7 +8117,9 @@ button.close {
     position: relative;
     float: right;
     cursor: pointer;
-    color: #888888; }
+    color: #888888;
+    font-size: 1.2em;
+    top: .3em; }
     .adminQuickPlaces .entry .body .delete:hover {
       color: #00B7FF; }
 

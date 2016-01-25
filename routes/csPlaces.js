@@ -1,3 +1,6 @@
+/**
+ * csPlaces.ts: REST endpoints for map places and place assignments.
+ */
 /// <reference path="../typings/tsd.d.ts" />
 "use strict";
 var Places_1 = require("./places/Places");
@@ -5,8 +8,6 @@ var PlacesEndpointSvc_1 = require("./places/PlacesEndpointSvc");
 var util_1 = require("./util/util");
 var router = require('express').Router();
 var endpoint = new util_1.default(router).endpoint;
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = router;
 /**
  * Add some middleware
  */
@@ -33,19 +34,19 @@ endpoint("/save", function (c, o) {
 /**
  *  Inserts or updates a place, and assigns it to a user
  *
- *  request { placeName, address, lat, lng, patientId }
+ *  request { placeName, address, lat, lng, userId }
  *  response { placeId }
  */
 endpoint("/saveAndAssign", function (c, o, user) {
-    return PlacesEndpointSvc_1.default.saveAndAssign(c, new Places_1.Place(o.placeName, o.address, o.lat, o.lng), user, o.placeLabel || o.placeName);
+    return PlacesEndpointSvc_1.default.saveAndAssign(c, new Places_1.Place(o.placeName, o.address, o.lat, o.lng), user, o.userId, o.placeLabel || o.placeName);
 });
 /**
  * Unassigns a place from a user
  *
- * { patientId, upId }
+ * request { userId, placeId }
  */
 endpoint("/unassign", function (c, o, user) {
-    return PlacesEndpointSvc_1.default.unassign(c, user, o.upId);
+    return PlacesEndpointSvc_1.default.unassign(c, user, o.userId, o.placeId);
 });
 /**
  * Loads user_places for a user, ordered by (rank, upId)
@@ -54,17 +55,19 @@ endpoint("/unassign", function (c, o, user) {
  *      userId      // Loads numbers for this user
  * }
  *
- * response [{      // See class UserPlace for a description of these properties
-        userId	    :number,        // the user to whom the place is assigsned
-        placeId	    :number,        // the placeId
-        label	    :string,        // the label to represent the address
+ * response [{
+        userId	    :number,   // the user to whom the place is assigned
+        placeId	    :number,   // the placeId
+        label	    :string,   // the label to represent the address
 
-        rank	   ?:number,        // used to sort and re-order
-        upId	   ?:number, 	    // primary key
-        place      ?:Place         // Not persisted, but may be decorated by API during load.
+        rank       ?:number,   // used to sort and re-order
+        upId       ?:number,   // primary key of the assignment
+        place      ?:Place     // The place itself
    }]
  */
 endpoint("/load", function (c, o, user) {
-    return PlacesEndpointSvc_1.default.loadUserPlaces(c, user);
+    return PlacesEndpointSvc_1.default.loadUserPlaces(c, user, o.userId);
 });
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = router;
 //# sourceMappingURL=csPlaces.js.map
