@@ -6,6 +6,7 @@ requirejs.config({
     baseUrl : '/js/web',
     paths: {
         'jquery': '/bower_components/jquery/dist/jquery.min',
+        'jqueryui': '../lib/jquery-ui.min',
         'angular': '/bower_components/angular/angular.min',
         'moment': '/bower_components/moment/min/moment.min',
         'angular-route': '/bower_components/angular-route/angular-route.min',
@@ -32,6 +33,7 @@ requirejs.config({
             exports: 'angular',
             deps: ['jquery']
         },
+        'jqueryui' : ['jquery'],
         'okshadow' : ['jquery'],
         'angular-route': ['angular'],
         'angular-animate': ['angular'],
@@ -48,6 +50,7 @@ requirejs.config({
 requirejs([
     'angular',
     'jquery',
+    'jqueryui',
     'ui.bootstrap',
     'ctrl/GroundWebCtrl',
     'fb',

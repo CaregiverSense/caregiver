@@ -171,6 +171,10 @@
 
 /* Styles specific to adminQuickPlaces.jade */
 .adminQuickPlaces {
+  .sortablePlaces {
+    list-style-type: none;
+    margin:0;
+  }
   .entry {
     @extend .raisedPanel;
     .body {

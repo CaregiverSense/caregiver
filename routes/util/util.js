@@ -12,9 +12,13 @@ function default_1(router) {
     this.endpoint = function (path, onRequest) {
         router.post(path, function (req, res) {
             log_1.default(path + log_1.default(req.body));
-            onRequest(req["c"], req.body, new User_1.User(req.session['user'])).
-                then(sendResults(res)).
-                catch(error(res));
+            var response = onRequest(req["c"], req.body, new User_1.User(req.session['user']));
+            if (typeof (response) === "undefined") {
+                log_1.default("The " + path + " endpoint returned undefined instead of a promise");
+            }
+            else {
+                response.then(sendResults(res)).catch(error(res));
+            }
         });
     };
 }

@@ -24,7 +24,11 @@
             button(ng-click="openAddPlaceDialog()") Add Place
     .row
         .col-xs-12
-            .entry.shadowed(ng-repeat="entry in entries" on-last-row="reapplyShadows")
-                .body
-                    .placeName {{ entry.label }}
-                    .fa.fa-trash-o.delete(ng-click='delete(entry)')
+            ul.sortablePlaces
+                li.entry.shadowed(ng-repeat="entry in entries" on-last-row="reapplyShadows")
+                    .body
+                        .placeName {{ entry.label }}
+                        .fa.fa-trash-o.delete(ng-click='delete(entry)')
+
+    script(type='text/javascript').
+       $(".sortablePlaces").sortable({ axis : "y" });

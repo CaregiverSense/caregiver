@@ -8108,6 +8108,8 @@ button.close {
       color: #00B7FF; }
 
 /* Styles specific to adminQuickPlaces.jade */
+.adminQuickPlaces .sortablePlaces {
+  list-style-type: none; }
 .adminQuickPlaces .entry .body {
   display: block;
   line-height: 2em; }

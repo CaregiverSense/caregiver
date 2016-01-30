@@ -38,7 +38,7 @@ endpoint("/find", (c, o) =>
  *  response { placeId }
  */
 endpoint("/save", (c, o) =>
-    svc.save(c, new Place(o.placeName, o.address, o.lat, o.lng))
+    svc.save(c, new Place(o.label, o.address, o.lat, o.lng))
 )
 
 
@@ -46,16 +46,13 @@ endpoint("/save", (c, o) =>
 /**
  *  Inserts or updates a place, and assigns it to a user
  *
- *  request { placeName, address, lat, lng, userId }
+ *  request { label, address, lat, lng, userId }
  *  response { placeId }
  */
-endpoint("/saveAndAssign", (c, o, user) =>
-    svc.saveAndAssign(c,
-            new Place(o.placeName, o.address, o.lat, o.lng),
-            user,
-            o.userId,
-            o.placeLabel || o.placeName)
-)
+endpoint("/saveAndAssign", (c, o, user) => {
+    let place = new Place(o.label, o.address, o.lat, o.lng)
+    return svc.saveAndAssign(c, place, user, o.userId, o.label || o.placeName)
+})
 
 
 

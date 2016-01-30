@@ -18,9 +18,13 @@ export default function(router : Router) {
         router.post(path, (req, res) => {
             log(path + log(req.body));
 
-            onRequest(req["c"], req.body, new User(req.session['user'])).
-            then(sendResults(res)).
-            catch(error(res))
+            let response = onRequest(req["c"], req.body, new User(req.session['user']))
+
+            if (typeof(response) === "undefined") {
+                log("The " + path + " endpoint returned undefined instead of a promise")
+            } else {
+                response.then(sendResults(res)).catch(error(res))
+            }
         })
 
     }

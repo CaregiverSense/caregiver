@@ -29,16 +29,17 @@ endpoint("/find", function (c, o) {
  *  response { placeId }
  */
 endpoint("/save", function (c, o) {
-    return PlacesEndpointSvc_1.default.save(c, new Places_1.Place(o.placeName, o.address, o.lat, o.lng));
+    return PlacesEndpointSvc_1.default.save(c, new Places_1.Place(o.label, o.address, o.lat, o.lng));
 });
 /**
  *  Inserts or updates a place, and assigns it to a user
  *
- *  request { placeName, address, lat, lng, userId }
+ *  request { label, address, lat, lng, userId }
  *  response { placeId }
  */
 endpoint("/saveAndAssign", function (c, o, user) {
-    return PlacesEndpointSvc_1.default.saveAndAssign(c, new Places_1.Place(o.placeName, o.address, o.lat, o.lng), user, o.userId, o.placeLabel || o.placeName);
+    var place = new Places_1.Place(o.label, o.address, o.lat, o.lng);
+    return PlacesEndpointSvc_1.default.saveAndAssign(c, place, user, o.userId, o.label || o.placeName);
 });
 /**
  * Unassigns a place from a user

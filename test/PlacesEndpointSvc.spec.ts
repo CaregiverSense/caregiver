@@ -109,7 +109,7 @@ describe("PlacesEndpointSvc", function() {
             then(() => {
                 return svc.save(c, place)
             }).then(() => {
-                return svc.saveAndAssign(c, place, user, label)
+                return svc.saveAndAssign(c, place, user, user.userId, label)
             }).then(() => {
                 return db.query(c, "select * from place where placeName = ?", [name])
             }).then((rows) => {

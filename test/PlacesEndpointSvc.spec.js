@@ -83,7 +83,7 @@ describe("PlacesEndpointSvc", function () {
                 then(function () {
                 return PlacesEndpointSvc_1.default.save(c, place);
             }).then(function () {
-                return PlacesEndpointSvc_1.default.saveAndAssign(c, place, user, label);
+                return PlacesEndpointSvc_1.default.saveAndAssign(c, place, user, user.userId, label);
             }).then(function () {
                 return db_1.default.query(c, "select * from place where placeName = ?", [name]);
             }).then(function (rows) {
