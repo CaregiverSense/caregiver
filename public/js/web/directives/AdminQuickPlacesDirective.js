@@ -1,4 +1,4 @@
-define(["jquery", ], function($) {
+define(["jquery"], function($) {
 
     return function(module) {
 
@@ -13,7 +13,7 @@ define(["jquery", ], function($) {
                     var me = scope;
                     me.entries = []
                     me.newPlace = {
-                        label : "",
+                        label : ""
                         // lat,
                         // lng,
                         // address
@@ -34,7 +34,7 @@ define(["jquery", ], function($) {
                     me.delete = function(entry) {
                         console.log(entry);
                         $http.post("/places/unassign", {userId:entry.userId, placeId:entry.placeId}).
-                            then((rs) => {
+                            then(function(rs) {
                                 console.log(rs.data);
                                 for (var i = 0; i < me.entries.length; i++) {
                                     if (me.entries[i].upId == entry.upId) {
@@ -168,7 +168,7 @@ define(["jquery", ], function($) {
                 if (self.isEdited()) {
                     self.entry["userId"] = $scope.userId;
                     $http.post("/places/saveAndAssign", self.entry).
-                        then(() => {
+                        then(function() {
                             console.log("saveAndAssign complete");
                             pushAndClose();
                         })

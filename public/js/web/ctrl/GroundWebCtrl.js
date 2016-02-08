@@ -24,7 +24,7 @@ define([
             loginService,
             angular) {
 
-    var module = angular.module("OpalWhale.Web", ['ui.bootstrap', 'ngRoute'])
+    var module = angular.module("OpalWhale.Web", ['ui.bootstrap', 'ngRoute', 'ui.sortable'])
         .config(["$httpProvider", "$routeProvider", "$locationProvider",
             function($httpProvider, $routeProvider, $locationProvider) {
             $locationProvider.html5Mode(true);

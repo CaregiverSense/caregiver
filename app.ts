@@ -56,7 +56,9 @@ function releaseConnection(req) {
     patientId   - set when the user has a patient selected, or when they select a new one.
 
  */
+
 console.log(process.env.COOKIE_SECRET)
+
 app.use(session(({
     // genid                // Use the uid2 library to generate session IDs.
     name : 'memtag.sid',    // The name of the session ID cookie.

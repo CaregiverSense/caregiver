@@ -35,7 +35,7 @@ class PlacesEndpointSvc {
 
     /**
      * Save a place and assign the user to that place
-     * @param c
+     * @param c          The database connection
      * @param place
      * @param user      The user performing the assignment.
      * @param userId    The user being assigned the place
@@ -57,7 +57,7 @@ class PlacesEndpointSvc {
     /**
      * Unassigns a place from a user
 
-     * @param c
+     * @param c         The database connection
      * @param user      The user performing the assignment.
      * @param userId    The user being assigned the place
      * @param placeId   The id of the place
@@ -73,18 +73,35 @@ class PlacesEndpointSvc {
     /**
      * Loads user_places for a user, ordered by (rank, upId)
      *
-     * @param c
-     * @param user
-     * @param userId
+     * @param c          The database connection
+     * @param actor      The user performing this action (used to check security).
+     * @param userId     UserPlaces are loaded for this user.
      * @returns {Promise<UserPlace[]>}
      */
-    loadUserPlaces(c, user : User, userId : number) : Promise<UserPlace[]> {
+    loadUserPlaces(c, actor : User, userId : number) : Promise<UserPlace[]> {
         let self = this;
-        return new User(user).
+        return new User(actor).
             hasAccessTo(c, userId).
             then(() => self.placesSvc.loadUserPlaces(c, userId))
     }
 
+    /**
+     * Updates the rank of the given user_places (identified by upId) so that
+     * they are saved as ordered in the same order as they appear in the given upIds list.
+     *
+     * @param c         The database connection
+     * @param actor     The user performing this action (used to check security).
+     * @param userId    Sorting is limited to the assignments for this user only.
+     * @param upIds     A list of upId, identifying the user_places in the order they should be sorted.
+     */
+    sort(c, actor : User, userId : number, upIds : number[]) : Promise<void> {
+        let self = this
+        return new User(actor).
+            hasAccessTo(c, userId).
+            then(() => self.placesSvc.setRank(c, userId, upIds))
+
+
+    }
 }
 
 export default new PlacesEndpointSvc();

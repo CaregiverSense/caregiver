@@ -19,6 +19,7 @@
     "bootstrap": "~3.3.6",
     "moment": "~2.10.6",
     "bootstrap-sass": "~3.3.6",
-    "components-font-awesome": "~4.5.0"
+    "components-font-awesome": "~4.5.0",
+    "angular-ui-sortable": "~0.13.4"
   }
 }

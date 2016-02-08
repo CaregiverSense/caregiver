@@ -24,6 +24,16 @@ module db {
          *
          * e.g. path = "test/databaseSettings.json"
          *
+         * Example databaseSettings.json:
+
+            {
+              "host" : "localhost",
+              "connectionLimit" : 50,
+              "database" : "someDatabaseName",
+              "user" : "someUser",
+              "password" : "somePassword"
+            }
+
          * @param path
          * @return this
          */

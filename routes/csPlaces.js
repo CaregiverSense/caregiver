@@ -69,6 +69,15 @@ endpoint("/unassign", function (c, o, user) {
 endpoint("/load", function (c, o, user) {
     return PlacesEndpointSvc_1.default.loadUserPlaces(c, user, o.userId);
 });
+/**
+ * request {
+ *      userId      :number,    // Load numbers for this user
+ *      upIds       :number[]   // An array of upIds to sort.
+ * }
+ */
+endpoint("/sort", function (c, o, user) {
+    return PlacesEndpointSvc_1.default.sort(c, user, o.userId, o.upIds);
+});
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = router;
 //# sourceMappingURL=csPlaces.js.map

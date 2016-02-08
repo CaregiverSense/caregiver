@@ -20,10 +20,87 @@ chai.should()
 
 describe("PlacesEndpointSvc", function() {
 
+    let placeA = new Place("TestPlaceA", "123 Street Rd.", "11.11119999", "22.11119999")
+    let placeB = new Place("TestPlaceB", "124 Street Rd.", "11.22229999", "22.22229999")
+    let placeC = new Place("TestPlaceC", "125 Street Rd.", "11.33339999", "22.33339999")
+    let userA = new User({fbId : "U1", name:"User A", role:'patient'})
+    let userB = new User({fbId : "U2", name:"User B", role:'patient'})
+
     beforeEach(function() {
         return db.getConnection(c => {
-            return TestUtil.resetDatabase(c)
+            return TestUtil.resetDatabase(c).
+                then(() => UserService.addUser(c, userA)).
+                then(() => UserService.addUser(c, userB)).
+                then(() => svc.save(c, placeA)).
+                then(() => svc.save(c, placeB)).
+                then(() => svc.save(c, placeC))
         })
+    })
+
+    it("supports the sort() endpoint", function() {
+
+        return db.getConnection(c => {
+
+            // Assign each place to userA and userB, then sort userA's assignments.
+
+            let a1 = new UserPlace(userA.userId, placeA.placeId, "UA,PA", 1);
+            let a2 = new UserPlace(userA.userId, placeB.placeId, "UA,PB", 3);
+            let a3 = new UserPlace(userA.userId, placeC.placeId, "UA,PC", 2);
+
+            let b1 = new UserPlace(userB.userId, placeA.placeId, "UB,PA", 3);
+            let b2 = new UserPlace(userB.userId, placeB.placeId, "UB,PB", 2);
+            let b3 = new UserPlace(userB.userId, placeC.placeId, "UB,PC", 1);
+
+            let ps = new PlacesService();
+
+            return          ps.assignPlace(c, a1).
+                then(() =>  ps.assignPlace(c, a2)).
+                then(() =>  ps.assignPlace(c, a3)).
+                then(() =>  ps.assignPlace(c, b1)).
+                then(() =>  ps.assignPlace(c, b2)).
+                then(() =>  ps.assignPlace(c, b3)).
+                then(() => ps.loadUserPlaces(c, userA.userId)).
+                then((userPlacesForA) => {
+                    expect(userPlacesForA).to.not.be.a('null')
+                    expect(userPlacesForA.length).to.equal(3)
+                    expect(userPlacesForA[0].equals(a1)).to.be.true
+                    expect(userPlacesForA[1].equals(a3)).to.be.true
+                    expect(userPlacesForA[2].equals(a2)).to.be.true
+                }).
+                then(() => {
+                    let upIds = [a1.upId, a2.upId, a3.upId];
+                    return svc.sort(c, userA, userA.userId, upIds)
+                }).
+                then(() => ps.loadUserPlaces(c, userA.userId)).
+                then((userPlacesForA) => {
+                    expect(userPlacesForA).to.not.be.a('null')
+                    expect(userPlacesForA.length).to.equal(3)
+                    expect(userPlacesForA[0].equals(a1)).to.be.true
+                    expect(userPlacesForA[1].equals(a2)).to.be.true
+                    expect(userPlacesForA[2].equals(a3)).to.be.true
+                }).
+                then(() => {
+                    let upIds = [a3.upId, a1.upId, a2.upId];
+                    return svc.sort(c, userA, userA.userId, upIds)
+                }).
+                then(() => ps.loadUserPlaces(c, userA.userId)).
+                then((userPlacesForA) => {
+                    expect(userPlacesForA).to.not.be.a('null')
+                    expect(userPlacesForA.length).to.equal(3)
+                    expect(userPlacesForA[0].equals(a3)).to.be.true
+                    expect(userPlacesForA[1].equals(a1)).to.be.true
+                    expect(userPlacesForA[2].equals(a2)).to.be.true
+                }).
+                then(() => ps.loadUserPlaces(c, userB.userId)).
+                then((userPlacesForB) => {
+                    expect(userPlacesForB).to.not.be.a('null')
+                    expect(userPlacesForB.length).to.equal(3)
+                    expect(userPlacesForB[0].equals(b3)).to.be.true
+                    expect(userPlacesForB[1].equals(b2)).to.be.true
+                    expect(userPlacesForB[2].equals(b1)).to.be.true
+                })
+        });
+
     })
 
     it("supports the find() endpoint", function() {
@@ -182,34 +259,30 @@ describe("PlacesEndpointSvc", function() {
             let place1 = new Place("P1", "A1", "1.1", "1.2")
             let place2 = new Place("P1", "A1", "1.1", "1.2")
             let place3 = new Place("P1", "A1", "1.1", "1.2")
-            let user1 = new User({fbId:"U1", role:'patient'})
-            let user2 = new User({fbId:"U2", role:'patient'})
 
             let placesSvc = new PlacesService()
 
-            return UserService.addUser(c, user1).
-            then(() => UserService.addUser(c, user2)).
-            then(() => placesSvc.savePlace(c, place1)).
+            return     placesSvc.savePlace(c, place1).
             then(() => placesSvc.savePlace(c, place2)).
             then(() => placesSvc.savePlace(c, place3)).
             then(() => placesSvc.assignPlace(c,
-                new UserPlace(user1.userId, place1.placeId, "L1"))
+                new UserPlace(userA.userId, place1.placeId, "L1"))
             ).
             then(() => placesSvc.assignPlace(c,
-                new UserPlace(user2.userId, place2.placeId, "L2"))
+                new UserPlace(userB.userId, place2.placeId, "L2"))
             ).
             then(() => placesSvc.assignPlace(c,
-                new UserPlace(user2.userId, place3.placeId, "L3"))
+                new UserPlace(userB.userId, place3.placeId, "L3"))
             ).
-            then(() => svc.loadUserPlaces(c, user2, user2.userId)).
+            then(() => svc.loadUserPlaces(c, userB, userB.userId)).
             then(rows => {
                 console.log(rows)
                 expect(rows).to.not.be.a('null')
                 expect(rows.length).to.equal(2)
-                expect(rows[0].userId).to.equal(user2.userId)
+                expect(rows[0].userId).to.equal(userB.userId)
                 expect(rows[0].placeId).to.equal(place2.placeId)
                 expect(rows[0].label).to.equal("L2")
-                expect(rows[1].userId).to.equal(user2.userId)
+                expect(rows[1].userId).to.equal(userB.userId)
                 expect(rows[1].placeId).to.equal(place3.placeId)
                 expect(rows[1].label).to.equal("L3")
             })

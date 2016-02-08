@@ -44,7 +44,7 @@ interface OnRequestHandler {
 
 export function sendResults(res) {
     return function(results) {
-        log("Sending: " + log(results))
+        log("sendResults: " + log(results))
         res.send(results)
     }
 }

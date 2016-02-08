@@ -9,7 +9,8 @@
 module.exports = function(req, res, next) {
 
     console.log("checkIsLoggedIn invoked for path " + req.path)
-
+    console.log("Stored session is: ")
+    console.dir(req.session)
 
     if (req.session["user"]) {
         next();

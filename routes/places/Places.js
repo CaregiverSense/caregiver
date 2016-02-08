@@ -9,16 +9,22 @@ var log_1 = require("../util/log");
 var PlacesService = (function () {
     function PlacesService() {
     }
+    // Converts
+    PlacesService.prototype.fix = function (latOrLng) {
+        return new Number(latOrLng).toFixed(12);
+    };
     /**
      * Finds a place given latitude and longitude coordinates.
      */
     PlacesService.prototype.findPlace = function (c, lat, lng) {
         var _this = this;
         console.log("PlaceService.findPlace( c, lat = ", lat, ", lng = ", lng, ")");
-        return db_1.default.queryOne(c, "select * from place where lat = ? and lng = ?", [lat, lng]).
+        return db_1.default.queryOne(c, "select * from place where lat = ? and lng = ?", [
+            this.fix(lat), this.fix(lng)
+        ]).
             then(function (row) {
             log_1.default("Found: " + log_1.default(row));
-            return new Place(row.placeName, row.address, _this.format(row.lat), _this.format(row.lng), row.placeId);
+            return new Place(row.placeName, row.address, _this.fix(row.lat), _this.fix(row.lng), row.placeId);
         });
     };
     /**
@@ -30,6 +36,7 @@ var PlacesService = (function () {
      * @returns A promise of the place inserted
      */
     PlacesService.prototype.savePlace = function (c, place) {
+        var _this = this;
         console.log("PlaceService.savePlace( c, place = ", place, ")");
         return new Promise(function (y, n) {
             if (typeof (place.placeId) !== "undefined") {
@@ -41,14 +48,15 @@ var PlacesService = (function () {
                     "where placeId = ?", [
                     place.placeName,
                     place.address,
-                    place.lat,
-                    place.lng,
+                    _this.fix(place.lat), _this.fix(place.lng),
                     place.placeId
                 ]).then(function () { return place; }));
             }
             else {
                 y(db_1.default.query(c, "insert into place (placeName, address, lat, lng) " +
-                    "values (?, ?, ?, ?)", [place.placeName, place.address, place.lat, place.lng]).then(function (rs) {
+                    "values (?, ?, ?, ?)", [place.placeName, place.address,
+                    _this.fix(place.lat), _this.fix(place.lng),
+                ]).then(function (rs) {
                     log_1.default("Inserted place with placeId " + rs.insertId);
                     place.placeId = rs.insertId;
                     return place;
@@ -69,7 +77,9 @@ var PlacesService = (function () {
     PlacesService.prototype.assignPlace = function (c, userPlace) {
         console.log("PlaceService.addUserPlace( c, userPlace = ", userPlace, ")");
         return db_1.default.query(c, "insert into user_place " +
-            "(userId, placeId, label) values (?, ?, ?)", [userPlace.userId, userPlace.placeId, userPlace.label]).
+            "(userId, placeId, label, rank) values (?, ?, ?, ?)", [userPlace.userId, userPlace.placeId, userPlace.label,
+            userPlace.rank ? userPlace.rank : 0
+        ]).
             then(function (rs) {
             userPlace.upId = rs.insertId;
             return userPlace;
@@ -120,8 +130,12 @@ var PlacesService = (function () {
             });
         });
     };
-    PlacesService.prototype.format = function (num) {
-        return new Number(num).toFixed(9);
+    PlacesService.prototype.setRank = function (c, userId, upIds) {
+        var updates = [];
+        upIds.forEach(function (upId, index) {
+            updates.push(db_1.default.query(c, "update user_place set rank = ? where upId = ? and userId = ?", [index, upId, userId]));
+        });
+        return Promise.all(upIds);
     };
     return PlacesService;
 })();
@@ -159,6 +173,17 @@ var UserPlace = (function () {
         this.upId = upId;
         this.place = place;
     }
+    /**
+     * One UserPlace is considered equal to another if the following fields are equal:
+     * (userId, placeId, label)
+     *
+     * @param userPlace
+     */
+    UserPlace.prototype.equals = function (userPlace) {
+        return (userPlace.userId == this.userId &&
+            userPlace.placeId == this.placeId &&
+            userPlace.label == this.label);
+    };
     return UserPlace;
 })();
 exports.UserPlace = UserPlace;

@@ -78,6 +78,8 @@ var LoginService = (function () {
             log_1.default("Loaded user: " + log_1.default(user));
             status.userIsRegistered = true;
             session["user"] = user;
+            console.log("User added to session.  Session looks like this: ");
+            console.dir(session);
         }, function () {
             // TODO The user was not found, record the login attempt.
         }).then(function () {

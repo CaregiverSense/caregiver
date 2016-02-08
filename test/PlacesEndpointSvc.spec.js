@@ -12,9 +12,77 @@ var chai = require("chai");
 chai.use(require("chai-as-promised"));
 chai.should();
 describe("PlacesEndpointSvc", function () {
+    var placeA = new Places_1.Place("TestPlaceA", "123 Street Rd.", "11.11119999", "22.11119999");
+    var placeB = new Places_1.Place("TestPlaceB", "124 Street Rd.", "11.22229999", "22.22229999");
+    var placeC = new Places_1.Place("TestPlaceC", "125 Street Rd.", "11.33339999", "22.33339999");
+    var userA = new User_2.User({ fbId: "U1", name: "User A", role: 'patient' });
+    var userB = new User_2.User({ fbId: "U2", name: "User B", role: 'patient' });
     beforeEach(function () {
         return db_1.default.getConnection(function (c) {
-            return TestUtil_1.default.resetDatabase(c);
+            return TestUtil_1.default.resetDatabase(c).
+                then(function () { return User_1.default.addUser(c, userA); }).
+                then(function () { return User_1.default.addUser(c, userB); }).
+                then(function () { return PlacesEndpointSvc_1.default.save(c, placeA); }).
+                then(function () { return PlacesEndpointSvc_1.default.save(c, placeB); }).
+                then(function () { return PlacesEndpointSvc_1.default.save(c, placeC); });
+        });
+    });
+    it("supports the sort() endpoint", function () {
+        return db_1.default.getConnection(function (c) {
+            // Assign each place to userA and userB, then sort userA's assignments.
+            var a1 = new Places_1.UserPlace(userA.userId, placeA.placeId, "UA,PA", 1);
+            var a2 = new Places_1.UserPlace(userA.userId, placeB.placeId, "UA,PB", 3);
+            var a3 = new Places_1.UserPlace(userA.userId, placeC.placeId, "UA,PC", 2);
+            var b1 = new Places_1.UserPlace(userB.userId, placeA.placeId, "UB,PA", 3);
+            var b2 = new Places_1.UserPlace(userB.userId, placeB.placeId, "UB,PB", 2);
+            var b3 = new Places_1.UserPlace(userB.userId, placeC.placeId, "UB,PC", 1);
+            var ps = new Places_1.default();
+            return ps.assignPlace(c, a1).
+                then(function () { return ps.assignPlace(c, a2); }).
+                then(function () { return ps.assignPlace(c, a3); }).
+                then(function () { return ps.assignPlace(c, b1); }).
+                then(function () { return ps.assignPlace(c, b2); }).
+                then(function () { return ps.assignPlace(c, b3); }).
+                then(function () { return ps.loadUserPlaces(c, userA.userId); }).
+                then(function (userPlacesForA) {
+                chai_1.expect(userPlacesForA).to.not.be.a('null');
+                chai_1.expect(userPlacesForA.length).to.equal(3);
+                chai_1.expect(userPlacesForA[0].equals(a1)).to.be.true;
+                chai_1.expect(userPlacesForA[1].equals(a3)).to.be.true;
+                chai_1.expect(userPlacesForA[2].equals(a2)).to.be.true;
+            }).
+                then(function () {
+                var upIds = [a1.upId, a2.upId, a3.upId];
+                return PlacesEndpointSvc_1.default.sort(c, userA, userA.userId, upIds);
+            }).
+                then(function () { return ps.loadUserPlaces(c, userA.userId); }).
+                then(function (userPlacesForA) {
+                chai_1.expect(userPlacesForA).to.not.be.a('null');
+                chai_1.expect(userPlacesForA.length).to.equal(3);
+                chai_1.expect(userPlacesForA[0].equals(a1)).to.be.true;
+                chai_1.expect(userPlacesForA[1].equals(a2)).to.be.true;
+                chai_1.expect(userPlacesForA[2].equals(a3)).to.be.true;
+            }).
+                then(function () {
+                var upIds = [a3.upId, a1.upId, a2.upId];
+                return PlacesEndpointSvc_1.default.sort(c, userA, userA.userId, upIds);
+            }).
+                then(function () { return ps.loadUserPlaces(c, userA.userId); }).
+                then(function (userPlacesForA) {
+                chai_1.expect(userPlacesForA).to.not.be.a('null');
+                chai_1.expect(userPlacesForA.length).to.equal(3);
+                chai_1.expect(userPlacesForA[0].equals(a3)).to.be.true;
+                chai_1.expect(userPlacesForA[1].equals(a1)).to.be.true;
+                chai_1.expect(userPlacesForA[2].equals(a2)).to.be.true;
+            }).
+                then(function () { return ps.loadUserPlaces(c, userB.userId); }).
+                then(function (userPlacesForB) {
+                chai_1.expect(userPlacesForB).to.not.be.a('null');
+                chai_1.expect(userPlacesForB.length).to.equal(3);
+                chai_1.expect(userPlacesForB[0].equals(b3)).to.be.true;
+                chai_1.expect(userPlacesForB[1].equals(b2)).to.be.true;
+                chai_1.expect(userPlacesForB[2].equals(b1)).to.be.true;
+            });
         });
     });
     it("supports the find() endpoint", function () {
@@ -148,26 +216,22 @@ describe("PlacesEndpointSvc", function () {
             var place1 = new Places_1.Place("P1", "A1", "1.1", "1.2");
             var place2 = new Places_1.Place("P1", "A1", "1.1", "1.2");
             var place3 = new Places_1.Place("P1", "A1", "1.1", "1.2");
-            var user1 = new User_2.User({ fbId: "U1", role: 'patient' });
-            var user2 = new User_2.User({ fbId: "U2", role: 'patient' });
             var placesSvc = new Places_1.default();
-            return User_1.default.addUser(c, user1).
-                then(function () { return User_1.default.addUser(c, user2); }).
-                then(function () { return placesSvc.savePlace(c, place1); }).
+            return placesSvc.savePlace(c, place1).
                 then(function () { return placesSvc.savePlace(c, place2); }).
                 then(function () { return placesSvc.savePlace(c, place3); }).
-                then(function () { return placesSvc.assignPlace(c, new Places_1.UserPlace(user1.userId, place1.placeId, "L1")); }).
-                then(function () { return placesSvc.assignPlace(c, new Places_1.UserPlace(user2.userId, place2.placeId, "L2")); }).
-                then(function () { return placesSvc.assignPlace(c, new Places_1.UserPlace(user2.userId, place3.placeId, "L3")); }).
-                then(function () { return PlacesEndpointSvc_1.default.loadUserPlaces(c, user2, user2.userId); }).
+                then(function () { return placesSvc.assignPlace(c, new Places_1.UserPlace(userA.userId, place1.placeId, "L1")); }).
+                then(function () { return placesSvc.assignPlace(c, new Places_1.UserPlace(userB.userId, place2.placeId, "L2")); }).
+                then(function () { return placesSvc.assignPlace(c, new Places_1.UserPlace(userB.userId, place3.placeId, "L3")); }).
+                then(function () { return PlacesEndpointSvc_1.default.loadUserPlaces(c, userB, userB.userId); }).
                 then(function (rows) {
                 console.log(rows);
                 chai_1.expect(rows).to.not.be.a('null');
                 chai_1.expect(rows.length).to.equal(2);
-                chai_1.expect(rows[0].userId).to.equal(user2.userId);
+                chai_1.expect(rows[0].userId).to.equal(userB.userId);
                 chai_1.expect(rows[0].placeId).to.equal(place2.placeId);
                 chai_1.expect(rows[0].label).to.equal("L2");
-                chai_1.expect(rows[1].userId).to.equal(user2.userId);
+                chai_1.expect(rows[1].userId).to.equal(userB.userId);
                 chai_1.expect(rows[1].placeId).to.equal(place3.placeId);
                 chai_1.expect(rows[1].label).to.equal("L3");
             });

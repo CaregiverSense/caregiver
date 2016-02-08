@@ -28,7 +28,7 @@ var PlacesEndpointSvc = (function () {
     };
     /**
      * Save a place and assign the user to that place
-     * @param c
+     * @param c          The database connection
      * @param place
      * @param user      The user performing the assignment.
      * @param userId    The user being assigned the place
@@ -49,7 +49,7 @@ var PlacesEndpointSvc = (function () {
     /**
      * Unassigns a place from a user
 
-     * @param c
+     * @param c         The database connection
      * @param user      The user performing the assignment.
      * @param userId    The user being assigned the place
      * @param placeId   The id of the place
@@ -64,16 +64,31 @@ var PlacesEndpointSvc = (function () {
     /**
      * Loads user_places for a user, ordered by (rank, upId)
      *
-     * @param c
-     * @param user
-     * @param userId
+     * @param c          The database connection
+     * @param actor      The user performing this action (used to check security).
+     * @param userId     UserPlaces are loaded for this user.
      * @returns {Promise<UserPlace[]>}
      */
-    PlacesEndpointSvc.prototype.loadUserPlaces = function (c, user, userId) {
+    PlacesEndpointSvc.prototype.loadUserPlaces = function (c, actor, userId) {
         var self = this;
-        return new User_1.User(user).
+        return new User_1.User(actor).
             hasAccessTo(c, userId).
             then(function () { return self.placesSvc.loadUserPlaces(c, userId); });
+    };
+    /**
+     * Updates the rank of the given user_places (identified by upId) so that
+     * they are saved as ordered in the same order as they appear in the given upIds list.
+     *
+     * @param c         The database connection
+     * @param actor     The user performing this action (used to check security).
+     * @param userId    Sorting is limited to the assignments for this user only.
+     * @param upIds     A list of upId, identifying the user_places in the order they should be sorted.
+     */
+    PlacesEndpointSvc.prototype.sort = function (c, actor, userId, upIds) {
+        var self = this;
+        return new User_1.User(actor).
+            hasAccessTo(c, userId).
+            then(function () { return self.placesSvc.setRank(c, userId, upIds); });
     };
     return PlacesEndpointSvc;
 })();

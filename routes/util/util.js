@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 function sendResults(res) {
     return function (results) {
-        log_1.default("Sending: " + log_1.default(results));
+        log_1.default("sendResults: " + log_1.default(results));
         res.send(results);
     };
 }

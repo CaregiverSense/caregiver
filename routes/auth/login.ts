@@ -90,6 +90,8 @@ export default class LoginService {
                     l("Loaded user: " + l(user));
                     status.userIsRegistered = true;
                     session["user"] = user;
+                    console.log("User added to session.  Session looks like this: ")
+                    console.dir(session);
                 },
                 () => {
                     // TODO The user was not found, record the login attempt.

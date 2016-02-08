@@ -88,6 +88,15 @@ endpoint("/load", (c, o, user) =>
     svc.loadUserPlaces(c, user, o.userId)
 )
 
+/**
+ * request {
+ *      userId      :number,    // Load numbers for this user
+ *      upIds       :number[]   // An array of upIds to sort.
+ * }
+ */
+endpoint("/sort", (c, o, user) =>
+    svc.sort(c, user, o.userId, o.upIds)
+)
 
 
 export default router
