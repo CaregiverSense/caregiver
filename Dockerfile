@@ -7,7 +7,7 @@ RUN npm install -g bower gulp
 # Define working directory.
 WORKDIR /data
 
-ADD . /app
+ADD . /data/app
 
 # Define default command.
 CMD ["bash"]
