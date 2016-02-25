@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var log_1 = require("./routes/util/log");
 var db_1 = require("./routes/dao/db");
-db_1.default.init("databaseSettings.json");
 var csIndex_1 = require('./routes/csIndex');
 var csAdmin_1 = require('./routes/csAdmin');
 var csLogin_1 = require('./routes/csLogin');

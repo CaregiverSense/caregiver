@@ -13,7 +13,6 @@ import session = require('express-session')
 import l from "./routes/util/log";
 
 import db from "./routes/dao/db";
-db.init("databaseSettings.json");
 
 import index    from './routes/csIndex'
 import admin    from './routes/csAdmin'

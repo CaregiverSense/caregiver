@@ -1,9 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 "use strict";
-var db_1 = require("../routes/dao/db");
 var Places_1 = require("../routes/places/Places");
 var chai_1 = require("chai");
-db_1.default.init("test/databaseSettings.json");
 var chai = require("chai");
 chai.use(require("chai-as-promised"));
 chai.should();

@@ -7,7 +7,6 @@ import { expect } from "chai"
 import * as chai from "chai"
 
 import db from "../routes/dao/db";
-db.init("test/databaseSettings.json");
 
 import UserService from "../routes/user/User";
 import { User, IUser } from "../routes/user/User";

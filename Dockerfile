@@ -10,7 +10,7 @@
 # These variables will be provided in a file that can be saved as .cs.env, which
 # you can then include at runtime as follows:
 #
-#     docker run --name memtag-app -p 80:7000 $(cat ~/.cs.env) -d cs-app
+#     docker run --name memtag-app -p 7001:7000 $(cat ~/.cs.env) -d cs-app
 #
 
 # Pull base image.
@@ -21,7 +21,12 @@ ENV PORT=7000 \
 	OAUTH_GMAIL_USER=x \
 	OAUTH_GMAIL_CLIENT_ID=x \
 	OAUTH_GMAIL_CLIENT_SECRET=x \
-	OAUTH_GMAIL_REFRESH_TOKEN=x
+	OAUTH_GMAIL_REFRESH_TOKEN=x \
+	DB_HOST= \
+	DB_POOL_SIZE= \
+	DB_NAME= \
+	DB_USER= \
+	DB_PASSWORD=
 
 # Install Bower & Gulp
 RUN npm install -g bower gulp

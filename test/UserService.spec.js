@@ -4,7 +4,6 @@ var TestUtil_1 = require("./TestUtil");
 var chai_1 = require("chai");
 var chai = require("chai");
 var db_1 = require("../routes/dao/db");
-db_1.default.init("test/databaseSettings.json");
 var User_1 = require("../routes/user/User");
 var User_2 = require("../routes/user/User");
 chai.use(require("chai-as-promised"));

@@ -6,8 +6,6 @@ let chai = require("chai");
 import { PhoneNumber } from "../routes/dial/Dial";
 import { expect, assert } from "chai"
 import db from "../routes/dao/db";
-db.init("test/databaseSettings.json");
-
 import TestUtil from "./TestUtil"
 import dial from "../routes/dial/Dial";
 

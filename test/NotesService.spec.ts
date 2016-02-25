@@ -10,8 +10,6 @@ import { User, IUser } from "../routes/user/User"
 import TestUtil from "./TestUtil"
 import { expect } from "chai"
 
-db.init("test/databaseSettings.json");
-
 let chai = require("chai");
 chai.use(require("chai-as-promised"))
 chai.should()

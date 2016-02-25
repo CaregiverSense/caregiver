@@ -8,7 +8,6 @@ var notes_2 = require("../routes/notes/notes");
 var User_2 = require("../routes/user/User");
 var TestUtil_1 = require("./TestUtil");
 var chai_1 = require("chai");
-db_1.default.init("test/databaseSettings.json");
 var chai = require("chai");
 chai.use(require("chai-as-promised"));
 chai.should();

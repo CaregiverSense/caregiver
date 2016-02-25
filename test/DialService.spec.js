@@ -4,7 +4,6 @@ var chai = require("chai");
 var Dial_1 = require("../routes/dial/Dial");
 var chai_1 = require("chai");
 var db_1 = require("../routes/dao/db");
-db_1.default.init("test/databaseSettings.json");
 var TestUtil_1 = require("./TestUtil");
 var Dial_2 = require("../routes/dial/Dial");
 var TEST_USER_ID = 2;

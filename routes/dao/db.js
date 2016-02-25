@@ -4,7 +4,22 @@ var log_1 = require("../util/log");
 var mysql = require("mysql");
 var db;
 (function (db) {
-    var settings = null;
+    var settings = {
+        host: process.env.DB_HOST,
+        connectionLimit: process.env.DB_POOL_SIZE,
+        database: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD
+    };
+    var s = settings;
+    if (!s.host || !s.connectionLimit || !s.database || !s.database || !s.user || !s.password) {
+        log_1.default("The following environment variables need to be set, to connect to the database");
+        log_1.default("\tDB_HOST            // e.g. localhost");
+        log_1.default("\tDB_POOL_SIZE       // e.g. 20");
+        log_1.default("\tDB_NAME            // e.g. memtag");
+        log_1.default("\tDB_USER            // e.g. root");
+        log_1.default("\tDB_PASSWORD        // e.g. XawzDZeKh9OwU4eyNVKA");
+    }
     var me = {
         pool: null
     };
@@ -16,39 +31,6 @@ var db;
         };
     }
     db.wrap = wrap;
-    /**
-     * Initialize the database with a path to the database settings file
-     * relative to the root of the project.  Do not include the leading slash (/)
-     *
-     * e.g. path = "test/databaseSettings.json"
-     *
-     * Example databaseSettings.json:
-
-        {
-          "host" : "localhost",
-          "connectionLimit" : 50,
-          "database" : "someDatabaseName",
-          "user" : "someUser",
-          "password" : "somePassword"
-        }
-
-     * @param path
-     * @return this
-     */
-    function init(path) {
-        if (settings == null) {
-            if (!path) {
-                path = "databaseSettings.json";
-            }
-            settings = require("../../" + path);
-            log_1.default("Loaded database settings " + log_1.default(settings));
-        }
-        else {
-            log_1.default("using db " + log_1.default(settings));
-        }
-        return me;
-    }
-    db.init = init;
     function getPool() {
         if (me.pool == null) {
             me.pool = mysql.createPool(settings);

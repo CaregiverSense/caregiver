@@ -4,10 +4,29 @@
 import l from "../util/log";
 import mysql = require("mysql");
 
-module db {
-    let settings = null;
 
-    var me = {
+module db {
+
+    let settings = {
+        host              : process.env.DB_HOST,
+        connectionLimit   : process.env.DB_POOL_SIZE,
+        database          : process.env.DB_NAME,
+        user              : process.env.DB_USER,
+        password          : process.env.DB_PASSWORD
+    }
+
+    let s = settings
+    if (!s.host || !s.connectionLimit || !s.database || !s.database || !s.user || !s.password) {
+        l("The following environment variables need to be set, to connect to the database")
+        l("\tDB_HOST            // e.g. localhost")
+        l("\tDB_POOL_SIZE       // e.g. 20")
+        l("\tDB_NAME            // e.g. memtag")
+        l("\tDB_USER            // e.g. root")
+        l("\tDB_PASSWORD        // e.g. XawzDZeKh9OwU4eyNVKA")
+    }
+
+
+    let me = {
         pool: null
     }
 
@@ -18,37 +37,6 @@ module db {
             }
         }
 
-        /**
-         * Initialize the database with a path to the database settings file
-         * relative to the root of the project.  Do not include the leading slash (/)
-         *
-         * e.g. path = "test/databaseSettings.json"
-         *
-         * Example databaseSettings.json:
-
-            {
-              "host" : "localhost",
-              "connectionLimit" : 50,
-              "database" : "someDatabaseName",
-              "user" : "someUser",
-              "password" : "somePassword"
-            }
-
-         * @param path
-         * @return this
-         */
-    export function init(path) {
-            if (settings == null) {
-                if (!path) {
-                    path = "databaseSettings.json";
-                }
-                settings = require("../../" + path);
-                l("Loaded database settings "  + l(settings));
-            } else {
-                l("using db " + l(settings))
-            }
-            return me;
-        }
 
     export function getPool() {
             if (me.pool == null) {
