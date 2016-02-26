@@ -6,7 +6,7 @@ var db;
 (function (db) {
     var settings = {
         host: process.env.DB_HOST,
-        port: process.env.PORT,
+        port: process.env.DB_PORT,
         connectionLimit: process.env.DB_POOL_SIZE,
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
