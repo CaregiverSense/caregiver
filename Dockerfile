@@ -1,49 +1,41 @@
 #
-# Тhis Dockerfile allows you to build an image of latest version of the app which
-# you can then run with the docker command.
+# Тhis Dockerfile allows you to use your local code as a volume
 #
 # To build, use this command:
 #
-#     docker build -t cs-app https://github.com/CaregiverSense/caregiver.git
+#     docker build -t memtag/cs-app-dev - < Dockerfile
 #
-# There are a number of environment variables that are needed to run it.
-# These variables will be provided in a file that can be saved as .cs.env, which
-# you can then include at runtime as follows:
+# The environment variables expected are the following:
+# 		FB_APP_ID					// The App ID from Facebook of a test or prod version of the app.
+#		COOKIE_SECRET				// A value used to encrypt cookies
+#		OAUTH_GMAIL_USER			// Gmail address used for new registrations
+#		OAUTH_GMAIL_CLIENT_ID
+#		OAUTH_GMAIL_CLIENT_SECRET
+#		OAUTH_GMAIL_REFRESH_TOKEN
+#		DB_HOST=172.19.0.2			// The IPv4 address of the server
+#		DB_PORT=3306				// The port to use to connect to the database
+#		DB_POOL_SIZE=10				// The number of connections held in the connection pool
+#		DB_NAME=memtag				// The name of the database
+#		DB_USER						// The user name for the db
+# 		DB_PASSWORD					// The password for the db
 #
-#     docker run --name memtag-app -p 7001:7000 $(cat ~/.cs.env) -d cs-app
+# Since this container is part of a multi-container setup (app and db), the preferred
+# approach is to launch it (from the same location as docker-compose.yml) in detached mode with:
+#
+#	docker-compose up -d
 #
 
 # Pull base image.
 FROM node
 
-ENV PORT=7000 \
-	COOKIE_SECRET=x \
-	OAUTH_GMAIL_USER=x \
-	OAUTH_GMAIL_CLIENT_ID=x \
-	OAUTH_GMAIL_CLIENT_SECRET=x \
-	OAUTH_GMAIL_REFRESH_TOKEN=x \
-	DB_HOST= \
-	DB_POOL_SIZE= \
-	DB_NAME= \
-	DB_USER= \
-	DB_PASSWORD=
-
 # Install Bower & Gulp
 RUN npm install -g bower gulp
 
-# Define working directory.
-
-ADD . /data/app
-
-WORKDIR /data/app
-RUN npm install
-
-WORKDIR public
-RUN bower install --allow-root
-
 # Define default command.
-WORKDIR ..
-CMD ["node", "--debug=5858", "bin/www" ]
+CMD ["node", "--debug=5858", "/data/bin/www" ]
+
+# Map your project to this volume
+VOLUME ["/data"]
 
 # 5858 is the debug port and 7000 is the main HTTP port
 EXPOSE 5858 7000

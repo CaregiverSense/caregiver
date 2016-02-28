@@ -29,6 +29,8 @@ var LoginService = (function () {
         // TODO Is an https Agent pool needed here, since this will default to using the global agent which may be a bottleneck.
         log_1.default("LoginService # verifyAccessToken");
         return new Promise(function (resolve, reject) {
+            log_1.default("Sending access token:");
+            console.dir(accessToken);
             request.get({
                 url: "https://graph.facebook.com/me",
                 qs: {
@@ -40,7 +42,13 @@ var LoginService = (function () {
                     parsedBody = JSON.parse(body);
                 }
                 if (err || httpResponse.statusCode != 200 || parsedBody == null || !parsedBody.verified) {
-                    console.log("Call to https://graph.facebook.com/me failed with status code %d, error %s, and body %s", httpResponse.statusCode, err, parsedBody);
+                    console.log("Call to https://graph.facebook.com/me failed with status code %d, error %s, and body %s", httpResponse ? httpResponse.statusCode : "undefined", err, parsedBody);
+                    console.log("response: ");
+                    console.dir(httpResponse);
+                    console.log("body: ");
+                    console.dir(body);
+                    console.log("err: ");
+                    console.dir(err);
                     reject({ err: err, body: body });
                 }
                 else {
@@ -69,7 +77,7 @@ var LoginService = (function () {
             accessTokenVerified: false,
             userIsRegistered: false
         };
-        return LoginService.verifyAccessToken(auth.accessToken).
+        return LoginService.verifyAccessToken(auth["accessToken"]).
             then(function (fbUser) {
             status.accessTokenVerified = true;
             log_1.default("Access token verified for fbUser.id: " + fbUser.id);

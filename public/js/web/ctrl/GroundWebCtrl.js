@@ -60,6 +60,7 @@ define([
 
             $http.post("/login/fbId").then(function(rs) {
                 var appId = rs.data.id;
+                console.log("Calling FB.init with appId " + rs.data.id);
                 FB.init({
                     appId: appId,
                     status: true,
@@ -68,8 +69,6 @@ define([
                     version: 'v2.4'
                 });
             });
-
-
 
             $scope.load = function (path) {
                 $location.path(path)

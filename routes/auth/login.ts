@@ -34,6 +34,8 @@ export default class LoginService {
         // TODO Is an https Agent pool needed here, since this will default to using the global agent which may be a bottleneck.
         l("LoginService # verifyAccessToken")
         return new Promise((resolve,reject) => {
+            l("Sending access token:")
+            console.dir(accessToken)
             request.get({
                 url: "https://graph.facebook.com/me",
                 qs: {
@@ -47,7 +49,14 @@ export default class LoginService {
                 }
                 if (err || httpResponse.statusCode != 200 || parsedBody == null || !parsedBody.verified) {
 
-                    console.log("Call to https://graph.facebook.com/me failed with status code %d, error %s, and body %s", httpResponse.statusCode, err, parsedBody);
+                    console.log("Call to https://graph.facebook.com/me failed with status code %d, error %s, and body %s", httpResponse ? httpResponse.statusCode : "undefined", err, parsedBody);
+                    console.log("response: ")
+                    console.dir(httpResponse);
+                    console.log("body: ")
+                    console.dir(body);
+                    console.log("err: ")
+                    console.dir(err);
+
                     reject({err, body});
                     // TODO e-mail sysadmin about failure
                 } else {
@@ -77,7 +86,8 @@ export default class LoginService {
             accessTokenVerified : false,
             userIsRegistered : false
         };
-        return LoginService.verifyAccessToken(auth.accessToken).
+
+        return LoginService.verifyAccessToken(auth["accessToken"]).
 
             then(
                 (fbUser) => {

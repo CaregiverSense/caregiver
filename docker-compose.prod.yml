@@ -1,12 +1,10 @@
 version: '2'
 services:
   app:
-    image: memtag/cs-app-dev
+    image: memtag/cs-app
     env_file: .env.csapp.txt
     ports:
      - "80:7000"
-    volumes_from:
-     - container:data
     depends_on:
      - db
     dns: 8.8.8.8
