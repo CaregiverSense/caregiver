@@ -1,0 +1,14 @@
+version: '2'
+services:
+  app:
+    image: memtag/cs-app
+    env_file: .env.csapp.txt
+    ports:
+     - "80:7000"
+    depends_on:
+     - db
+  db:
+    image: memtag/cs-db
+    env_file: .env.csdb.txt
+    ports:
+     - "3306:3306"

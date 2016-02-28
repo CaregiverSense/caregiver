@@ -15,6 +15,23 @@ router.post("/", function (req, res, next) {
         res.send(status);
     });
 });
+/**
+ * Returns the Facebook App ID for this instance of the application.
+ * This value is read from the FB_APP_ID environment variable.
+ *
+ * Local development instances of this application will usually
+ * set a different FB_APP_ID than the one that is used for prod to allow
+ * access from their local machine.
+ */
+router.post("/fbid", function (req, res) {
+    var id = process.env.FB_APP_ID;
+    if (!id) {
+        log_1.default("FB_APP_ID is not set.  This must be set to match the App ID in facebook.");
+    }
+    else {
+        res.send({ id: id });
+    }
+});
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = router;
 //# sourceMappingURL=csLogin.js.map

@@ -54,9 +54,22 @@ define([
                 }
             }])
         }]).
-        controller("GroundWebCtrl", ["$scope", "$location", function($scope, $location) {
+        controller("GroundWebCtrl", ["$scope", "$location", "$http", function($scope, $location, $http) {
 
             this.roles = 'caregivers,patients'; // Used in the user-lookup dropdown in the header bar
+
+            $http.post("/login/fbId").then(function(rs) {
+                var appId = rs.data.id;
+                FB.init({
+                    appId: appId,
+                    status: true,
+                    cookie: true,
+                    xfbml: true,
+                    version: 'v2.4'
+                });
+            });
+
+
 
             $scope.load = function (path) {
                 $location.path(path)

@@ -2,14 +2,6 @@ define(["facebook"], function() {
 
     return function(module) {
 
-        FB.init({
-            appId: '244016658689',
-            status: true,
-            cookie: true,
-            xfbml: true,
-            version: 'v2.4'
-        });
-
         /* May come in handy at some point
         FB.Event.subscribe('auth.authResponseChange', function (res) {
             console.log("auth.authResponseChange:");

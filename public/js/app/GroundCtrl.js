@@ -126,6 +126,16 @@ define([
                 function ($scope, $http, $location, userInfo) {
                     var me = this
 
+                    $http.post("/login/fbId").then(function(rs) {
+                        FB.init({
+                            appId: rs.data.id,
+                            status: true,
+                            cookie: true,
+                            xfbml: true,
+                            version: 'v2.4'
+                        });
+                    });
+
                     $scope.load = function (path) {
                         $location.path(path)
                     }

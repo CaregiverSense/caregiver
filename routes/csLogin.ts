@@ -20,8 +20,23 @@ router.post("/", function(req, res, next) {
         l("Sending " + l(status));
         res.send(status);
     });
-
-
 });
+
+/**
+ * Returns the Facebook App ID for this instance of the application.
+ * This value is read from the FB_APP_ID environment variable.
+ *
+ * Local development instances of this application will usually
+ * set a different FB_APP_ID than the one that is used for prod to allow
+ * access from their local machine.
+ */
+router.post("/fbid", function(req, res) {
+    let id = process.env.FB_APP_ID
+    if (!id) {
+        l("FB_APP_ID is not set.  This must be set to match the App ID in facebook.")
+    } else {
+        res.send({id})
+    }
+})
 
 export default router

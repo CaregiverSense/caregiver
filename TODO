@@ -1,0 +1,20 @@
+Existing patient
+	- Try logging in as a test user through the phone
+
+
+
+Add a patient
+	- Show dialog
+	- Enter name
+	- Enter email
+	- Submit
+		- Sends a link for the patient to sign in via facebook
+		- Once signed in they are shown a link where they can download the app
+
+
+
+Put the app on the Play store
+Launch as caregiversense.com
+	- Set up a web server to host it on the micro instance
+	- Decide between apache or nginx
+
