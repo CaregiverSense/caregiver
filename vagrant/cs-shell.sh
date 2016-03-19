@@ -13,7 +13,7 @@ echo "Installed resty"
 echo Using vault token $VAULT_TOKEN
 echo "export VAULT_HEADER=\"X-Vault-Token: $VAULT_TOKEN\"" >> /etc/profile.d/startup.sh
 # TODO Replace this IP with the domain name.
-echo "resty http://159.203.49.247:8200" >> /etc/profile.d/startup.sh
+echo "resty http://vault.caregiversense.com:8200" >> /etc/profile.d/startup.sh
 
 . /etc/profile.d/startup.sh
 

@@ -1,13 +1,15 @@
 Vagrant.configure("2") do |config|
 
-	config.vm.box = "cs-2016-03-13"
+	config.vm.box = "memtag/cs-devbox-base"
 	config.vm.network "forwarded_port", guest: 5858, host: 5858
 	config.vm.network "forwarded_port", guest: 7000, host: 80
+	config.vm.provider :virtualbox do |vb|
+	  vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+	end
 
 	# Update
 	config.vm.provision "shell", inline: <<-END
 		apt-get update
-		apt-get install -y nodejs-legacy npm git jq
 	END
 
 

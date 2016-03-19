@@ -1,11 +1,25 @@
-# Tasks
-# 		apt-get update
-#		download from git
-#		npm install
-#		bower install
 #
-#		Install docker
-#   	install docker-machine
+# Before running this, make sure you've added the guest additions plugin to vagrant
+# so that the latest version of the guest additions will be installed as shown below.
+# After installing, run a 'vagrant up'.
+#
+# Example:
+#
+# $ vagrant plugin install vagrant-vbguest
+# $ vagrant up
+#
+# Following the installation, to compress the drive, go to the folder where the VM disk is located and run:
+# > vboxmanage clonehd box-disk1.vmdk box-disk1.vdi --format VDI
+# > vboxmanage modifyhd --compact box-disk1.vdi
+# > vboxmanage internalcommands sethduuid box-disk1.vdi
+# > move box-disk1.vmdk box-disk1.vmdk.old
+# > vboxmanage clonehd box-disk1.vdi box-optimized.vmdk --format VMDK
+#
+# Now open Oracle VM VirtualBox Manager and associate the VM with the new disk, by going into Settings > Storage,
+# removing the old drive and adding the new box-optimized.vmdk drive.
+#
+# Finally, package it with:
+# > vagrant package --base <name of the VM from VirtualBox>
 #
 
 Vagrant.configure("2") do |config|
@@ -23,23 +37,24 @@ Vagrant.configure("2") do |config|
 		npm install -g bower
 	END
 
-	config.vm.provision "shell", privileged:false, inline: <<-END
-		cd /vagrant/public
-		bower install
-	END
-
 	# TODO run the container with environment variables (obtained from Vault?)
 	config.vm.provision "docker" do |docker|
 		docker.pull_images "memtag/cs-app-dev"
 	end
 
+	config.vm.provision "shell", inline: <<-END
+		echo Reconfiguring SSH to use the insecure public key
+		curl https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub > /home/vagrant/.ssh/authorized_keys
+		echo Clearing unnecessary files and packages
+		rm -rf /usr/src/linux-headers*
+		rm -rf /usr/src/vboxguest*
+		rm -rf /usr/share/locale/{ace,af,am,an,ar,ary,as,ast,az,bal,be,bem,bg,bn,bn_IN,bo,br,bs,byn,ca,ca@valencia,ckb,cr,crh,cs,csb,cv,cy,da,de,de_at,de_DE,dv,dz,el,en_AU,en_CA,en_GB,eo,es,et,et_ee,eu,fa,fa_AF,fi,fil,fo,fr,fr_CA,frp,fur,fy,ga,gd,gez,gl,gu,gv,haw,he,hi,hr,ht,hu,hy,ia,id,is,it,ja,jv,ka,kk,km,kn,ko,kok,ku,kw,ky,lb,lg,ln,lo,lt,lv,mg,mhr,mi,mk,ml,mn,mr,ms,mt,my,nb,nds,ne,nl,nn,no,nso,oc,or,os,pa,pam,pl,ps,pt,pt_BR,pt_PT,qu,ro,ru,rw,sc,sco,sd,se,shn,si,sk,sl,so,sq,sr,sr*latin,st,sv,sw,szl,ta,te,tg,th,ti,tig,tk,tl,tr,trv,tt,tt@iqtelif,ug,uk,ur,urd,uz,ve,vec,vi,wa,wal,wo,xh,zh,zh_HK,zh_CN,zh_TW,zu}
+		apt-get autoremove -y
+		echo "Zeroing out free space to allow for the drive to be compressed manually (an error is expected here)"
+		dd if=/dev/zero of=/empty bs=64k
+		sync
+		rm -f /empty
+		sync
+	END
 
 end
-
-
-#	   # Run Ansible from the Vagrant VM
-#		config.vm.provision "ansible_local" do |ansible|
-#			ansible.provisioning_path = "/vagrant/ansible"
-#			ansible.playbook 		  = "playbook.yml"
-#			ansible.install  		  = true
-#		end
